@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+#
+# Starts ansible-silo
+#
+# Copyright (c) 2017, Groupon, Inc.
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#
+# Redistributions of source code must retain the above copyright notice,
+# this list of conditions and the following disclaimer.
+#
+# Redistributions in binary form must reproduce the above copyright
+# notice, this list of conditions and the following disclaimer in the
+# documentation and/or other materials provided with the distribution.
+#
+# Neither the name of GROUPON nor the names of its contributors may be
+# used to endorse or promote products derived from this software without
+# specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+# IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+# TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+# PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+# TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+# PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+# LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+# NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+#######################################
+# Generates the docker-run command to start ansible-silo
+# Globals:
+#   SILO_DEBUG
+#   SILO_VERSION
+#   SILO_PATH
+# Arguments:
+#   $@ - Anything that was passed to the script
+# Returns:
+#   None
+#######################################
+silo() {
+  local SILO_IMAGE command
+
+  # SILO_IMAGE is replaced with the value defined in silo.Dockerfile
+  SILO_IMAGE="{{ SILO_IMAGE }}"
+
+  # SILO_VERSION is set as buld parameter "v" in docker-build
+  # It can be defined by the user as environment var to run a specific
+  # ansible-silo version
+  if [[ -z "${SILO_VERSION}" ]]; then
+    SILO_VERSION="{{ SILO_VERSION }}"
+  fi
+
+  if [[ "$1" == "--update" ]]; then
+    docker pull "${SILO_IMAGE}:latest"
+    # SILO_PATH can be set by the user to define a custom location where the
+    # silo executables will be installed/updated.
+    if [[ -z "${SILO_PATH}" ]]; then
+      # BASH_SOURCE holds the source file path and is used here to get the
+      # absolute path to the parent directory of this script.
+      SILO_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    fi
+    docker run -it --rm -v "${SILO_PATH}:/silo_install_path" \
+      -i grpn/ansible-silo:latest --install
+    exit
+  fi
+
+  command="$(docker run -it --rm -v "/tmp:/tmp" -i \
+    "${SILO_IMAGE}:${SILO_VERSION}" --run "$@")"
+
+  # SILO_DEBUG can be set by the user to enable debug output
+  if [[ ! -z "${SILO_DEBUG}" ]]; then
+    echo "Executing: ${command}"
+  fi
+  bash -c "$(echo "${command}" | tr -d "\r")"
+  exit
+}
+
+silo "$@"

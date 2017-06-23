@@ -1,0 +1,112 @@
+#!/usr/bin/env bash
+#
+# Builds Docker images and uploads them to the docker hub
+#
+# Copyright (c) 2017, Groupon, Inc.
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#
+# Redistributions of source code must retain the above copyright notice,
+# this list of conditions and the following disclaimer.
+#
+# Redistributions in binary form must reproduce the above copyright
+# notice, this list of conditions and the following disclaimer in the
+# documentation and/or other materials provided with the distribution.
+#
+# Neither the name of GROUPON nor the names of its contributors may be
+# used to endorse or promote products derived from this software without
+# specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+# IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+# TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+# PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+# TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+# PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+# LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+# NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+# shellcheck disable=SC1091
+source silo/exit_codes.sh
+
+# Default Dockerfile to process. Can be overwritten via -i
+dockerfile="silo.Dockerfile"
+
+# Default image name to build. Can be overwritten via -i
+image_name="ansible-silo"
+
+# Fallback image version. It will be tried to detect the current version to
+# rebuild it unless -v war provided
+image_version="0.0.0"
+
+# If set to 1, the built image will be uploaded to the docker hub
+push=0
+
+while getopts "v:i:p" opt; do
+  case "${opt}" in
+    v)
+      image_version="${OPTARG}"
+      ;;
+    i)
+      dockerfile="${OPTARG}.Dockerfile"
+      image_name="ansible-silo-${OPTARG}"
+      ;;
+    p)
+      push=1
+      ;;
+    \?)
+      exit "${EX_USAGE}"
+      ;;
+  esac
+done
+
+if [[ ! -f "${dockerfile}" ]]; then
+  echo "There is no file ${dockerfile}" >&2
+  exit "${EX_NOINPUT}"
+fi
+
+image_path="grpn/${image_name}"
+
+# If -v was not passed as option, we use the latest available version
+# Though we disable the push, as this might not have been intended.
+if [[ "${image_version}" == "0.0.0" ]]; then
+  if [[ "${push}" -eq 1 ]]; then
+    echo "DISABLING PUSH - NO VERSION GIVEN"
+    push=0
+  fi
+  # Detect latest version
+  last_version=$(docker inspect "${image_path}" 2> /dev/null \
+    | grep "${image_path}:" \
+    | grep -v "${image_path}:latest" \
+    | sed "s/\"//g;s/,//g" \
+    | cut -d':' -f2)
+  if [[ ! -z "${last_version}" ]]; then
+    image_version="${last_version}"
+  fi
+fi
+
+# Validate version
+if [[ ! "${image_version}" =~ ^[0-9]+(\.[0-9]+)+(-[0-9]){0,2}$ ]]; then
+  echo "Version must be in format X.Y.Z, e.g. 1.2.3. Given: ${image_version}" \
+    >&2
+  exit "${EX_VERSION}"
+fi
+
+echo "Building new ${image_name} image ${image_version}"
+
+# Build as "latest"
+docker build --build-arg "v=${image_version}" --file "${dockerfile}" \
+  --tag "${image_path}:latest" . || exit
+docker tag "$(docker images --quiet "${image_path}:latest")" \
+  "${image_path}:${image_version}" || exit
+
+if [[ "${push}" -eq 1 ]]; then
+  docker push "${image_path}:${image_version}" || exit
+  docker push "${image_path}:latest" || exit
+fi

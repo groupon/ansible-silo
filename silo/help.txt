@@ -1,0 +1,23 @@
+Usage: silo [option] [command]
+
+ansible-silo provides you a controlled environment for Ansible and its dependencies.
+It works as a drop-in replacement for ansible.
+
+Options:
+  --help                displays this help text
+  --version             displays Silo version and configured Ansible version
+  --switch              switches to the specified Ansible version. You need to
+                        provide the git tag or branch you want to switch to
+  --shell               opens a bash shell inside the running Silo container
+  --bundle              creates a new Silo bundle
+  --update              updates Silo to the latest version. This does not
+                        change the configured Ansible version
+
+Commands:
+  console               Calls ansible-console
+  doc                   Calls ansible-doc
+  galaxy                Calls ansible-galaxy
+  lint                  Calls ansible-lint
+  playbook              Calls ansible-playbook
+  pull                  Calls ansible-pull
+  vault                 Calls ansible-vault
