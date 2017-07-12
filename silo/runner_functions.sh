@@ -49,7 +49,7 @@
 
 # SILO_IMAGE, SILO_IMAGE_SHORT and SILO_VERSION are replaced with their values
 # when the runner file is copied to the host. SILO_IMAGE is defined in
-# silo.Dockerfile. SILO_IMAGE_SHORT is defined in silo/silo_functions.sh.
+# Dockerfile. SILO_IMAGE_SHORT is defined in silo/silo_functions.sh.
 # SILO_VERSION is defined in silo/bin/ansible-silo but can be overridden by the
 # user through environment var
 readonly SILO_IMAGE="{{ SILO_IMAGE }}"

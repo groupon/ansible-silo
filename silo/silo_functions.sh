@@ -33,8 +33,8 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 # SILO_IMAGE is an env var defined in silo/bin/ansible-silo, originating from
-# silo.Dockerfile. It holds the name of the Docker image including the
-# repository path.
+# Dockerfile. It holds the name of the Docker image including the repository
+# path.
 # SILO_IMAGE_SHORT is based on SILO_IMAGE, the path is removed and will only
 # contain the name (basically a basename)
 readonly SILO_IMAGE_SHORT="${SILO_IMAGE##*/}"
