@@ -1,6 +1,8 @@
 Ansible Silo
 ============
 
+[![Build Status](https://travis-ci.org/groupon/ansible-silo.svg?branch=master)](https://travis-ci.org/groupon/ansible-silo)
+
 Table of Contents
 -----------------
 
