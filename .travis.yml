@@ -31,8 +31,9 @@ script:
 after_success:
   - >
     [ -n "$TRAVIS_TAG" ]
+    && export GIT_TAG="${TRAVIS_TAG:1}"
     && curl -X POST -H "Content-Type: application/json"
-    --data '{"docker_tag_name": "${TRAVIS_TAG:1}"}'
+    --data '{"docker_tag_name": "$GIT_TAG"}'
     https://registry.hub.docker.com/u/grpn/ansible-silo/trigger/$DOCKER_HUB_TOKEN/
 
 ...
