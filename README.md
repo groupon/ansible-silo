@@ -93,7 +93,7 @@ Silo is based on **[Alpine Linux] 3.4** and includes the following packages:
  - bash 4.3.42-r5
  - ca-certificates 20161130-r0
  - curl 7.52.1-r2
- - expat 2.2.0-r0
+ - expat 2.2.0-r1
  - gdbm 1.11-r1
  - git 2.8.5-r0
  - gmp 6.1.0-r0
@@ -113,7 +113,7 @@ Silo is based on **[Alpine Linux] 3.4** and includes the following packages:
  - perl 5.22.2-r0
  - python 2.7.12-r0
  - py2-pexpect 4.2.1-r1
- - py2-ptyprocess 0.5.1-r3
+ - py2-ptyprocess 0.5.2-r0
  - py-crypto 2.6.1-r0
  - py-cryptography 1.3.1-r0
  - py-ecdsa 0.13-r0

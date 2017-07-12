@@ -56,7 +56,7 @@ apk add --no-cache openssl=1.0.2k-r0\
 
 # Install git
                    perl=5.22.2-r0\
-                   expat=2.2.0-r0\
+                   expat=2.2.0-r1\
                    pcre=8.38-r1\
                    git=2.8.5-r0\
 
@@ -79,7 +79,7 @@ apk add --no-cache openssl=1.0.2k-r0\
                    py-ecdsa=0.13-r0\
                    py-httplib2=0.9.2-r2\
                    py-paramiko=1.16.0-r0\
-                   py2-ptyprocess@community=0.5.1-r3\
+                   py2-ptyprocess@community=0.5.2-r0\
                    py2-pexpect@community=4.2.1-r1\
 
 # Install gosu, which enables us to run Ansible as the user who started the container
