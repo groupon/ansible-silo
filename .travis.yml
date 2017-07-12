@@ -22,7 +22,6 @@ before_install:
   - ssh-keygen -b 2048 -t rsa -f ~/.ssh/id_rsa -q -N ""
   - eval `ssh-agent -s`
   - ssh-add ~/.ssh/id_rsa
-  - cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 
 script:
   - tests/style
