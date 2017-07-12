@@ -1,6 +1,8 @@
 Ansible Silo
 ============
 
+[![Build state](https://travis-ci.org/udondan/ansible-silo.svg)](https://travis-ci.org/udondan/ansible-silo)
+
 Table of Contents
 -----------------
 
