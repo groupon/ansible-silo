@@ -15,9 +15,14 @@ addons:
       - shellcheck
 
 before_install:
+  - sudo apt-get install realpath
   - sudo add-apt-repository ppa:duggan/bats --yes
   - sudo apt-get update -qq
   - sudo apt-get install -qq bats
+  - ssh-keygen -b 2048 -t rsa -f ~/.ssh/id_rsa -q -N ""
+  - eval `ssh-agent -s`
+  - ssh-add ~/.ssh/id_rsa
+  - cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 
 script:
   - tests/style
