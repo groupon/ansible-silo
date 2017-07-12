@@ -91,6 +91,7 @@ run() {
     # docker command. Also functions matching the docker image name will be
     # triggered, e.g. for an image named some-image all functions starting with
     # some_image_* will be triggered.
+    # shellcheck disable=SC2001
     while read -r func; do
       command+=" $(${func})"
     done < <(typeset -f \
