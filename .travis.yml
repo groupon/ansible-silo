@@ -28,4 +28,11 @@ script:
   - tests/style
   - bats tests/functional
 
+after_success:
+  - >
+    [ -n "$TRAVIS_TAG" ]
+    && curl -X POST -H "Content-Type: application/json"
+    --data '{"docker_tag_name": "${TRAVIS_TAG:1}"}'
+    https://registry.hub.docker.com/u/grpn/ansible-silo/trigger/$DOCKER_HUB_TOKEN/
+
 ...
