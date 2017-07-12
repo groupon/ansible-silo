@@ -36,7 +36,7 @@
 source silo/exit_codes.sh
 
 # Default Dockerfile to process. Can be overwritten via -i
-dockerfile="silo.Dockerfile"
+dockerfile="Dockerfile"
 
 # Default image name to build. Can be overwritten via -i
 image_name="ansible-silo"

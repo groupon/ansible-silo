@@ -46,7 +46,7 @@
 silo() {
   local SILO_IMAGE command
 
-  # SILO_IMAGE is replaced with the value defined in silo.Dockerfile
+  # SILO_IMAGE is replaced with the value defined in Dockerfile
   SILO_IMAGE="{{ SILO_IMAGE }}"
 
   # SILO_VERSION is set as buld parameter "v" in docker-build

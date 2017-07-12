@@ -398,7 +398,7 @@ Be aware, tests modify the Ansible version of your default ansible-silo volume!
 
 The APK package repository of Alpine only holds the very latest version of a package. This makes it currently impossible to install exact package versions and building of the image would fail once a new version of a package was released.
 
-To ensure we are never forced to update any dependency when we build the silo docker image, all APK dependencies are stored in the docker image [ansible-silo-base]. If required, this image can be built with the command `./build base`. Make sure to afterwards update the tag in the [`silo.Dockerfile`].
+To ensure we are never forced to update any dependency when we build the silo docker image, all APK dependencies are stored in the docker image [ansible-silo-base]. If required, this image can be built with the command `./build base`. Make sure to afterwards update the tag in the [`Dockerfile`].
 
 ## License
 
@@ -437,7 +437,7 @@ To ensure we are never forced to update any dependency when we build the silo do
   [Alpine Linux]: https://hub.docker.com/_/alpine/
   [Ansible github repo]: https://github.com/ansible/ansible
   [ansible-silo-base]: ./base.Dockerfile
-  [`silo.Dockerfile`]: ./silo.Dockerfile
+  [`Dockerfile`]: ./Dockerfile
   [ansible-lint]: https://github.com/willthames/ansible-lint
   [bats]: https://github.com/sstephenson/bats
   [shellcheck]: https://github.com/koalaman/shellcheck
