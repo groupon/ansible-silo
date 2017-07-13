@@ -1,0 +1,494 @@
+#!/usr/bin/env bats
+#
+# Functional tests written with bats - https://github.com/sstephenson/bats
+#
+# Copyright (c) 2017, Groupon, Inc.
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#
+# Redistributions of source code must retain the above copyright notice,
+# this list of conditions and the following disclaimer.
+#
+# Redistributions in binary form must reproduce the above copyright
+# notice, this list of conditions and the following disclaimer in the
+# documentation and/or other materials provided with the distribution.
+#
+# Neither the name of GROUPON nor the names of its contributors may be
+# used to endorse or promote products derived from this software without
+# specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+# IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+# TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+# PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+# TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+# PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+# LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+# NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+readonly BATS_ANSIBLE_SILO_INSTALL_PATH=/tmp/silo_installation_test_dir
+readonly BATS_ANSIBLE_SILO_LOGFILE="/tmp/ansible.test.log"
+
+readonly BATS_ANSIBLE_SILO_BUNDLE_NAME="test-silo-bundle"
+readonly BATS_ANSIBLE_SILO_BUNDLE_URL="test.example/org/${BATS_ANSIBLE_SILO_BUNDLE_NAME}"
+
+readonly BATS_ANSIBLE_SILO_BUNDLE_PATH="/tmp/${BATS_ANSIBLE_SILO_BUNDLE_NAME}"
+
+export PATH="$BATS_ANSIBLE_SILO_INSTALL_PATH:$PATH"
+
+source "${BATS_TEST_DIRNAME}/../silo/exit_codes.sh"
+
+# Silo extension functions
+# Should be loaded in standalone and bundle mode
+silo_test_function_all() {
+  echo "--env SILO_TEST_FUNCTION_ALL='true'"
+}
+
+# Should be loaded in standalone mode
+_silo_test_function_standalone() {
+  echo "--env SILO_TEST_FUNCTION_STANDALONE='true'"
+}
+
+# Should be loaded in bundle mode
+test_silo_bundle_function() {
+  echo "--env SILO_TEST_FUNCTION_BUNDLE='true'"
+}
+
+@test "Build Silo image" {
+  cd "$(dirname ${BATS_TEST_DIRNAME})" || exit
+  run ./build
+  [[ "${status}" -eq 0 ]]
+}
+
+@test "Installation" {
+  rm -rf "$BATS_ANSIBLE_SILO_INSTALL_PATH"
+  mkdir -p "$BATS_ANSIBLE_SILO_INSTALL_PATH"
+  run docker run -it --rm \
+    -v "$BATS_ANSIBLE_SILO_INSTALL_PATH:/silo_install_path" \
+    -i grpn/ansible-silo:latest --install
+  [[ "${status}" -eq 0 ]]
+}
+
+@test "ansible is pointing to ansible-silo" {
+
+  # Make sure the ansible* command is calling ansible-silo in its last line
+  run cat "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible"
+  [[ "${lines[-1]}" == *$'ansible-silo ansible'* ]]
+
+  run cat "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-doc"
+  [[ "${lines[-1]}" == *$'ansible-silo ansible-doc'* ]]
+
+  run cat "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-galaxy"
+  [[ "${lines[-1]}" == *$'ansible-silo ansible-galaxy'* ]]
+
+  run cat "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-lint"
+  [[ "${lines[-1]}" == *$'ansible-silo ansible-lint'* ]]
+
+  run cat "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-playbook"
+  [[ "${lines[-1]}" == *$'ansible-silo ansible-playbook'* ]]
+
+  run cat "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-pull"
+  [[ "${lines[-1]}" == *$'ansible-silo ansible-pull'* ]]
+
+  run cat "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-vault"
+  [[ "${lines[-1]}" == *$'ansible-silo ansible-vault'* ]]
+
+  # Make sure the setup module executed against localhost shows docker as
+  # virtualization type
+  result1=$("$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible" -i localhost, -c local \
+    -m setup all | grep ansible_virtualization_type)
+  [[ "${result1}" =~ docker ]]
+
+  # Make sure the setup module executed against localhost shows the expected
+  # home directory
+  result2=$("$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible" -i localhost, -c local \
+    -m setup all | grep ANSIBLE_HOME)
+  [[ "${result2}" =~ /silo/ansible ]]
+}
+
+#@test "Run specific ansible-silo version" {
+#
+#  # Define which Silo version to use
+#  export SILO_VERSION="1.2.1"
+#
+#  # Get info from Silo and check it is the expected version
+#  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --info
+#  [[ "${lines[0]}" == 'Silo 1.2.1'* ]]
+#
+#  # Cleanup
+#  unset SILO_VERSION
+#}
+
+@test "Fail when no options were provided" {
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo"
+  [[ "${status}" -ne 0 ]]
+  [[ "${lines[0]}" == "Usage: silo [option] [command]"* ]]
+}
+
+@test "Fail when unknown option was provided" {
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" slartibartfast
+  [[ "${status}" -eq "${EX_USAGE}" ]]
+  [[ "${lines[0]}" == "Unknown option:"* ]]
+  [[ "${lines[1]}" == "Usage: silo [option] [command]"* ]]
+}
+
+@test "Show help message" {
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --help
+  [[ "${status}" -eq 0 ]]
+  [[ "${lines[0]}" == "Usage: silo [option] [command]"* ]]
+}
+
+@test "Switch to Ansible 2.0.0.2" {
+
+  # Switch to 2.0.0.2
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --switch v2.0.0.2-1
+  [[ "${status}" -eq 0 ]]
+
+  # Confirm switch was successful
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible" --version
+  [[ "${status}" -eq 0 ]]
+  [[ "${lines[0]}" =~ ^ansible[[:space:]]2\.0\.0\.2.*detached[[:space:]]HEAD ]]
+}
+
+@test "Switch to Ansible 2.3.0.0" {
+
+  # Switch to 2.3.0.0
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --switch v2.3.0.0-1
+  [[ "${status}" -eq 0 ]]
+
+  # Confirm switch was successful
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible" --version
+  [[ "${status}" -eq 0 ]]
+  [[ "${lines[0]}" =~ ^ansible[[:space:]]2\.3\.0\.0.*detached[[:space:]]HEAD ]]
+}
+
+@test "Default volume" {
+
+  # Reset volume
+  unset SILO_VOLUME
+
+  # Confirm Silo uses the defined volume
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --version
+  [[ "${status}" -eq 0 ]]
+  [[ "${lines[-1]}" == *$"ansible installed on volume silo.$(whoami)"* ]]
+}
+
+@test "Switch volume" {
+
+  # Set volume used by silo
+  export SILO_VOLUME="test"
+
+  # Confirm Silo uses the defined volume
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --version
+  [[ "${status}" -eq 0 ]]
+  [[ "${lines[-1]}" == *$'ansible installed on volume silo.test'* ]]
+
+  # Delete the test volume through Docker API
+  run docker volume rm "silo.test"
+
+  # Reset volume
+  unset SILO_VOLUME
+}
+
+@test "Switch to Ansible 1.9.6 on a separate volume" {
+
+  # Set volume used by silo
+  export SILO_VOLUME="test.1.9.6"
+
+  # Switch to 1.9.6
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --switch v1.9.6-1
+  [[ "${status}" -eq 0 ]]
+
+  # Confirm switch was successful
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible" --version
+  [[ "${status}" -eq 0 ]]
+  [[ "${lines[0]}" =~ ^ansible[[:space:]]1\.9\.6.*detached[[:space:]]HEAD ]]
+
+  # Reset volume, will use default volume
+  unset SILO_VOLUME
+
+  # Confirm silo on default volume is still 2.3.0.0
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible" --version
+  [[ "${status}" -eq 0 ]]
+  [[ "${lines[0]}" =~ ^ansible[[:space:]]2\.3\.0\.0.*detached[[:space:]]HEAD ]]
+
+  # Delete the test volume through Docker API
+  run docker volume rm "silo.test.1.9.6"
+}
+
+@test "Silo containers are not persistent" {
+
+  # Get current number of active silo containers
+  before=$(docker ps -a | grep ansible-silo | wc -l)
+
+  # Run a silo command
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible" --version
+  [[ "${status}" -eq 0 ]]
+
+  # Get current number of active silo containers
+  after=$(docker ps -a | grep ansible-silo | wc -l)
+
+  # Make sure there are still the same number of active silo containers running
+  [[ "${before}" -eq "${after}" ]]
+}
+
+@test "Ansible command through local connection" {
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible" -i localhost, -c local \
+    -m setup all
+  [[ "${status}" -eq 0 ]]
+}
+
+@test "Ansible command through ssh" {
+
+  # Delete the test file, if it exists
+  rm -f /tmp/silo.test
+
+  # Disable hostkey checking
+  export ANSIBLE_HOST_KEY_CHECKING=False
+
+  # Run ansible command
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible" -i "`hostname -f`," -m shell \
+    -a "echo \$(whoami) > /tmp/silo.test" all
+  [[ "${status}" -eq 0 ]]
+
+  # Cleanup
+  unset ANSIBLE_HOST_KEY_CHECKING
+  rm -f /tmp/silo.test
+}
+
+@test "User name/id forwarding" {
+
+  # Disable hostkey checking and colors
+  export ANSIBLE_HOST_KEY_CHECKING=False
+  export ANSIBLE_NOCOLOR=True
+
+  # Check user
+  MYNAME="$(whoami)"
+  MYID="$(id -u)"
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible" -i "`hostname -f`," -m shell \
+    -a "echo \$(whoami)" all
+  [[ "${status}" -eq 0 ]]
+  [[ "${lines[-1]}" == "$MYNAME"* ]]
+
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible" -i "`hostname -f`," -m shell \
+    -a "id -u" all
+  [[ "${status}" -eq 0 ]]
+  [[ "${lines[-1]}" == "$MYID"* ]]
+
+  # Cleanup
+  unset ANSIBLE_HOST_KEY_CHECKING
+  unset ANSIBLE_NOCOLOR
+}
+
+@test "Bundle create" {
+
+  rm -rf "$BATS_ANSIBLE_SILO_BUNDLE_PATH"
+
+  # Create test bundle
+  cd /tmp
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" \
+    --bundle "$BATS_ANSIBLE_SILO_BUNDLE_URL"
+  [[ "${status}" -eq 0 ]]
+  [[ -d "$BATS_ANSIBLE_SILO_BUNDLE_PATH" ]]
+  [[ -d "$BATS_ANSIBLE_SILO_BUNDLE_PATH/playbooks" ]]
+}
+
+@test "Bundle build" {
+
+  cd "$BATS_ANSIBLE_SILO_BUNDLE_PATH"
+  run "./build"
+  [[ "${status}" -eq 0 ]]
+
+  run docker images -q "$BATS_ANSIBLE_SILO_BUNDLE_URL"
+  [[ "${status}" -eq 0 ]]
+  [[ "${#lines[@]}" -eq 2 ]]
+}
+
+@test "Bundle install" {
+  run docker run -it --rm \
+    -v "$BATS_ANSIBLE_SILO_INSTALL_PATH:/silo_install_path" \
+    -i "$BATS_ANSIBLE_SILO_BUNDLE_URL:latest" --install
+  [[ "${status}" -eq 0 ]]
+  [[ -x "$BATS_ANSIBLE_SILO_INSTALL_PATH/$BATS_ANSIBLE_SILO_BUNDLE_NAME" ]]
+}
+
+@test "Bundle execute" {
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/$BATS_ANSIBLE_SILO_BUNDLE_NAME" \
+    playbook.yml
+  [[ "${status}" -eq 0 ]]
+}
+
+@test "ansible-lint" {
+  cd "$BATS_ANSIBLE_SILO_BUNDLE_PATH/playbooks"
+  run ansible-lint playbook.yml
+  [[ "${status}" -eq 0 ]]
+}
+
+@test "Execute Playbook" {
+  cd "$BATS_ANSIBLE_SILO_BUNDLE_PATH/playbooks"
+  run ansible-playbook playbook.yml
+  [[ "${status}" -eq 0 ]]
+}
+
+@test "Ansible Galaxy" {
+  rm -rf /tmp/geerlingguy.apache /tmp/ansible-role-apache
+
+  cd /tmp
+  run ansible-galaxy install --roles-path . geerlingguy.apache
+  [[ "${status}" -eq 0 ]]
+  [[ -d "/tmp/geerlingguy.apache" ]]
+
+  run ansible-galaxy install --roles-path . git+https://github.com/geerlingguy/ansible-role-apache.git,0b7cd353c0250e87a26e0499e59e7fd265cc2f25
+  [[ "${status}" -eq 0 ]]
+  [[ -d "ansible-role-apache" ]]
+
+  # Cleanup
+  rm -rf /tmp/geerlingguy.apache /tmp/ansible-role-apache
+}
+
+@test "Core modules available" {
+
+  # Switch to 2.0.0.2
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --switch v2.0.0.2-1
+  [[ "${status}" -eq 0 ]]
+
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible" -i localhost, -c local \
+    -m ping all
+  [[ "${status}" -eq 0 ]]
+}
+
+@test "Extra modules available" {
+
+  # Switch to 2.0.0.2
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --switch v2.0.0.2-1
+  [[ "${status}" -eq 0 ]]
+
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible" -i localhost, -c local \
+    -m blockinfile -a "dest=/tmp/blockinfile.test block=content create=yes" all
+  [[ "${status}" -eq 0 ]]
+}
+
+@test "Shell execution" {
+  run ansible-silo --shell hostname -f
+  [[ "${status}" -eq 0 ]]
+  [[ "${lines[0]}" == "silo.$(hostname -f)"* ]]
+}
+
+@test "Standalone function loading" {
+  export -f silo_test_function_all
+  export -f _silo_test_function_standalone
+  export -f test_silo_bundle_function
+
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible" -i "localhost," -c local \
+    -m shell -a "printenv SILO_TEST_FUNCTION_ALL" all
+  [[ "${status}" -eq 0 ]]
+  [[ "${lines[1]}" == "true"* ]]
+
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible" -i "localhost," -c local \
+    -m shell -a "printenv SILO_TEST_FUNCTION_STANDALONE" all
+  [[ "${status}" -eq 0 ]]
+  [[ "${lines[1]}" == "true"* ]]
+
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible" -i "localhost," -c local \
+    -m shell -a "printenv SILO_TEST_FUNCTION_BUNDLE" all
+  [[ "${status}" -ne 0 ]]
+  [[ "${lines[1]}" != *"true"* ]]
+
+  # Cleanup
+  unset silo_test_function_all
+  unset _silo_test_function_standalone
+  unset test_silo_bundle_function
+}
+
+@test "Bundle function loading" {
+  export -f silo_test_function_all
+  export -f _silo_test_function_standalone
+  export -f test_silo_bundle_function
+
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/$BATS_ANSIBLE_SILO_BUNDLE_NAME" \
+    --shell printenv SILO_TEST_FUNCTION_ALL
+  [[ "${status}" -eq 0 ]]
+  [[ "${lines[0]}" == "true"* ]]
+
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/$BATS_ANSIBLE_SILO_BUNDLE_NAME" \
+    --shell printenv SILO_TEST_FUNCTION_STANDALONE
+  [[ "${status}" -ne 0 ]]
+  [[ "${lines[0]}" != *"true"* ]]
+
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/$BATS_ANSIBLE_SILO_BUNDLE_NAME" \
+    --shell printenv SILO_TEST_FUNCTION_BUNDLE
+  [[ "${status}" -eq 0 ]]
+  [[ "${lines[0]}" == "true"* ]]
+
+  # Cleanup
+  unset silo_test_function_all
+  unset _silo_test_function_standalone
+  unset test_silo_bundle_function
+  run docker rmi --force "$(docker images "$BATS_ANSIBLE_SILO_BUNDLE_URL" \
+    --format '{{.ID}}')"
+}
+
+@test "Debug output" {
+  export SILO_DEBUG=true
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible" --version
+  [[ "${status}" -eq 0 ]]
+  [[ "${lines[0]}" =~ ^Executing:[[:space:]]/tmp/ansible-silo-runner-.*[[:space:]]\"ansible\"[[:space:]]\"--version\" ]]
+  [[ "${lines[1]}" =~ ^Executing:[[:space:]].*/docker[[:space:]]run ]]
+  unset SILO_DEBUG
+}
+
+@test "Mount logfile per environment variable" {
+
+  # Switch to an Ansible version that does not log color codes
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --switch v2.3.0.0-1
+  [[ "${status}" -eq 0 ]]
+
+  # Create logfile
+  echo "" > "$BATS_ANSIBLE_SILO_LOGFILE"
+  export ANSIBLE_LOG_PATH="$BATS_ANSIBLE_SILO_LOGFILE"
+
+  # Run an ansible command
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible" -i "localhost," -c local \
+    -m shell -a "whoami" all
+echo "DEBUG:"
+echo "${lines}"
+  [[ "${status}" -eq 0 ]]
+
+  run cat "$BATS_ANSIBLE_SILO_LOGFILE"
+  [[ "${status}" -eq 0 ]]
+  [[ "${lines[0]}" == *'SUCCESS'* ]]
+
+  # Cleanup
+  unset ANSIBLE_LOG_PATH
+  rm -f "$BATS_ANSIBLE_SILO_LOGFILE"
+}
+
+@test "Mount logfile per ansible.cfg variable" {
+
+  # Create logfile
+  echo "" > "$BATS_ANSIBLE_SILO_LOGFILE"
+
+  # cd into the example bundle dir and add the logfile to the config
+  cd "$BATS_ANSIBLE_SILO_BUNDLE_PATH/playbooks"
+  echo "log_path = $BATS_ANSIBLE_SILO_LOGFILE" >> "ansible.cfg"
+
+  # Run an ansible command
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible" -i "localhost," -c local \
+    -m shell -a "whoami" all
+echo "DEBUG:"
+echo "${lines}"
+  [[ "${status}" -eq 0 ]]
+
+  run cat "$BATS_ANSIBLE_SILO_LOGFILE"
+  [[ "${status}" -eq 0 ]]
+  [[ "${lines[0]}" == *'SUCCESS'* ]]
+
+  # Cleanup
+  rm -f "$BATS_ANSIBLE_SILO_LOGFILE"
+}

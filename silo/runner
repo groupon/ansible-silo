@@ -1,0 +1,120 @@
+#!/usr/bin/env bash
+#
+# Runner script which will be copied to the host and starts the actual
+# container
+#
+# This executable is going to be mounted on the host when the container is
+# called with --run and afterwards executed _on_ the host. This enables silo to
+# bundle its own, very complex, docker command inside the container.
+#
+# Copyright (c) 2017, Groupon, Inc.
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#
+# Redistributions of source code must retain the above copyright notice,
+# this list of conditions and the following disclaimer.
+#
+# Redistributions in binary form must reproduce the above copyright
+# notice, this list of conditions and the following disclaimer in the
+# documentation and/or other materials provided with the distribution.
+#
+# Neither the name of GROUPON nor the names of its contributors may be
+# used to endorse or promote products derived from this software without
+# specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+# IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+# TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+# PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+# TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+# PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+# LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+# NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+# Make sure this is bash
+# BASH_VERSION is provided by bash itself. If empty this ain't bash.
+if [[ -z "${BASH_VERSION}" ]]; then
+  echo "Redirecting to bash..." >&2
+  self=$(readlink -f "$0")
+  /bin/bash "${self}"
+  exit
+fi
+
+# RUNNER_FUNCTIONS is replaced with the content of the file
+# silo/runner_functions.sh. The file is not sourced as the runner file will be
+# copied to the host during runtime where the runner_functions.sh is not
+# available.
+#{{ RUNNER_FUNCTIONS }}
+
+#######################################
+# Builds the docker command to start the container
+# Globals:
+#   SILO_DEBUG
+#   BUNDLE_VERSION
+#   SILO_IMAGE
+#   SILO_IMAGE_SHORT
+#   SILO_VERSION
+# Arguments:
+#   $@ - Anything that was passed to the script
+# Returns:
+#   None
+#######################################
+run() {
+  local command func
+
+  command="$(command -v docker) run --interactive --tty --rm"
+
+  # SILO_IMAGE_SHORT is defined in silo/runner_functions.sh and contains the
+  # basename of the Docker image. Below test checks if this is the ansible-silo
+  # image or an image extending it.
+  if [[ "${SILO_IMAGE_SHORT}" == "ansible-silo" ]]; then
+    # Run all functions starting with silo_* and _silo_ and append their output
+    # to the docker command
+    while read -r func; do
+      command+=" $(${func})"
+    done < <(typeset -f | awk '/ \(\) $/ && !/^main / {print $1}' \
+      | grep -e "^silo_" -e "^_silo_" \
+      | grep -v "^silo_run")
+
+    # SILO_VERSION is set as buld parameter "v" in docker-build. It can be
+    # defined by the user as environment var to run a specific ansible-silo
+    # version.
+    command+=" \"${SILO_IMAGE}:${SILO_VERSION}\""
+  else
+    # Run all functions starting with silo_* and append their output to the
+    # docker command. Also functions matching the docker image name will be
+    # triggered, e.g. for an image named some-image all functions starting with
+    # some_image_* will be triggered.
+    # shellcheck disable=SC2001
+    while read -r func; do
+      command+=" $(${func})"
+    done < <(typeset -f \
+      | awk '/ \(\) $/ && !/^main / {print $1}' \
+      | grep -e "^silo_" -e "^$(echo "${SILO_IMAGE_SHORT}" \
+      | sed -e "s/[^A-Za-z0-9._]/_/g")_" \
+      | grep -v "^silo_run")
+    # SILO_IMAGE is defined in silo/runner_functions.sh and contains the
+    # name of the Docker image, including the repository path.
+    # BUNDLE_VERSION is set as buld parameter "v" in docker-build.
+    command+=" \"${SILO_IMAGE}:{{ BUNDLE_VERSION }}\""
+  fi
+
+  for var in "$@"; do
+    command+=" \"${var}\""
+  done
+
+  # SILO_DEBUG can be set by the user to enable debug output
+  if [[ ! -z "${SILO_DEBUG}" ]]; then
+    echo "Executing: ${command}"
+  fi
+
+  /bin/bash -c "${command}"
+}
+
+run "$@"

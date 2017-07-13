@@ -1,0 +1,30 @@
+participant "Host" as host
+participant "Silo executable" as script
+participant "Runner Script" as runner
+participant "Silo container" as container
+participant "Ansible" as ansible
+
+activate host
+activate script
+host -> script: User calls ansible-silo
+activate container
+script -> container: Start container with --run
+container --> host: Copy runner script to host
+container -> script: Return exact command how to invoke runner script
+deactivate container
+activate runner
+script -> runner: Start runner script
+activate container
+runner -> container: Start container
+activate ansible
+container -> ansible: Run Ansible
+ansible -> *: Run tasks against n hosts
+ansible -> container: Output result
+deactivate ansible
+container -> runner : Output result
+deactivate container
+runner -> script: Output result
+deactivate runner
+script -> host: Output result
+deactivate script
+deactivate host
