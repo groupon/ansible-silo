@@ -33,5 +33,5 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 # Custom build command which passes the git tag as build argument "v"
-docker build --build-arg "v=$SOURCE_BRANCH" --file Dockerfile \
-  --tag "$IMAGE_NAME" . || exit
+docker build --build-arg "v=${SOURCE_BRANCH:1}" --file Dockerfile \
+  --tag "${IMAGE_NAME}" . || exit
