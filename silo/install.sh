@@ -47,7 +47,12 @@ for src in /silo/bin/*; do
   else
     echo "${file} will be created"
   fi
-  render_template "${src}" "${target}"
-  chmod +x "${target}"
+  if [[ -L "${src}" ]]; then
+    cp -a "${src}" "${target}"
+  else
+    render_template "${src}" "${target}"
+    chmod +x "${target}"
+  fi
+
 done
 echo "Done"
