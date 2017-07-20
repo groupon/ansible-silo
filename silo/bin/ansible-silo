@@ -70,6 +70,13 @@ silo() {
     exit
   fi
 
+  tool="$(basename "$0")"
+  # If this is one of the symlinks, e.g. ansible-playbook
+  if [[ "${tool}" != "ansible-silo" ]]; then
+    # Prepend it to the args
+    set -- "${tool}" "$@"
+  fi
+
   command="$(docker run -it --rm -v "/tmp:/tmp" -i \
     "${SILO_IMAGE}:${SILO_VERSION}" --run "$@")"
 

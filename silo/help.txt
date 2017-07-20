@@ -14,10 +14,10 @@ Options:
                         change the configured Ansible version
 
 Commands:
-  console               Calls ansible-console
-  doc                   Calls ansible-doc
-  galaxy                Calls ansible-galaxy
-  lint                  Calls ansible-lint
-  playbook              Calls ansible-playbook
-  pull                  Calls ansible-pull
-  vault                 Calls ansible-vault
+  ansible-console       Calls ansible-console
+  ansible-doc           Calls ansible-doc
+  ansible-galaxy        Calls ansible-galaxy
+  ansible-lint          Calls ansible-lint
+  ansible-playbook      Calls ansible-playbook
+  ansible-pull          Calls ansible-pull
+  ansible-vault         Calls ansible-vault

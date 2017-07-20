@@ -77,27 +77,11 @@ test_silo_bundle_function() {
 
 @test "ansible is pointing to ansible-silo" {
 
-  # Make sure the ansible* command is calling ansible-silo in its last line
-  run cat "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible"
-  [[ "${lines[-1]}" == *$'ansible-silo ansible'* ]]
-
-  run cat "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-doc"
-  [[ "${lines[-1]}" == *$'ansible-silo ansible-doc'* ]]
-
-  run cat "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-galaxy"
-  [[ "${lines[-1]}" == *$'ansible-silo ansible-galaxy'* ]]
-
-  run cat "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-lint"
-  [[ "${lines[-1]}" == *$'ansible-silo ansible-lint'* ]]
-
-  run cat "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-playbook"
-  [[ "${lines[-1]}" == *$'ansible-silo ansible-playbook'* ]]
-
-  run cat "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-pull"
-  [[ "${lines[-1]}" == *$'ansible-silo ansible-pull'* ]]
-
-  run cat "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-vault"
-  [[ "${lines[-1]}" == *$'ansible-silo ansible-vault'* ]]
+  # Make sure the ansible* commands are symbolic links pointing to ansible-silo
+  for tool in "ansible" "ansible-doc" "ansible-galaxy" "ansible-lint" "ansible-playbook" "ansible-pull" "ansible-vault"; do
+    [[ -L "$BATS_ANSIBLE_SILO_INSTALL_PATH/$tool" ]]
+    [[ "$(readlink -- "$BATS_ANSIBLE_SILO_INSTALL_PATH/$tool")" = "ansible-silo" ]]
+  done
 
   # Make sure the setup module executed against localhost shows docker as
   # virtualization type
