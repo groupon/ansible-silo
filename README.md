@@ -3,7 +3,11 @@ Ansible Silo
 
 [![GitHub release](https://img.shields.io/github/tag/groupon/ansible-silo.svg)](https://github.com/groupon/ansible-silo/releases) [![Build Status](https://travis-ci.org/groupon/ansible-silo.svg?branch=master)](https://travis-ci.org/groupon/ansible-silo) [![Docker Build Status](https://img.shields.io/docker/build/grpn/ansible-silo.svg)](https://hub.docker.com/r/grpn/ansible-silo/builds/) [![Docker Automated build](https://img.shields.io/docker/automated/grpn/ansible-silo.svg)](https://hub.docker.com/r/grpn/ansible-silo/builds/)
 
-<!-- For a more readable version, view this page on GitHub: https://github.com/groupon/ansible-silo#ansible-silo -->
+<!--
+
+    For a more readable version, view this page on GitHub: https://github.com/groupon/ansible-silo#ansible-silo
+
+-->
 
 Table of Contents
 -----------------
@@ -45,7 +49,7 @@ Silo provides you a controlled environment for Ansible and its dependencies. It 
 
 Silo also makes it easy to run multiple Ansible versions in parallel on the same system.
 
-Furthermore you can bundle your playbooks (incl. configuration, roles, plugins etc) in a custom Docker image which inherits Silo and therefore have a shippable complete and self-contained executable bundle which runs your playbooks in any environment.
+Furthermore you can bundle your playbooks (incl. configuration, roles, plugins etc) in a custom Docker image which inherits Silo and therefore generate a versioned, shippable, complete and self-contained executable package which runs your playbooks in any environment. (where you have access to a Docker daemon)
 
 For convenience ansible-silo includes [ansible-lint]. Since ansible-lint uses the ansible libraries it may react differently depending on the used ansible version.
 
@@ -56,7 +60,7 @@ If you expect reproducible outcome of an automation system, you not only need to
 
 One approach to solve above problem are shared control hosts. Control hosts though add another problem: All teams and users who use the Ansible control hosts need to align on one specific Ansible version and it gets extremely complicated to update Ansible on the control hosts since all teams and users need to align and test all their roles and playbooks against the new version.
 
-Silo not only removes moving parts by having 100% fixed dependencies hardcoded in a Docker image. It also enables you to switch Ansible to any version without affecting other users, therefore making it easy to test your playbooks and roles against new Ansible releases and run different Ansible versions per playbook or project.
+Silo not only removes moving parts by having 100% fixed dependencies hardcoded in a Docker image. It also enables you to switch Ansible to any version without affecting other users, therefore making it easy to test your playbooks and roles against new Ansible releases and run differing Ansible versions per playbook, project or user.
 
 
 ## How it works
@@ -221,7 +225,7 @@ Functions matching `_silo_*` will not be included in bundle mode. Functions matc
 
 ```bash
 $ ansible-silo --version
-ansible-silo 1.3.0
+ansible-silo 1.3.3
 ansible 2.3.0.0
 ansible-lint 3.4.13
 ansible installed on volume silo.some.user
@@ -249,7 +253,7 @@ You can log into the running silo container by calling silo with the `--shell` o
 
 ```bash
 $ ansible-silo --shell
-[ansible-silo 1.3.0|~/playbooks]$
+[ansible-silo 1.3.3|~/playbooks]$
 ```
 
 
@@ -264,13 +268,13 @@ $ SILO_VOLUME="1.9.6" ansible-silo --switch v1.9.6-1
 Switched to Ansible 1.9.6
 
 $ ansible-silo --version
-ansible-silo 1.3.0
+ansible-silo 1.3.3
 ansible 2.3.0.0
 ansible-lint 3.4.13
 ansible installed on volume silo.1.9.6
 
 $ SILO_VOLUME="1.9.6" ansible-silo --version
-ansible-silo 1.3.0
+ansible-silo 1.3.3
 ansible 1.9.6
 ansible-lint 3.4.13
 ansible installed on volume silo.1.9.6
@@ -366,7 +370,7 @@ SILO_DEBUG=true ansible --shell exit
 Which will show the something along these lines:
 
     Executing: /tmp/ansible-silo-runner-OTgyNGY3NGIyYjczMmM3Nzk5NGQ3ZTgy "--shell" "exit"
-    Executing: /usr/bin/docker run --interactive --tty --rm --volume "/tmp:/home/user/playbooks" --env SILO_DEBUG --volume "silo.some.user:/silo/ansible" --env "SILO_VOLUME=silo.some.user" --hostname "silo.host.example" --volume "/tmp/ssh-vKRVrRCSMA":"/tmp/ssh-vKRVrRCSMA" --env SSH_AUTH_SOCK --env USER_NAME="some.user" --env USER_ID="1234" "ansible-silo:1.3.0" "--shell" "exit"
+    Executing: /usr/bin/docker run --interactive --tty --rm --volume "/tmp:/home/user/playbooks" --env SILO_DEBUG --volume "silo.some.user:/silo/ansible" --env "SILO_VOLUME=silo.some.user" --hostname "silo.host.example" --volume "/tmp/ssh-vKRVrRCSMA":"/tmp/ssh-vKRVrRCSMA" --env SSH_AUTH_SOCK --env USER_NAME="some.user" --env USER_ID="1234" "ansible-silo:1.3.3" "--shell" "exit"
 
 The first line shows the location of the generated runner script. The second line shows the docker command executed by the runner script.
 
