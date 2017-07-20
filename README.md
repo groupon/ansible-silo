@@ -350,7 +350,7 @@ All files inside `foo` can be modified by you. For instance you **should** defin
 
 ### Why do I always have to enter my SSH key passphrase when Silo starts?
 
-On OS X, forwarding of the SSH authentication socket [currently is not possible](https://github.com/docker/for-mac/issues/410). Therefore silo can not use your ssh agent, even though it is forwarded to the container. If you have a password protected SSH key, you need to enter it once after the container is started. Since silo is not persistent you have to enter it on every silo run.
+On OS X, forwarding of the SSH authentication socket [currently is not possible](https://github.com/groupon/ansible-silo/issues/2). Therefore silo can not use your ssh agent, even though it is forwarded to the container. If you have a password protected SSH key, you need to enter it once after the container is started. Since silo is not persistent you have to enter it on every silo run.
 
 
 ## Troubleshooting
