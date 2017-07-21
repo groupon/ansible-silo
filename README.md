@@ -71,7 +71,7 @@ To enable Ansible in the container to connect to remote hosts, your `~/.ssh` fol
 
 Starting the Silo container is a complex docker command which needs to cover forwarding of environment variables and mounting required resources like the users ssh configuration. This complex command itself is included in the image and can be fetched by starting the container with the `--run` flag. The returned command then can be executed on the host which will start the container again with the correct parameters.
 
-![Sequence diagram](.docs/sequence-diagram.jpg)
+![Sequence diagram](docs/sequence-diagram.jpg)
 
 A [bash script](./silo/bin) to easily trigger this process [can automatically be installed](#install-ansible-silo) by silo when called with the `--install` flag.
 
