@@ -57,6 +57,7 @@ fi
 # Globals:
 #   SILO_DEBUG
 #   BUNDLE_VERSION
+#   SILO_DOCKER_CMD
 #   SILO_IMAGE
 #   SILO_IMAGE_SHORT
 #   SILO_VERSION
@@ -66,9 +67,13 @@ fi
 #   None
 #######################################
 run() {
-  local command func
+  local command docker_cmd docker_default func
 
-  command="$(command -v docker) run --interactive --tty --rm"
+  # SILO_DOCKER_CMD can be set by the user to override the default docker
+  # command
+  docker_default="$(command -v docker)"
+  docker_cmd="${SILO_DOCKER_CMD:-${docker_default}}"
+  command="${docker_cmd} run --interactive --tty --rm"
 
   # SILO_IMAGE_SHORT is defined in silo/runner_functions.sh and contains the
   # basename of the Docker image. Below test checks if this is the ansible-silo
