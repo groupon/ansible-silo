@@ -44,10 +44,11 @@
 #   None
 #######################################
 silo() {
-  local SILO_IMAGE command
+  local SILO_IMAGE SILO_IMAGE_SHORT command
 
   # SILO_IMAGE is replaced with the value defined in Dockerfile
   SILO_IMAGE="{{ SILO_IMAGE }}"
+  SILO_IMAGE_SHORT="${SILO_IMAGE##*/}"
 
   # SILO_VERSION is set as buld parameter "v" in docker-build
   # It can be defined by the user as environment var to run a specific
@@ -77,8 +78,22 @@ silo() {
     set -- "${tool}" "$@"
   fi
 
-  command="$(docker run -it --rm -v "/tmp:/tmp" -i \
-    "${SILO_IMAGE}:${SILO_VERSION}" --run "$@")"
+  runner_path="/tmp/${SILO_IMAGE_SHORT}-runner-${SILO_VERSION}"
+  if [[ -f "${runner_path}" ]]; then
+    if [[ ! -z "${SILO_DEBUG}" ]]; then
+      echo "Runner file already exists."
+    fi
+    command="${runner_path}"
+    for var in "$@"; do
+      command+=" \"${var}\""
+    done
+  else
+    if [[ ! -z "${SILO_DEBUG}" ]]; then
+      echo "Requesting runner creation. Starting container with --run."
+    fi
+    command="$(docker run -it --rm -v "/tmp:/tmp" -i \
+      "${SILO_IMAGE}:${SILO_VERSION}" --run "$@")"
+  fi
 
   # SILO_DEBUG can be set by the user to enable debug output
   if [[ ! -z "${SILO_DEBUG}" ]]; then

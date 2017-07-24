@@ -422,8 +422,8 @@ test_silo_bundle_function() {
   export SILO_DEBUG=true
   run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible" --version
   [[ "${status}" -eq 0 ]]
-  [[ "${lines[0]}" =~ ^Executing:[[:space:]]/tmp/ansible-silo-runner-.*[[:space:]]\"ansible\"[[:space:]]\"--version\" ]]
-  [[ "${lines[1]}" =~ ^Executing:[[:space:]].*/docker[[:space:]]run ]]
+  [[ "${lines[1]}" =~ ^Executing:[[:space:]]/tmp/ansible-silo-runner-.*[[:space:]]\"ansible\"[[:space:]]\"--version\" ]]
+  [[ "${lines[2]}" =~ ^Executing:[[:space:]].*/docker[[:space:]]run ]]
   unset SILO_DEBUG
 }
 
@@ -440,8 +440,6 @@ test_silo_bundle_function() {
   # Run an ansible command
   run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible" -i "localhost," -c local \
     -m shell -a "whoami" all
-echo "DEBUG:"
-echo "${lines}"
   [[ "${status}" -eq 0 ]]
 
   run cat "$BATS_ANSIBLE_SILO_LOGFILE"
@@ -465,8 +463,6 @@ echo "${lines}"
   # Run an ansible command
   run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible" -i "localhost," -c local \
     -m shell -a "whoami" all
-echo "DEBUG:"
-echo "${lines}"
   [[ "${status}" -eq 0 ]]
 
   run cat "$BATS_ANSIBLE_SILO_LOGFILE"
