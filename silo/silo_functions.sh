@@ -495,7 +495,7 @@ bundle_create() {
 #   None
 #######################################
 create_runner() {
-  local command md5 runner_path var
+  local command runner_path var
 
   render_template "/silo/runner" "/runner"
   runner_path="/tmp/${SILO_IMAGE_SHORT}-runner-${SILO_VERSION}"
