@@ -488,7 +488,7 @@ bundle_create() {
 # Render the runner script and print the command to invoke it
 # volume
 # Globals:
-#   None
+#   SILO_VERSION
 # Arguments:
 #   $@ - everything that was passed to ansible-silo
 # Returns:
@@ -498,8 +498,7 @@ create_runner() {
   local command md5 runner_path var
 
   render_template "/silo/runner" "/runner"
-  md5="$(md5sum /runner | cut -c -32)"
-  runner_path="/tmp/${SILO_IMAGE_SHORT}-runner-${md5}"
+  runner_path="/tmp/${SILO_IMAGE_SHORT}-runner-${SILO_VERSION}"
   if [[ ! -f "${runner_path}" ]]; then
     mv "/runner" "${runner_path}"
     chmod +x "${runner_path}"
