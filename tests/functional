@@ -112,20 +112,20 @@ test_silo_bundle_function() {
 @test "Fail when no options were provided" {
   run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo"
   [[ "${status}" -ne 0 ]]
-  [[ "${lines[0]}" == "Usage: silo [option] [command]"* ]]
+  [[ "${lines[0]}" == "Usage: ansible-silo [option] [command]"* ]]
 }
 
 @test "Fail when unknown option was provided" {
   run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" slartibartfast
   [[ "${status}" -eq "${EX_USAGE}" ]]
   [[ "${lines[0]}" == "Unknown option:"* ]]
-  [[ "${lines[1]}" == "Usage: silo [option] [command]"* ]]
+  [[ "${lines[1]}" == "Usage: ansible-silo [option] [command]"* ]]
 }
 
 @test "Show help message" {
   run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --help
   [[ "${status}" -eq 0 ]]
-  [[ "${lines[0]}" == "Usage: silo [option] [command]"* ]]
+  [[ "${lines[0]}" == "Usage: ansible-silo [option] [command]"* ]]
 }
 
 @test "Switch to Ansible 2.0.0.2" {

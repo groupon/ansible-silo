@@ -1,7 +1,11 @@
 Ansible Silo
 ============
 
-[![GitHub release](https://img.shields.io/github/tag/groupon/ansible-silo.svg)](https://github.com/groupon/ansible-silo/releases) [![Build Status](https://travis-ci.org/groupon/ansible-silo.svg?branch=master)](https://travis-ci.org/groupon/ansible-silo) [![Docker Build Status](https://img.shields.io/docker/build/grpn/ansible-silo.svg)](https://hub.docker.com/r/grpn/ansible-silo/builds/) [![Docker Automated build](https://img.shields.io/docker/automated/grpn/ansible-silo.svg)](https://hub.docker.com/r/grpn/ansible-silo/builds/)
+[![GitHub release](https://img.shields.io/github/tag/groupon/ansible-silo.svg?style=flat&colorB=4183C4&label=Latest%20release)](https://github.com/groupon/ansible-silo/releases)
+[![Commits since v1.3.3](https://img.shields.io/github/commits-since/groupon/ansible-silo/v1.3.3.svg?style=flat&colorB=4183C4&label=Commits%20since%20v1.3.3)](https://github.com/groupon/ansible-silo/commits/master)
+[![GitHub Stars](https://img.shields.io/github/stars/groupon/ansible-silo.svg?style=flat&colorB=4183C4&label=GitHub%20Stars)](https://github.com/groupon/ansible-silo/stargazers)
+[![Build Status](https://img.shields.io/travis/groupon/ansible-silo.svg?style=flat&label=Tests)](https://travis-ci.org/groupon/ansible-silo)
+[![Docker Build Status](https://img.shields.io/docker/build/grpn/ansible-silo.svg?style=flat&label=Build)](https://hub.docker.com/r/grpn/ansible-silo/builds/)
 
 <!--
 

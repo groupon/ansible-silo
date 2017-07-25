@@ -1,7 +1,7 @@
-Usage: silo [option] [command]
+Usage: ansible-silo [option] [command]
 
-ansible-silo provides you a controlled environment for Ansible and its dependencies.
-It works as a drop-in replacement for ansible.
+ansible-silo provides a controlled environment for Ansible and its dependencies.
+It works as a drop-in replacement for Ansible.
 
 Options:
   --help                displays this help text
