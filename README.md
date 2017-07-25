@@ -6,6 +6,7 @@ Ansible Silo
 [![GitHub Stars](https://img.shields.io/github/stars/groupon/ansible-silo.svg?style=flat&colorB=4183C4&label=GitHub%20Stars)](https://github.com/groupon/ansible-silo/stargazers)
 [![Build Status](https://img.shields.io/travis/groupon/ansible-silo.svg?style=flat&label=Tests)](https://travis-ci.org/groupon/ansible-silo)
 [![Docker Build Status](https://img.shields.io/docker/build/grpn/ansible-silo.svg?style=flat&label=Build)](https://hub.docker.com/r/grpn/ansible-silo/builds/)
+[![Code Climate](https://codeclimate.com/github/groupon/ansible-silo/badges/gpa.svg)](https://codeclimate.com/github/groupon/ansible-silo)
 
 <!--
 
