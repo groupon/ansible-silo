@@ -1,0 +1,19 @@
+---
+
+engines:
+  shellcheck:
+    enabled: true
+ratings:
+  paths:
+    - build
+    - hooks/*
+    - silo/bin/*
+    - silo/bundle/bin/*
+    - silo/bundle/build
+    - silo/bundle/entrypoint
+    - silo/entrypoint
+    - silo/*.sh
+    - silo/runner
+    - tests/style
+
+...
