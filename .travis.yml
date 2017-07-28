@@ -2,7 +2,9 @@
 
 sudo: required
 
-language: bash
+language: ruby
+
+rvm: 2.4.1
 
 services:
   - docker
@@ -14,7 +16,8 @@ addons:
     packages:
       - shellcheck
 
-before_install:
+before_script:
+  - gem install awesome_bot
   - sudo apt-get install realpath
   - sudo add-apt-repository ppa:duggan/bats --yes
   - sudo apt-get update -qq
@@ -26,6 +29,7 @@ before_install:
 
 script:
   - tests/style
+  - tests/links
   - bats tests/functional
 
 after_success:
