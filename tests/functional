@@ -321,6 +321,8 @@ test_silo_bundle_function() {
 }
 
 @test "Ansible Galaxy" {
+  local role_url="https://github.com/geerlingguy/ansible-role-apache.git"
+  local role_hash="0b7cd353c0250e87a26e0499e59e7fd265cc2f25"
   rm -rf /tmp/geerlingguy.apache /tmp/ansible-role-apache
 
   cd /tmp
@@ -328,7 +330,7 @@ test_silo_bundle_function() {
   [[ "${status}" -eq 0 ]]
   [[ -d "/tmp/geerlingguy.apache" ]]
 
-  run ansible-galaxy install --roles-path . git+https://github.com/geerlingguy/ansible-role-apache.git,0b7cd353c0250e87a26e0499e59e7fd265cc2f25
+  run ansible-galaxy install --roles-path . git+$role_url,$role_hash
   [[ "${status}" -eq 0 ]]
   [[ -d "ansible-role-apache" ]]
 
