@@ -1,7 +1,7 @@
 Ansible Silo
 ============
 
-[![GitHub release](https://img.shields.io/github/tag/groupon/ansible-silo.svg?style=flat&colorB=4183C4&label=Latest%20release)](https://github.com/groupon/ansible-silo/releases)
+[![GitHub release](https://img.shields.io/github/tag/groupon/ansible-silo.svg?style=flat&colorB=4183C4&label=Latest%20release)](https://github.com/groupon/ansible-silo/releases/latest)
 [![Commits since v1.3.3](https://img.shields.io/github/commits-since/groupon/ansible-silo/v1.3.3.svg?style=flat&colorB=4183C4&label=Commits%20since%20v1.3.3)](https://github.com/groupon/ansible-silo/commits/master)
 [![GitHub Stars](https://img.shields.io/github/stars/groupon/ansible-silo.svg?style=flat&colorB=4183C4&label=GitHub%20Stars)](https://github.com/groupon/ansible-silo/stargazers)
 [![Build Status](https://img.shields.io/travis/groupon/ansible-silo.svg?style=flat&label=Tests)](https://travis-ci.org/groupon/ansible-silo)
