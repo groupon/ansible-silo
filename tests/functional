@@ -330,7 +330,7 @@ test_silo_bundle_function() {
   [[ "${status}" -eq 0 ]]
   [[ -d "/tmp/geerlingguy.apache" ]]
 
-  run ansible-galaxy install --roles-path . git+$role_url,role_hash
+  run ansible-galaxy install --roles-path . git+$role_url,$role_hash
   [[ "${status}" -eq 0 ]]
   [[ -d "ansible-role-apache" ]]
 
