@@ -34,7 +34,7 @@ ENV container docker
 ARG v
 ENV SILO_BASE_VERSION ${v:-UNDEFINED}
 
-MAINTAINER daniel.schroeder@groupon.com
+LABEL maintainer="Daniel Schroeder <daniel.schroeder@groupon.com>"
 
 # Add testing repo, as we need this for installing gosu
 RUN echo "@testing http://dl-4.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories &&\
@@ -96,5 +96,5 @@ cd /tmp &&\
 wget https://files.pythonhosted.org/packages/source/n/netaddr/netaddr-0.7.18.tar.gz &&\
 tar -xzvf netaddr-0.7.18.tar.gz &&\
 cd netaddr-0.7.18 &&\
-sudo python2 setup.py install --prefix=/usr &&\
+python2 setup.py install --prefix=/usr &&\
 rm -rf /tmp/netaddr-0.7.18.tar.gz /tmp/netaddr-0.7.18

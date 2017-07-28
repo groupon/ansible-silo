@@ -30,24 +30,31 @@
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+command -v shellcheck >/dev/null 2>&1 || { \
+  echo >&2 "shellcheck required: \
+  https://github.com/koalaman/shellcheck"; exit 1; }
+
+command -v dockerfilelint >/dev/null 2>&1 || { \
+  echo >&2 "dockerfilelint required: \
+  https://github.com/replicatedhq/dockerfilelint"; exit 1; }
+
 result=0
 
-get_bash_files() {
-  grep -rl '^#!/.*bash' .
-}
-
-bash_files=$(get_bash_files)
+bash_files=$(grep -rl '^#!/.*bash' .)
 
 # shellcheck disable=SC2086
 shellcheck ${bash_files}
-result=$?
+result=$((result +$?))
 
 # shellcheck disable=SC2086
 long_lines=$(grep --color=always '.\{80\}' ${bash_files})
 
 if [[ -n ${long_lines} ]]; then
   echo "${long_lines}"
-  exit 1
+  result=$((result +1))
 fi
+
+dockerfilelint Dockerfile base.Dockerfile
+result=$((result +$?))
 
 exit ${result}
