@@ -101,46 +101,48 @@ A new bundle can easily be created by calling silo with `--bundle <bundle name>`
 
 ## Included software
 
-Silo is based on **[Alpine Linux] 3.4** and includes the following packages:
+Silo is based on **[Alpine Linux] 3.6** and includes the following packages:
 
- - bash 4.3.42-r5
- - ca-certificates 20161130-r0
- - curl 7.52.1-r2
+ - bash 4.3.48-r1
+ - ca-certificates 20161130-r2
+ - curl 7.54.0-r0
  - expat 2.2.0-r1
- - gdbm 1.11-r1
- - git 2.8.5-r0
- - gmp 6.1.0-r0
+ - gdbm 1.12-r0
+ - git 2.13.0-r0
+ - gmp 6.1.2-r0
  - gosu 1.9-r0
  - libbz2 1.0.6-r5
- - libffi 3.2.1-r2
+ - libffi 3.2.1-r3
  - ncurses-libs 6.0-r7
  - ncurses-terminfo 6.0-r7
  - ncurses-terminfo-base 6.0-r7
- - libcurl 7.52.1-r2
- - libssh2 1.7.0-r0
- - openssh 7.2_p2-r4
- - openssh-client 7.2_p2-r4
- - openssh-sftp-server 7.2_p2-r4
+ - libcurl 7.54.0-r0
+ - libssh2 1.8.0-r1
+ - openssh 7.5_p1-r1
+ - openssh-client 7.5_p1-r1
+ - openssh-sftp-server 7.5_p1-r1
  - openssl 1.0.2k-r0
- - pcre 8.38-r1
- - perl 5.22.2-r0
- - python 2.7.12-r0
+ - pcre 8.40-r2
+ - perl 5.24.1-r2
+ - python 2.7.13-r1
  - py2-pexpect 4.2.1-r1
  - py2-ptyprocess 0.5.2-r0
- - py-crypto 2.6.1-r0
- - py-cryptography 1.3.1-r0
+ - py-cffi 1.10.0-r0
+ - py-crypto 2.6.1-r2
+ - py-cryptography 1.8.1-r1
  - py-ecdsa 0.13-r0
  - py-httplib2 0.9.2-r2
  - py-jinja2 2.8-r0
  - py-markupsafe 0.23-r0
- - py-netaddr 0.7.18
+ - py-netaddr 0.7.19-r1
  - py-paramiko 1.16.0-r0
+ - py2-pip 9.0.1-r1
  - py-six 1.10.0-r0
  - py-yaml 3.11-r0
- - readline 6.3.008-r4
- - sqlite-libs 3.13.0-r0
- - sudo 1.8.16-r0
- - yaml 0.1.6-r1
+ - readline 6.3.008-r5
+ - sqlite-libs 3.18.0-r0
+ - sudo 1.8.19_p2-r0
+ - yaml 0.1.7-r0
 
 
 ## Installation
