@@ -34,6 +34,8 @@ ENV container docker
 ARG v
 ENV SILO_BASE_VERSION ${v:-UNDEFINED}
 
+ADD pip/pip.conf /etc/pip.conf
+
 LABEL maintainer="Daniel Schroeder <daniel.schroeder@groupon.com>"
 
 # Add testing repo, as we need this for installing gosu
@@ -66,21 +68,16 @@ RUN echo "@testing http://dl-4.alpinelinux.org/alpine/edge/testing" >> /etc/apk/
                        gdbm=1.11-r1\
                        sqlite-libs=3.13.0-r0\
                        python=2.7.12-r0\
-                       py-six=1.10.0-r0\
+                       py-cffi@community=1.4.2-r0\
+
+# Install pip
+                       py-pip=8.1.2-r0\
 
 # Install Ansible dependencies
                        yaml=0.1.6-r1\
-                       py-yaml=3.11-r0\
-                       py-markupsafe=0.23-r0\
-                       py-jinja2=2.8-r0\
                        gmp=6.1.0-r0\
                        py-crypto=2.6.1-r0\
                        py-cryptography=1.3.1-r0\
-                       py-ecdsa=0.13-r0\
-                       py-httplib2=0.9.2-r2\
-                       py-paramiko=1.16.0-r0\
-                       py2-ptyprocess@community=0.5.2-r0\
-                       py2-pexpect@community=4.2.1-r1\
 
 # Install gosu, which enables us to run Ansible as the user who started the container
                        gosu@testing=1.9-r0\

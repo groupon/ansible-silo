@@ -28,12 +28,16 @@
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-FROM grpn/ansible-silo-base:1.2.2
+FROM grpn/ansible-silo-base:1.3.0
 
 ENV ANSIBLE_VERSION v2.3.1.0-1
 ENV SILO_IMAGE grpn/ansible-silo
 
 ADD silo /silo/
+
+# Install pip modules from requirements file
+ADD pip/requirements /tmp/pip-requirements.txt
+RUN pip install -r /tmp/pip-requirements.txt
 
 # Installing Ansible from source
 RUN git clone --progress git://github.com/ansible/ansible.git /silo/ansible 2>&1 &&\
