@@ -130,4 +130,10 @@ RUN echo "@testing http://dl-4.alpinelinux.org/alpine/edge/testing" >> /etc/apk/
                        zlib-dev\
                        python2-dev\
                        openssl-dev\
-                       libffi-dev
+                       libffi-dev &&\
+
+# Install docker command
+    curl -fL -o /tmp/docker.tgz "https://download.docker.com/linux/static/stable/x86_64/docker-17.06.0-ce.tgz" &&\
+    tar -xf /tmp/docker.tgz --exclude docker/docker?* -C /tmp &&\
+    mv /tmp/docker/docker /usr/local/bin/ &&\
+    rm -rf /tmp/docker /tmp/docker.tgz

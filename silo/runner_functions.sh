@@ -6,7 +6,7 @@
 # Functions in this file will be available in the runner scripts of silo AND
 # child images of silo. Functions starting with _silo_* will be executed and
 # their output will be appended to the docker starting command of silo.
-# Functions starting with  silo_* will be executed and their output will be
+# Functions starting with silo_* will be executed and their output will be
 # appended to the docker starting command of silo and its child images.
 #
 # The file ~/.ansible-silo will be sourced, so the user additionally can define
@@ -130,7 +130,7 @@ silo_ssh_key_forwarding() {
 #   --hostname option
 #######################################
 silo_hostname() {
-    echo "--hostname \"silo.$(hostname -f)\""
+  echo "--hostname \"silo.$(hostname -f)\""
 }
 
 #######################################
@@ -245,6 +245,26 @@ silo_mount_logfile() {
     return+="--env \"ANSIBLE_LOG_PATH=${logfile}\""
     echo "${return}"
   fi
+}
+
+#######################################
+# Mounts docker socket
+# Globals:
+#   None
+# Arguments:
+#   None
+# Returns:
+#   --volume and --privileged options for mounting docker socket
+#######################################
+silo_mount_docker_socket() {
+  local docker_socket check_paths
+  check_paths=("/var/run/docker.sock" "/private/var/run/docker.sock")
+  for docker_socket in "${check_paths[@]}"; do
+    if [[ -S "/var/run/docker.sock" ]]; then
+      echo "--volume ${docker_socket}:/var/run/docker.sock --privileged"
+      break
+    fi
+  done
 }
 
 # Load any potential silo extensions
