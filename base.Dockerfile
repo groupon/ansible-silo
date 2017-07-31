@@ -85,24 +85,24 @@ RUN echo "@testing http://dl-4.alpinelinux.org/alpine/edge/testing" >> /etc/apk/
                        openssh=7.5_p1-r1 &&\
 
 # Install some required python modules which need compiling
-    sudo apk add --no-cache gcc=6.3.0-r4\
-                            musl=1.1.16-r13\
-                            musl-dev=1.1.16-r13\
-                            musl-utils=1.1.16-r13 \
-                            binutils-libs=2.28-r2\
-                            binutils=2.28-r2\
-                            isl=0.17.1-r0\
-                            libgomp=6.3.0-r4\
-                            libatomic=6.3.0-r4\
-                            pkgconf=1.3.7-r0\
-                            libgcc=6.3.0-r4\
-                            mpfr3=3.1.5-r0\
-                            mpc1=1.0.3-r0\
-                            libstdc++=6.3.0-r4\
-                            zlib-dev=1.2.11-r0\
-                            python2-dev=2.7.13-r1\
-                            openssl-dev=1.0.2k-r0\
-                            libffi-dev=3.2.1-r3 &&\
+    apk add --no-cache gcc=6.3.0-r4\
+                       musl=1.1.16-r13\
+                       musl-dev=1.1.16-r13\
+                       musl-utils=1.1.16-r13 \
+                       binutils-libs=2.28-r2\
+                       binutils=2.28-r2\
+                       isl=0.17.1-r0\
+                       libgomp=6.3.0-r4\
+                       libatomic=6.3.0-r4\
+                       pkgconf=1.3.7-r0\
+                       libgcc=6.3.0-r4\
+                       mpfr3=3.1.5-r0\
+                       mpc1=1.0.3-r0\
+                       libstdc++=6.3.0-r4\
+                       zlib-dev=1.2.11-r0\
+                       python2-dev=2.7.13-r1\
+                       openssl-dev=1.0.2k-r0\
+                       libffi-dev=3.2.1-r3 &&\
 
     pip install asn1crypto==0.22.0\
                 cffi==1.10.0\
@@ -113,20 +113,21 @@ RUN echo "@testing http://dl-4.alpinelinux.org/alpine/edge/testing" >> /etc/apk/
                 pycparser==2.18\
                 pycrypto==2.6.1\
                 six==1.10.0 &&\
-    sudo apk del --no-cache gcc\
-                            python2-dev\
-                            musl-dev\
-                            binutils-libs\
-                            binutils\
-                            isl\
-                            libgomp\
-                            libatomic\
-                            pkgconf\
-                            libgcc\
-                            mpfr3\
-                            mpc1\
-                            libstdc++\
-                            zlib-dev\
-                            python2-dev\
-                            openssl-dev\
-                            libffi-dev
+
+    apk del --no-cache gcc\
+                       python2-dev\
+                       musl-dev\
+                       binutils-libs\
+                       binutils\
+                       isl\
+                       libgomp\
+                       libatomic\
+                       pkgconf\
+                       libgcc\
+                       mpfr3\
+                       mpc1\
+                       libstdc++\
+                       zlib-dev\
+                       python2-dev\
+                       openssl-dev\
+                       libffi-dev
