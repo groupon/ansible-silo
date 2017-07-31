@@ -83,6 +83,10 @@ case "$1" in
       ansible_command="$1"
       shift
       run_as_user_with_SSH "${ansible_command}" "$@"
+    elif [[ -x "/silo/userspace/bin/$1" ]]; then
+      command="$1"
+      shift
+      run_as_user_with_SSH "${command}" "$@"
     else
       echo "Unknown option: $1" >&2
       cat /silo/help.txt
