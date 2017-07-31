@@ -101,7 +101,7 @@ A new bundle can easily be created by calling silo with `--bundle <bundle name>`
 
 ## Included software
 
-Silo is based on **[Alpine Linux] 3.6** and includes the following packages:
+Silo is based on **[Alpine Linux] 3.6** and includes the following APK packages:
 
  - bash 4.3.48-r1
  - ca-certificates 20161130-r2
@@ -112,37 +112,47 @@ Silo is based on **[Alpine Linux] 3.6** and includes the following packages:
  - gmp 6.1.2-r0
  - gosu 1.9-r0
  - libbz2 1.0.6-r5
+ - libcurl 7.54.0-r0
  - libffi 3.2.1-r3
+ - libssh2 1.8.0-r1
  - ncurses-libs 6.0-r7
  - ncurses-terminfo 6.0-r7
  - ncurses-terminfo-base 6.0-r7
- - libcurl 7.54.0-r0
- - libssh2 1.8.0-r1
+ - musl 1.1.16-r13
+ - musl-utils 1.1.16-r13
  - openssh 7.5_p1-r1
  - openssh-client 7.5_p1-r1
  - openssh-sftp-server 7.5_p1-r1
  - openssl 1.0.2k-r0
  - pcre 8.40-r2
  - perl 5.24.1-r2
- - python 2.7.13-r1
- - py2-pexpect 4.2.1-r1
- - py2-ptyprocess 0.5.2-r0
- - py-cffi 1.10.0-r0
- - py-crypto 2.6.1-r2
- - py-cryptography 1.8.1-r1
- - py-ecdsa 0.13-r0
- - py-httplib2 0.9.2-r2
- - py-jinja2 2.8-r0
- - py-markupsafe 0.23-r0
- - py-netaddr 0.7.19-r1
- - py-paramiko 1.16.0-r0
+ - py-netifaces 0.10.5-r3
  - py2-pip 9.0.1-r1
- - py-six 1.10.0-r0
- - py-yaml 3.11-r0
  - readline 6.3.008-r5
  - sqlite-libs 3.18.0-r0
  - sudo 1.8.19_p2-r0
  - yaml 0.1.7-r0
+
+
+The following Python modules are installed via pip:
+
+ - cffi 1.10.0
+ - cryptography 2.0.2
+ - ecdsa 0.13
+ - enum34 1.1.6
+ - httplib2 0.9.2
+ - idna 2.5
+ - ipaddress 1.0.18
+ - jinja2 2.8
+ - markupsafe 0.23
+ - netaddr 0.7.19
+ - paramiko 1.16.0
+ - pexpect 4.2.1
+ - ptyprocess 0.5.2
+ - pycparser 2.18
+ - pycrypto 2.6.1
+ - pyyaml 3.11
+ - six 1.10.0
 
 
 ## Installation

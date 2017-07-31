@@ -6,5 +6,4 @@ netaddr==0.7.19
 paramiko==1.16.0
 pexpect==4.2.1
 ptyprocess==0.5.2
-pyyaml==3.11
-six==1.10.0
+pycrypto==2.6.1
