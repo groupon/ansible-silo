@@ -66,7 +66,7 @@ Everything not matching one of the above options will be forwarded to `ansible-p
         prepare_user
         prepare_ansible
         cd /home/user/playbooks || exit
-        run_as_user_with_SSH "/silo/ansible/bin/ansible-playbook" "$@"
+        run_as_user_with_SSH "/silo/userspace/ansible/bin/ansible-playbook" "$@"
     ;;
 ```
 
@@ -77,7 +77,7 @@ If you only have a single playbook in your bundle and want to hardcode it, this 
         prepare_user
         prepare_ansible
         cd /home/user/playbooks || exit
-        run_as_user_with_SSH "/silo/ansible/bin/ansible-playbook" "playbook.yml"
+        run_as_user_with_SSH "/silo/userspace/ansible/bin/ansible-playbook" "playbook.yml"
     ;;
 ```
 

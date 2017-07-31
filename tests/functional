@@ -93,7 +93,7 @@ test_silo_bundle_function() {
   # home directory
   result2=$("$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible" -i localhost, -c local \
     -m setup all | grep ANSIBLE_HOME)
-  [[ "${result2}" =~ /silo/ansible ]]
+  [[ "${result2}" =~ /silo/userspace/ansible ]]
 }
 
 #@test "Run specific ansible-silo version" {

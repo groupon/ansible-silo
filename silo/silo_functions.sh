@@ -311,7 +311,7 @@ get_ansible_version() {
 #   None
 #######################################
 switch_ansible_version() {
-  cd /silo/ansible || exit
+  cd /silo/userspace/ansible || exit
   find . -name "*.pyc" -delete
   rm -rf v2/ansible/modules/core v2/ansible/modules/extras \
     lib/ansible/modules/core lib/ansible/modules/extras
