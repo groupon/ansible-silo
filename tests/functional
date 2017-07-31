@@ -474,3 +474,22 @@ test_silo_bundle_function() {
   # Cleanup
   rm -f "$BATS_ANSIBLE_SILO_LOGFILE"
 }
+
+@test "Install pip module" {
+  # Install a module through pip
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --shell pip install pbr==3.1.1
+  [[ "${status}" -eq 0 ]]
+
+  # Make sure we can import the just installed module
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --shell "python -c 'import pbr; print pbr'"
+  [[ "${status}" -eq 0 ]]
+  [[ "${lines[-1]}" == *$"<module 'pbr' from '/silo/userspace/lib/python2.7/site-packages/pbr/__init__.pyc'>"* ]]
+
+  # pbr also installs an executable. Make sure we can call it
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --shell pbr -h
+  [[ "${status}" -eq 0 ]]
+
+  # Uninstall pbr
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --shell pip uninstall -y pbr
+  [[ "${status}" -eq 0 ]]
+}
