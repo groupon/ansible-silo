@@ -56,7 +56,10 @@ RUN git clone --progress git://github.com/ansible/ansible.git /silo/userspace/an
     echo "ControlPath  /home/user/.ssh/tmp/%h_%p_%r" > /etc/ssh/ssh_config &&\
 
 # User pip installs should be written to custom location
-    echo "install-option = --install-scripts=/silo/userspace/bin --prefix=/silo/userspace" >> /etc/pip.conf
+    echo "install-option = --install-scripts=/silo/userspace/bin --prefix=/silo/userspace" >> /etc/pip.conf &&\
+
+# Grant write access to the userspace sub directories
+   chmod 777 /silo/userspace/bin /silo/userspace/lib
 
 ENTRYPOINT ["/silo/entrypoint"]
 
