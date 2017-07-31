@@ -81,7 +81,8 @@ prepare_ansible() {
   chmod +x /silo/userspace/ansible/hacking/env-setup
   # shellcheck disable=SC1091
   source /silo/userspace/ansible/hacking/env-setup silent
-  user_modules="/silo/userspace/lib/python2.7/site-packages/"
+  user_modules="/silo/userspace/lib/python2.7/site-packages"
+  # PYTHONPATH defines the search path for Python module files
   export PYTHONPATH="${user_modules}:${PYTHONPATH}"
 
   # If ANSIBLE_LOG_PATH was already set by the user.
