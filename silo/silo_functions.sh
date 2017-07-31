@@ -42,21 +42,47 @@ readonly SILO_IMAGE_SHORT="${SILO_IMAGE##*/}"
 # shellcheck disable=SC1091
 source /silo/exit_codes.sh
 
+
+#######################################
+# Validates volume content
+# Globals:
+#   SILO_VOLUME
+# Arguments:
+#   None
+# Returns:
+#   None
+#######################################
+check_compatibility() {
+  if [[ ! -d "/silo/userspace" ]]; then
+    echo "Unexpected directory structure. To fix run: docker volume rm" \
+      "${SILO_VOLUME}" >&2
+    exit "${EX_INCVOL}"
+  fi
+  if [[ -d "/silo/ansible" ]]; then
+    echo "Unexpected directory structure. It looks like you're running and" \
+      "older ansible-silo version. Update your starter scripts per:" \
+      "ansible-silo --update" >&2
+    exit "${EX_INCVOL}"
+  fi
+}
+
 #######################################
 # Sets up Ansible from cloned source and put logfile into place
 # Globals:
 #   ANSIBLE_LOG_PATH
+#   PYTHONPATH
 # Arguments:
 #   None
 # Returns:
 #   None
 #######################################
 prepare_ansible() {
-  local log_path
-
-  chmod +x /silo/ansible/hacking/env-setup
+  local log_path user_modules
+  chmod +x /silo/userspace/ansible/hacking/env-setup
   # shellcheck disable=SC1091
-  source /silo/ansible/hacking/env-setup silent
+  source /silo/userspace/ansible/hacking/env-setup silent
+  user_modules="/silo/userspace/lib/python2.7/site-packages/"
+  export PYTHONPATH="${user_modules}:${PYTHONPATH}"
 
   # If ANSIBLE_LOG_PATH was already set by the user.
   # ANSIBLE_LOG_PATH is used by Ansible to define log file location.
@@ -192,9 +218,22 @@ prepare_user() {
 #######################################
 prepare_ansible_lint() {
   # PYTHONPATH defines the search path for Python module files
-  export PYTHONPATH="${PYTHONPATH}:/silo/ansible-lint/lib"
+  export PYTHONPATH="/silo/ansible-lint/lib:${PYTHONPATH}"
   ln -fs /silo/ansible-lint/lib/ansiblelint/main/__init__.py \
-    /silo/ansible/bin/ansible-lint
+    /silo/userspace/bin/ansible-lint
+}
+
+#######################################
+# Sets up user environemnt
+# Globals:
+#   PATH
+# Arguments:
+#   None
+# Returns:
+#   None
+#######################################
+prepare_environment() {
+  export PATH="/silo/userspace/bin:${PATH}"
 }
 
 #######################################
@@ -416,6 +455,8 @@ render_template() {
 get_silo_info() {
   prepare_user
   prepare_ansible
+  prepare_environment
+  prepare_ansible_lint
 
   # If this is a bundle, a version might have been specified
   if [[ ! -z "${BUNDLE_VERSION}" ]]; then
@@ -431,7 +472,6 @@ get_silo_info() {
   echo "ansible $(get_ansible_version)"
 
   # Show ansible-lint version
-  prepare_ansible_lint
   ansible-lint --version
 
   # If Ansible was installed on a Docker volume, show the volume name/location.

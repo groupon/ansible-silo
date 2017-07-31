@@ -189,7 +189,7 @@ _silo_volume() {
       exit "${EX_DVOLUME}"
     fi
   fi
-  return+="--volume \"${SILO_VOLUME}:/silo/ansible\" "
+  return+="--volume \"${SILO_VOLUME}:/silo/userspace\" "
   return+="--env \"SILO_VOLUME=${SILO_VOLUME}\""
   echo "${return}"
 }

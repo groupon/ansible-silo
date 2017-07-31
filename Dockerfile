@@ -40,8 +40,8 @@ ADD pip/requirements /tmp/pip-requirements.txt
 RUN pip install -r /tmp/pip-requirements.txt
 
 # Installing Ansible from source
-RUN git clone --progress git://github.com/ansible/ansible.git /silo/ansible 2>&1 &&\
-    cd /silo/ansible &&\
+RUN git clone --progress git://github.com/ansible/ansible.git /silo/userspace/ansible 2>&1 &&\
+    cd /silo/userspace/ansible &&\
     git checkout --force ${ANSIBLE_VERSION} 2>&1 &&\
     git submodule update --init --recursive 2>&1 &&\
     git clone --progress https://github.com/willthames/ansible-lint /silo/ansible-lint 2>&1  &&\
@@ -53,7 +53,10 @@ RUN git clone --progress git://github.com/ansible/ansible.git /silo/ansible 2>&1
     echo 'export PS1="[ansible-silo $SILO_VERSION|\w]\\$ "' > /home/user/.bashrc &&\
 
 # Set default control path in ssh config
-    echo "ControlPath  /home/user/.ssh/tmp/%h_%p_%r" > /etc/ssh/ssh_config
+    echo "ControlPath  /home/user/.ssh/tmp/%h_%p_%r" > /etc/ssh/ssh_config &&\
+
+# User pip installs should be written to custom location
+    echo "install-option = --install-scripts=/silo/userspace/bin --prefix=/silo/userspace" >> /etc/pip.conf
 
 ENTRYPOINT ["/silo/entrypoint"]
 
