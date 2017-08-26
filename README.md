@@ -132,6 +132,7 @@ Silo is based on **[Alpine Linux] 3.6** and includes the following APK packages:
  - py2-pip 9.0.1-r1
  - readline 6.3.008-r5
  - sqlite-libs 3.18.0-r0
+ - sshpass 1.06-r0
  - sudo 1.8.19_p2-r0
  - yaml 0.1.7-r0
 
