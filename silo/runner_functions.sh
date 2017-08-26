@@ -149,7 +149,8 @@ _silo_var_forwarding() {
   var_filter=("_" "_fzf_"* "BASH"* "command" "EDITOR" "func" "FUNCNAME" "FZF"*
     "GROUPS" "HOME" "HOSTNAME" "i" "ID" "IFS" "LOGNAME" "LS_COLORS" "MACHTYPE"
     "OLDPWD" "OSTYPE" "PATH" "SILO_"* "PWD" "return" "SHELL" "SSH_"* "TERM"
-    "TMPDIR" "UID" "USER" "var" "var_filter" "var_filter_item" "XDG_"* "EX_"*)
+    "TMPDIR" "UID" "USER" "var" "var_filter" "var_filter_item" "XDG_"* "EX_"*
+    "GIT_"*)
   for var in $( (set -o posix; set) | grep = | cut -d '=' -f 1 ); do
     for var_filter_item in "${var_filter[@]}"; do
       # shellcheck disable=SC2053
