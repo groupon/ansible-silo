@@ -106,26 +106,26 @@ Silo is based on **[Alpine Linux] 3.6** and includes the following APK packages:
 
  - bash 4.3.48-r1
  - ca-certificates 20161130-r2
- - curl 7.54.0-r0
+ - curl 7.55.0-r0
  - expat 2.2.0-r1
  - gdbm 1.12-r0
- - git 2.13.0-r0
+ - git 2.13.5-r0
  - gmp 6.1.2-r0
  - gosu 1.9-r0
  - libbz2 1.0.6-r5
- - libcurl 7.54.0-r0
+ - libcurl 7.55.0-r0
  - libffi 3.2.1-r3
  - libssh2 1.8.0-r1
- - ncurses-libs 6.0-r7
- - ncurses-terminfo 6.0-r7
- - ncurses-terminfo-base 6.0-r7
+ - ncurses-libs 6.0-r8
+ - ncurses-terminfo 6.0-r8
+ - ncurses-terminfo-base 6.0-r8
  - musl 1.1.16-r13
  - musl-utils 1.1.16-r13
  - openssh 7.5_p1-r1
  - openssh-client 7.5_p1-r1
  - openssh-sftp-server 7.5_p1-r1
  - openssl 1.0.2k-r0
- - pcre 8.40-r2
+ - pcre 8.41-r0
  - perl 5.24.1-r2
  - py-netifaces 0.10.5-r3
  - py2-pip 9.0.1-r1

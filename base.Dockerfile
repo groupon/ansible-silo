@@ -45,21 +45,21 @@ RUN echo "@testing http://dl-4.alpinelinux.org/alpine/edge/testing" >> /etc/apk/
     apk add --no-cache openssl=1.0.2k-r0\
                        ca-certificates=20161130-r2\
                        libssh2=1.8.0-r1\
-                       libcurl=7.54.0-r0\
-                       curl=7.54.0-r0\
+                       libcurl=7.55.0-r0\
+                       curl=7.55.0-r0\
 
 # Install bash
-                       ncurses-terminfo-base=6.0-r7\
-                       ncurses-terminfo=6.0-r7\
-                       ncurses-libs=6.0-r7\
+                       ncurses-terminfo-base=6.0-r8\
+                       ncurses-terminfo=6.0-r8\
+                       ncurses-libs=6.0-r8\
                        readline=6.3.008-r5\
                        bash=4.3.48-r1\
 
 # Install git
                        perl=5.24.1-r2\
                        expat=2.2.0-r1\
-                       pcre=8.40-r2\
-                       git=2.13.0-r0\
+                       pcre=8.41-r0\
+                       git=2.13.5-r0\
 
 # Install python
                        libbz2=1.0.6-r5\
@@ -130,10 +130,4 @@ RUN echo "@testing http://dl-4.alpinelinux.org/alpine/edge/testing" >> /etc/apk/
                        zlib-dev\
                        python2-dev\
                        openssl-dev\
-                       libffi-dev &&\
-
-# Install docker command
-    curl -fL -o /tmp/docker.tgz "https://download.docker.com/linux/static/stable/x86_64/docker-17.06.0-ce.tgz" &&\
-    tar -xf /tmp/docker.tgz --exclude docker/docker?* -C /tmp &&\
-    mv /tmp/docker/docker /usr/local/bin/ &&\
-    rm -rf /tmp/docker /tmp/docker.tgz
+                       libffi-dev
