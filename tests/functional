@@ -217,10 +217,10 @@ test_silo_bundle_function() {
   # Reset volume, will use default volume
   unset SILO_VOLUME
 
-  # Confirm silo on default volume is still 2.3.0.0
+  # Confirm silo on default volume is still 2.3.2.0
   run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible" --version
   [[ "${status}" -eq 0 ]]
-  [[ "${lines[0]}" =~ ^ansible[[:space:]]2\.3\.0\.0.*detached[[:space:]]HEAD ]]
+  [[ "${lines[0]}" =~ ^ansible[[:space:]]2\.3\.2\.0.*detached[[:space:]]HEAD ]]
 }
 
 @test "Silo containers are not persistent" {

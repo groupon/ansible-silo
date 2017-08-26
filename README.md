@@ -293,7 +293,7 @@ $ ansible-silo --shell
 
 You can run multiple Ansible versions in parallel by installing Ansible in different volumes. By default, Silo will use the volume `silo.<username>`, e.g. `silo.some.user`.
 
-The name of the volume can be changed by passing the environment variable `SILO_VOLUME`. The volume name will be prepended with `silo.` and automatically be created if it does not exist. It will contain Ansible 2.2.2.0, the latest version as of writing this document. To change the Ansible version in that volume run the switch command:
+The name of the volume can be changed by passing the environment variable `SILO_VOLUME`. The volume name will be prepended with `silo.` and automatically be created if it does not exist. It will contain Ansible 2.3.2.0, the latest version as of writing this document. To change the Ansible version in that volume run the switch command:
 
 ```bash
 $ SILO_VOLUME="1.9.6" ansible-silo --switch v1.9.6-1
