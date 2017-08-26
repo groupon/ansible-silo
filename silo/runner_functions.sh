@@ -178,12 +178,8 @@ _silo_volume() {
   # SILO_VOLUME can be set by the user to point to a specific volume where
   # ansible was/will be installed. It defaults to a volume named after the
   # user.
-  if [[ -z "${SILO_VOLUME}" ]]; then
-    whoami="$(whoami)"
-    SILO_VOLUME=silo."${whoami}"
-  else
-    SILO_VOLUME=silo."${SILO_VOLUME}"
-  fi
+  SILO_VOLUME="silo.${SILO_VOLUME:-$(whoami)}"
+
   if ! docker volume inspect "${SILO_VOLUME}" > /dev/null 2>&1; then
     if ! docker volume create --name "${SILO_VOLUME}" > /dev/null; then
       echo "Failed to create docker volume ${SILO_VOLUME}" >&2
