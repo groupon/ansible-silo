@@ -82,13 +82,14 @@ RUN echo "@testing http://dl-4.alpinelinux.org/alpine/edge/testing" >> /etc/apk/
 # Install ssh
                        openssh-client=7.5_p1-r1\
                        openssh-sftp-server=7.5_p1-r1\
-                       openssh=7.5_p1-r1 &&\
+                       openssh=7.5_p1-r1\
+                       sshpass=1.06-r0 &&\
 
 # Install some required python modules which need compiling
     apk add --no-cache gcc=6.3.0-r4\
                        musl=1.1.16-r13\
                        musl-dev=1.1.16-r13\
-                       musl-utils=1.1.16-r13 \
+                       musl-utils=1.1.16-r13\
                        binutils-libs=2.28-r2\
                        binutils=2.28-r2\
                        isl=0.17.1-r0\
