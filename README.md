@@ -2,7 +2,7 @@ Ansible Silo
 ============
 
 [![GitHub release](https://img.shields.io/github/tag/groupon/ansible-silo.svg?style=flat&colorB=4183C4&label=Latest%20release)](https://github.com/groupon/ansible-silo/releases/latest)
-[![Commits since v1.3.3](https://img.shields.io/github/commits-since/groupon/ansible-silo/v1.3.3.svg?style=flat&colorB=4183C4&label=Commits%20since%20v1.3.3)](https://github.com/groupon/ansible-silo/commits/master)
+[![Commits since v2.0.0](https://img.shields.io/github/commits-since/groupon/ansible-silo/v2.0.0.svg?style=flat&colorB=4183C4&label=Commits%20since%20v2.0.0)](https://github.com/groupon/ansible-silo/commits/master)
 [![GitHub Stars](https://img.shields.io/github/stars/groupon/ansible-silo.svg?style=flat&colorB=4183C4&label=GitHub%20Stars)](https://github.com/groupon/ansible-silo/stargazers)
 [![Build Status](https://img.shields.io/travis/groupon/ansible-silo.svg?style=flat&label=Tests)](https://travis-ci.org/groupon/ansible-silo)
 [![Docker Build Status](https://img.shields.io/docker/build/grpn/ansible-silo.svg?style=flat&label=Build)](https://hub.docker.com/r/grpn/ansible-silo/builds/)
@@ -243,8 +243,8 @@ Functions matching `_silo_*` will not be included in bundle mode. Functions matc
 
 ```bash
 $ ansible-silo --version
-ansible-silo 1.3.3
-ansible 2.3.0.0
+ansible-silo 2.0.0
+ansible 2.3.2.0
 ansible-lint 3.4.13
 ansible installed on volume silo.some.user
 ```
@@ -261,7 +261,7 @@ The given version relates to any git tag or branch of the [Ansible github reposi
 
 ```bash
 $ ansible-silo --switch devel
-Switched to Ansible 2.2.0
+Switched to Ansible 2.4.0
 ```
 
 ### `--reset` Resets a Silo volume
@@ -285,7 +285,7 @@ You can log into the running silo container by calling silo with the `--shell` o
 
 ```bash
 $ ansible-silo --shell
-[ansible-silo 1.3.3|~/playbooks]$
+[ansible-silo 2.0.0|~/playbooks]$
 ```
 
 
@@ -300,13 +300,13 @@ $ SILO_VOLUME="1.9.6" ansible-silo --switch v1.9.6-1
 Switched to Ansible 1.9.6
 
 $ ansible-silo --version
-ansible-silo 1.3.3
-ansible 2.3.0.0
+ansible-silo 2.0.0
+ansible 2.3.2.0
 ansible-lint 3.4.13
 ansible installed on volume silo.1.9.6
 
 $ SILO_VOLUME="1.9.6" ansible-silo --version
-ansible-silo 1.3.3
+ansible-silo 2.0.0
 ansible 1.9.6
 ansible-lint 3.4.13
 ansible installed on volume silo.1.9.6
@@ -402,7 +402,7 @@ SILO_DEBUG=true ansible --shell exit
 Which will show something along these lines:
 
     Executing: /tmp/ansible-silo-runner-OTgyNGY3NGIyYjczMmM3Nzk5NGQ3ZTgy "--shell" "exit"
-    Executing: /usr/bin/docker run --interactive --tty --rm --volume "/tmp:/home/user/playbooks" --env SILO_DEBUG --volume "silo.some.user:/silo/userspace/ansible" --env "SILO_VOLUME=silo.some.user" --hostname "silo.host.example" --volume "/tmp/ssh-vKRVrRCSMA":"/tmp/ssh-vKRVrRCSMA" --env SSH_AUTH_SOCK --env USER_NAME="some.user" --env USER_ID="1234" "ansible-silo:1.3.3" "--shell" "exit"
+    Executing: /usr/bin/docker run --interactive --tty --rm --volume "/tmp:/home/user/playbooks" --env SILO_DEBUG --volume "silo.some.user:/silo/userspace/ansible" --env "SILO_VOLUME=silo.some.user" --hostname "silo.host.example" --volume "/tmp/ssh-vKRVrRCSMA":"/tmp/ssh-vKRVrRCSMA" --env SSH_AUTH_SOCK --env USER_NAME="some.user" --env USER_ID="1234" "ansible-silo:2.0.0" "--shell" "exit"
 
 The first line shows the location of the generated runner script. The second line shows the docker command executed by the runner script.
 
@@ -481,7 +481,6 @@ To ensure we are never forced to update any dependency when we build the silo do
     LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
     NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
     SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 
 
   [Alpine Linux]: https://hub.docker.com/_/alpine/
