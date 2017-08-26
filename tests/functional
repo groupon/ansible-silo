@@ -173,11 +173,27 @@ test_silo_bundle_function() {
   [[ "${status}" -eq 0 ]]
   [[ "${lines[-1]}" == *$'ansible installed on volume silo.test'* ]]
 
-  # Delete the test volume through Docker API
-  run docker volume rm "silo.test"
-
   # Reset volume
   unset SILO_VOLUME
+}
+
+@test "Reset volume" {
+
+  # Set volume used by silo
+  export SILO_VOLUME="test"
+
+  # Delete the test volume
+  run ansible-silo --reset
+  [[ "${status}" -eq 0 ]]
+  [[ "${lines[-1]}" == silo.test* ]]
+
+  # Reset volume, will use default volume
+  unset SILO_VOLUME
+
+  # Delete the default volume
+  run ansible-silo --reset
+  [[ "${status}" -eq 0 ]]
+  [[ "${lines[-1]}" == silo.$(whoami)* ]]
 }
 
 @test "Switch to Ansible 1.9.6 on a separate volume" {
@@ -194,6 +210,10 @@ test_silo_bundle_function() {
   [[ "${status}" -eq 0 ]]
   [[ "${lines[0]}" =~ ^ansible[[:space:]]1\.9\.6.*detached[[:space:]]HEAD ]]
 
+  # Delete the test volume
+  run ansible-silo --reset
+  [[ "${status}" -eq 0 ]]
+
   # Reset volume, will use default volume
   unset SILO_VOLUME
 
@@ -201,9 +221,6 @@ test_silo_bundle_function() {
   run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible" --version
   [[ "${status}" -eq 0 ]]
   [[ "${lines[0]}" =~ ^ansible[[:space:]]2\.3\.0\.0.*detached[[:space:]]HEAD ]]
-
-  # Delete the test volume through Docker API
-  run docker volume rm "silo.test.1.9.6"
 }
 
 @test "Silo containers are not persistent" {

@@ -69,6 +69,9 @@ silo() {
     docker run -it --rm -v "${SILO_PATH}:/silo_install_path" \
       -i grpn/ansible-silo:latest --install
     exit
+  elif [[ "$1" == "--reset" ]]; then
+    docker volume rm "silo.${SILO_VOLUME:-$(whoami)}"
+    exit
   fi
 
   tool="$(basename "$0")"

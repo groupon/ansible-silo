@@ -32,6 +32,7 @@ Table of Contents
 - [Usage](#usage)
     - [`--version` Show current Silo & Ansible version](#--version-show-current-silo--ansible-version)
     - [`--switch` Switch to any Ansible version](#--switch-switch-to-any-ansible-version)
+    - [`--reset` Resets a Silo volume](#--reset-resets-a-silo-volume)
     - [`--shell` Log into container](#--shell-log-into-container)
     - [Run Silo with different Ansible versions](#run-silo-with-different-ansible-versions)
     - [Using Ansible](#using-ansible)
@@ -263,6 +264,20 @@ $ ansible-silo --switch devel
 Switched to Ansible 2.2.0
 ```
 
+### `--reset` Resets a Silo volume
+
+Will reset (delete) a Silo volume.
+
+```bash
+$ ansible-silo --reset
+```
+
+The volume can be specified by environment variable SILO_VOLUME:
+
+```bash
+$ SILO_VOLUME="foo" ansible-silo --reset
+```
+
 
 ### `--shell` Log into container
 
@@ -372,10 +387,10 @@ On OS X, forwarding of the SSH authentication socket [currently is not possible]
 
 ## Troubleshooting
 
-If anything goes wrong, try to delete your silo volume.
+If anything goes wrong, try to reset your silo volume.
 
 ```bash
-docker volume rm "silo.$(whoami)"
+ansible-silo --reset
 ```
 
 You can see the actual generated and executed docker run commands by setting `SILO_DEBUG`:
