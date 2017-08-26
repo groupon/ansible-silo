@@ -96,18 +96,18 @@ test_silo_bundle_function() {
   [[ "${result2}" =~ /silo/userspace/ansible ]]
 }
 
-#@test "Run specific ansible-silo version" {
-#
-#  # Define which Silo version to use
-#  export SILO_VERSION="1.2.1"
-#
-#  # Get info from Silo and check it is the expected version
-#  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --info
-#  [[ "${lines[0]}" == 'Silo 1.2.1'* ]]
-#
-#  # Cleanup
-#  unset SILO_VERSION
-#}
+@test "Run specific ansible-silo version" {
+
+  # Define which Silo version to use
+  export SILO_VERSION="1.3.3"
+
+  # Get info from Silo and check it is the expected version
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --version
+  [[ "${lines[0]}" == 'ansible-silo 1.3.3'* ]]
+
+  # Cleanup
+  unset SILO_VERSION
+}
 
 @test "Fail when no options were provided" {
   run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo"
