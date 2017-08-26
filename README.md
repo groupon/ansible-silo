@@ -37,6 +37,7 @@ Table of Contents
     - [Run Silo with different Ansible versions](#run-silo-with-different-ansible-versions)
     - [Using Ansible](#using-ansible)
         - [Examples](#examples)
+    - [Disabling privileged mode](#disabling-privileged-mode)
 - [Bundle mode](#bundle-mode-1)
 - [FAQ](#faq)
     - [Why do I always have to enter my SSH key passphrase when Silo starts?](#why-do-i-always-have-to-enter-my-ssh-key-passphrase-when-silo-starts)
@@ -354,6 +355,10 @@ ansible-lint some-playbook.yml
 ansible-silo ansible-lint some-playbook.yml
 ```
 
+### Disabling privileged mode
+
+By default, Silo forwards the Docker socket into the container to be able to run Ansible against other containers. This requires the Silo container to run in [privileged mode]. To disable this you can define the environment variable `ANSIBLE_NO_PRIVILEGED`.
+
 
 ## Bundle mode
 
@@ -490,3 +495,4 @@ To ensure we are never forced to update any dependency when we build the silo do
   [ansible-lint]: https://github.com/willthames/ansible-lint
   [bats]: https://github.com/sstephenson/bats
   [shellcheck]: https://github.com/koalaman/shellcheck
+  [privileged mode]: https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities

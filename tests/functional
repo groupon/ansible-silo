@@ -493,6 +493,7 @@ test_silo_bundle_function() {
 }
 
 @test "Install pip module" {
+
   # Install a module through pip
   run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --shell pip install pbr==3.1.1
   [[ "${status}" -eq 0 ]]
@@ -508,5 +509,24 @@ test_silo_bundle_function() {
 
   # Uninstall pbr
   run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --shell pip uninstall -y pbr
+  [[ "${status}" -eq 0 ]]
+}
+
+@test "Docker socket forwarding" {
+
+  # Disable
+  export ANSIBLE_NO_PRIVILEGED=true
+
+  # Make sure the socket does not exist
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --shell\
+    [[ -S /var/run/docker.sock ]]
+  [[ "${status}" -eq 1 ]]
+
+  # Enable
+  unset ANSIBLE_NO_PRIVILEGED
+
+  # Make sure the socket does exist
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --shell\
+    [[ -S /var/run/docker.sock ]]
   [[ "${status}" -eq 0 ]]
 }
