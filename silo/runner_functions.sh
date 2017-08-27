@@ -173,7 +173,7 @@ _silo_var_forwarding() {
 #   --env and --volume options for mounting the silo volume
 #######################################
 _silo_volume() {
-  local whoami return=""
+  local return=""
 
   # SILO_VOLUME can be set by the user to point to a specific volume where
   # ansible was/will be installed. It defaults to a volume named after the
