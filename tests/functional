@@ -194,6 +194,10 @@ test_silo_bundle_function() {
   run ansible-silo --reset
   [[ "${status}" -eq 0 ]]
   [[ "${lines[-1]}" == silo.$(whoami)* ]]
+
+  # Switch again to a specific version, so further tests do not run with the latest version
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --switch v2.3.2.0-1
+  [[ "${status}" -eq 0 ]]
 }
 
 @test "Switch to Ansible 1.9.6 on a separate volume" {
@@ -223,6 +227,32 @@ test_silo_bundle_function() {
   [[ "${lines[0]}" =~ ^ansible[[:space:]]2\.3\.2\.0.*detached[[:space:]]HEAD ]]
 }
 
+@test "Docker socket forwarding" {
+
+  # Disable
+  export ANSIBLE_NO_PRIVILEGED=true
+
+  # Make sure the socket does not exist
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --shell\
+    [[ -S /var/run/docker.sock ]]
+  [[ "${status}" -eq 1 ]]
+
+  # Enable
+  unset ANSIBLE_NO_PRIVILEGED
+
+  # Make sure the socket does exist
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --shell\
+    [[ -S /var/run/docker.sock ]]
+  [[ "${status}" -eq 0 ]]
+}
+
+@test "Docker implementation" {
+  cd "${BATS_TEST_DIRNAME}/playbooks"
+  run ansible-playbook -i inventory docker.yml --tags create
+  echo "${lines}"
+  [[ "${status}" -eq 0 ]]
+}
+
 @test "Silo containers are not persistent" {
 
   # Get current number of active silo containers
@@ -245,7 +275,7 @@ test_silo_bundle_function() {
   [[ "${status}" -eq 0 ]]
 }
 
-@test "Ansible command through ssh" {
+@test "Ansible command through ssh w/ key authentication" {
 
   # Delete the test file, if it exists
   rm -f /tmp/silo.test
@@ -261,6 +291,22 @@ test_silo_bundle_function() {
   # Cleanup
   unset ANSIBLE_HOST_KEY_CHECKING
   rm -f /tmp/silo.test
+}
+
+@test "Ansible command through ssh w/ password authentication" {
+  cd "${BATS_TEST_DIRNAME}/playbooks"
+  run ansible-playbook -i inventory docker.yml --tags test_ssh
+  [[ "${status}" -eq 0 ]]
+}
+
+@test "Ansible command through docker socket connection" {
+  cd "${BATS_TEST_DIRNAME}/playbooks"
+  run ansible-playbook -i inventory docker.yml --tags test_socket
+  [[ "${status}" -eq 0 ]]
+
+  # Cleanup: we no longer need the test container
+  run ansible-playbook -i inventory docker.yml --tags create
+  [[ "${status}" -eq 0 ]]
 }
 
 @test "User name/id forwarding" {
@@ -509,24 +555,5 @@ test_silo_bundle_function() {
 
   # Uninstall pbr
   run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --shell pip uninstall -y pbr
-  [[ "${status}" -eq 0 ]]
-}
-
-@test "Docker socket forwarding" {
-
-  # Disable
-  export ANSIBLE_NO_PRIVILEGED=true
-
-  # Make sure the socket does not exist
-  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --shell\
-    [[ -S /var/run/docker.sock ]]
-  [[ "${status}" -eq 1 ]]
-
-  # Enable
-  unset ANSIBLE_NO_PRIVILEGED
-
-  # Make sure the socket does exist
-  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --shell\
-    [[ -S /var/run/docker.sock ]]
   [[ "${status}" -eq 0 ]]
 }

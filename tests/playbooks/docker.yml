@@ -1,0 +1,81 @@
+---
+
+- name: Create ssh container
+  tags: create
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - setup:
+
+    - name: Start test container
+      docker_container:
+        name: silo_test
+        state: started
+        image: udondan/alpine-sshd-python:latest
+        ports:
+          - "2222:22"
+      become: yes
+
+    - name: Accept container host key
+      shell: |
+        if [ ! -n "$(grep "\[{{ ansible_domain }}\]:2222" ~/.ssh/known_hosts)" ]; then
+          ssh-keyscan -p 2222 {{ ansible_domain }} >> ~/.ssh/known_hosts 2>/dev/null
+          echo CHANGED
+        fi
+      register: key_accept
+      changed_when:
+        - key_accept.stdout_lines | length > 0
+        - key_accept.stdout_lines[0] == "CHANGED"
+
+- name: Add container hosts to inventory
+  tags:
+    - test_ssh
+    - test_socket
+  hosts: localhost
+  tasks:
+
+    - name: Add host w/ ssh connection
+      add_host:
+        hostname: container_ssh
+        ansible_host: "{{ ansible_domain }}"
+        ansible_port: 2222
+        ansible_user: root
+        ansible_ssh_pass: root
+
+    - name: Add host w/ docker connection
+      add_host:
+        hostname: container_docker
+        ansible_host: silo_test
+        ansible_connection: docker
+        ansible_user: root
+
+- name: Connect to container via ssh
+  tags: test_ssh
+  hosts: container_ssh
+  gather_facts: no
+  tasks:
+    - setup:
+    - debug:
+        msg: works
+
+- name: Connect to container via docker socket
+  tags: test_socket
+  hosts: container_docker
+  gather_facts: no
+  tasks:
+    - setup:
+    - debug:
+        msg: works
+
+- name: Remove ssh container
+  tags: destroy
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Remove test container
+      docker_container:
+        name:  silo_test
+        state: absent
+      become: yes
+
+...

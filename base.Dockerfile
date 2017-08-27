@@ -131,4 +131,13 @@ RUN echo "@testing http://dl-4.alpinelinux.org/alpine/edge/testing" >> /etc/apk/
                        zlib-dev\
                        python2-dev\
                        openssl-dev\
-                       libffi-dev
+                       libffi-dev &&\
+
+ # Install docker command and ensure it's always executed w/ sudo
+    curl -fL -o /tmp/docker.tgz "https://download.docker.com/linux/static/stable/x86_64/docker-17.06.0-ce.tgz" &&\
+    tar -xf /tmp/docker.tgz --exclude docker/docker?* -C /tmp &&\
+    mv /tmp/docker/docker /usr/local/bin/real-docker &&\
+    rm -rf /tmp/docker /tmp/docker.tgz &&\
+    echo "#!/usr/bin/env bash" > /usr/local/bin/docker &&\
+    echo 'sudo /usr/local/bin/real-docker "$@"' >> /usr/local/bin/docker &&\
+    chmod +x /usr/local/bin/docker
