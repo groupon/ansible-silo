@@ -193,6 +193,7 @@
             padding: 10px;
             font-family: Menlo, Monaco, monospace;
             font-size: 14px;
+            white-space: pre;
         }
         
         a {
@@ -231,6 +232,7 @@
             </div>
         </nav>
     </header>
+
     <h1 id="ansible-silo">Ansible Silo</h1>
     <p><strong>Ansible in a self-contained environment via Docker.</strong></p>
     <p>
@@ -247,15 +249,50 @@
         new Ansible releases and run differing Ansible versions per playbook, project or user.</p>
     <p>Furthermore you can bundle your playbooks (incl. configuration, roles, plugins etc) in a custom Docker image which inherits Silo and therefore generate a versioned, shippable, complete and self-contained executable package which runs your playbooks
         in any environment. (where you have access to a Docker daemon)</p>
-    <h2 id="demo">Feature demo</h2>
+
+    <h2 id="demo">Demo</h2>
     <asciinema-player src="demo.json" poster="npt:0:32" title="ansible-silo demo" theme="asciinema" author="Groupon" preload="true" cols="143" rows="39"></asciinema-player>
     <p id="asciinema-credit">This recording is powered by <a href="https://github.com/asciinema/asciinema-player">asciinema player</a> and <a href="https://github.com/paxtonhare/demo-magic">demo-magic</a>.</p>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/asciinema-player/2.4.1/asciinema-player.min.js" integrity="sha256-kJiKb3tXr6/6NwlJ6B8avqaS8PofIlGDEaLZaRmbOZ0=" crossorigin="anonymous"></script>
+
     <h2 id="installation">Installation</h2>
     <p>To run Ansible Silo you need <a href="https://www.docker.com/get-docker">Docker Engine</a> >= 1.9.
         <code>docker run --interactive --tty --rm --volume "$HOME/bin:/silo_install_path" grpn/ansible-silo:v2.0.0 --install</code>
     </p>
     <p>For detailed documentation, bug reports and contributions visit <a href="https://github.com/groupon/ansible-silo">GitHub</a>.</p>
+
+    <h2 id="license">License</h2>
+    <p>
+        <code>Copyright (c) 2017, Groupon, Inc.
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+
+Redistributions of source code must retain the above copyright notice,
+this list of conditions and the following disclaimer.
+
+Redistributions in binary form must reproduce the above copyright
+notice, this list of conditions and the following disclaimer in the
+documentation and/or other materials provided with the distribution.
+
+Neither the name of GROUPON nor the names of its contributors may be
+used to endorse or promote products derived from this software without
+specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</code>
+    </p>
 </body>
 
 </html>
