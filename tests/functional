@@ -100,6 +100,7 @@ test_silo_bundle_function() {
 
   # Define which Silo version to use
   export SILO_VERSION="1.3.3"
+  export SILO_VOLUME="silo_1.3.3"
 
   # Get info from Silo and check it is the expected version
   run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --version
@@ -107,6 +108,9 @@ test_silo_bundle_function() {
 
   # Cleanup
   unset SILO_VERSION
+  run ansible-silo --reset
+  [[ "${status}" -eq 0 ]]
+  unset SILO_VOLUME
 }
 
 @test "Fail when no options were provided" {
