@@ -42,6 +42,11 @@ Table of Contents
 - [FAQ](#faq)
     - [Why do I always have to enter my SSH key passphrase when Silo starts?](#why-do-i-always-have-to-enter-my-ssh-key-passphrase-when-silo-starts)
 - [Troubleshooting](#troubleshooting)
+- [Versioning](#versioning)
+- [Version history](#version-history)
+    - [v1.3.3 (July 20, 2017)](#v133-july-20-2017)
+    - [v1.3.2 (July 17, 2017)](#v132-july-17-2017)
+    - [v1.3.1 (July 13, 2017)](#v131-july-13-2017)
 - [Development](#development)
     - [Build pipeline](#build-pipeline)
     - [Testing](#testing)
@@ -413,6 +418,26 @@ Which will show something along these lines:
 The first line shows the location of the generated runner script. The second line shows the docker command executed by the runner script.
 
 
+## Versioning
+
+Ansible Silo uses [SemVer]. Since Ansible Silo is the promise of a stable environment, we consider the smallest update of any contained dependency to be a potential breaking change and indicate such change by incrementing the major version number.
+
+## Version history
+
+### v1.3.3 (July 20, 2017)
+
+* Converts starter scripts to symlinks
+* Fixes help message command name
+* Minor readme cleanup
+
+### v1.3.2 (July 17, 2017)
+
+* Fixes version number in automated docker build
+
+### v1.3.1 (July 13, 2017)
+
+* Initial public release
+
 ## Development
 
 ### Build pipeline
@@ -497,3 +522,4 @@ To ensure we are never forced to update any dependency when we build the silo do
   [bats]: https://github.com/sstephenson/bats
   [shellcheck]: https://github.com/koalaman/shellcheck
   [privileged mode]: https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities
+  [SemVer]: http://semver.org/
