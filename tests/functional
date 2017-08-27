@@ -487,8 +487,10 @@ test_silo_bundle_function() {
   export SILO_DEBUG=true
   run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible" --version
   [[ "${status}" -eq 0 ]]
-  [[ "${lines[1]}" =~ ^Executing:[[:space:]]/tmp/ansible-silo-runner-.*[[:space:]]\"ansible\"[[:space:]]\"--version\" ]]
-  [[ "${lines[2]}" =~ ^Executing:[[:space:]].*/docker[[:space:]]run ]]
+  [[ "${lines[0]}" == "SILO vars:" ]]
+  [[ "${lines[1]}" == " - SILO_DEBUG=true" ]]
+  [[ "${lines[-7]}" =~ ^Executing:[[:space:]]/tmp/ansible-silo-runner-.*[[:space:]]\"ansible\"[[:space:]]\"--version\" ]]
+  [[ "${lines[-6]}" =~ ^Executing:[[:space:]].*/docker[[:space:]]run ]]
   unset SILO_DEBUG
 }
 

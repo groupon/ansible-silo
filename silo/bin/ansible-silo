@@ -46,6 +46,18 @@
 silo() {
   local SILO_IMAGE SILO_IMAGE_SHORT command
 
+  # SILO_DEBUG can be set by the user to enable debug output
+  if [[ ! -z "${SILO_DEBUG}" ]]; then
+    # Output all defined evn vars starting with SILO_
+    echo "SILO vars:"
+    for var in $( (set -o posix; set) | grep = | cut -d '=' -f 1 ); do
+      if [[ "${var}" == "SILO_"* ]]; then
+        echo " - ${var}=${!var}"
+      fi
+    done
+    echo ""
+  fi
+
   # SILO_IMAGE is replaced with the value defined in Dockerfile
   SILO_IMAGE="{{ SILO_IMAGE }}"
   SILO_IMAGE_SHORT="${SILO_IMAGE##*/}"
@@ -84,7 +96,7 @@ silo() {
   runner_path="/tmp/${SILO_IMAGE_SHORT}-runner-${SILO_VERSION}"
   if [[ -f "${runner_path}" ]]; then
     if [[ ! -z "${SILO_DEBUG}" ]]; then
-      echo "Runner file already exists."
+      echo -e "Runner file already exists.\n"
     fi
     command="${runner_path}"
     for var in "$@"; do
@@ -92,15 +104,14 @@ silo() {
     done
   else
     if [[ ! -z "${SILO_DEBUG}" ]]; then
-      echo "Requesting runner creation. Starting container with --run."
+      echo -e "Requesting runner creation. Starting container with --run.\n"
     fi
     command="$(docker run -it --rm -v "/tmp:/tmp" -i \
       "${SILO_IMAGE}:${SILO_VERSION}" --run "$@")"
   fi
 
-  # SILO_DEBUG can be set by the user to enable debug output
   if [[ ! -z "${SILO_DEBUG}" ]]; then
-    echo "Executing: ${command}"
+    echo -e "Executing: ${command}\n"
   fi
   bash -c "$(echo "${command}" | tr -d "\r")"
   exit
