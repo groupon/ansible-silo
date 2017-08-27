@@ -44,12 +44,13 @@
 #   None
 #######################################
 silo() {
-  local SILO_IMAGE SILO_IMAGE_SHORT command
+  local SILO_IMAGE SILO_IMAGE_SHORT command var
 
   # SILO_DEBUG can be set by the user to enable debug output
   if [[ ! -z "${SILO_DEBUG}" ]]; then
     # Output all defined evn vars starting with SILO_
     echo "SILO vars:"
+    # shellcheck disable=SC2030
     for var in $( (set -o posix; set) | grep = | cut -d '=' -f 1 ); do
       if [[ "${var}" == "SILO_"* ]]; then
         echo " - ${var}=${!var}"
@@ -90,6 +91,7 @@ silo() {
   # If this is one of the symlinks, e.g. ansible-playbook
   if [[ "${tool}" != "ansible-silo" ]]; then
     # Prepend it to the args
+    # shellcheck disable=SC2031
     set -- "${tool}" "$@"
   fi
 
