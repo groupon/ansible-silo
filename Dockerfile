@@ -52,9 +52,6 @@ RUN git clone --progress git://github.com/ansible/ansible.git /silo/userspace/an
 # Give the user a custom shell prompt
     echo 'export PS1="[ansible-silo $SILO_VERSION|\w]\\$ "' > /home/user/.bashrc &&\
 
-# Always run docker as sudo for convenience
-    echo 'alias docker="sudo docker"' >> /home/user/.bashrc &&\
-
 # Set default control path in ssh config
     echo "ControlPath  /home/user/.ssh/tmp/%h_%p_%r" > /etc/ssh/ssh_config &&\
 
