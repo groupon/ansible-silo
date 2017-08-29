@@ -42,15 +42,43 @@
 #   None
 #######################################
 ansible_silo_bundle_starter() {
-  local silo_image bundle_version command
-
-  silo_image="{{ BUNDLE_IMAGE }}"
-  bundle_version="{{ BUNDLE_VERSION }}"
-
-  command="$(docker run -it --rm -v "/tmp:/tmp" \
-    -i "${silo_image}:${bundle_version}" --run "$@")"
+  local command runner_path
 
   # SILO_DEBUG can be set by the user to enable debug output
+  if [[ ! -z "${SILO_DEBUG}" ]]; then
+    # Output all defined evn vars starting with SILO_
+    echo "SILO vars:"
+    # shellcheck disable=SC2030
+    for var in $( (set -o posix; set) | grep = | cut -d '=' -f 1 ); do
+      if [[ "${var}" == "SILO_"* ]]; then
+        echo " - ${var}=${!var}"
+      fi
+    done
+    echo ""
+  fi
+
+  # SILO_IMAGE is replaced with the value defined in Dockerfile
+  BUNDLE_IMAGE="{{ BUNDLE_IMAGE }}"
+  BUNDLE_IMAGE_SHORT="${BUNDLE_IMAGE##*/}"
+  BUNDLE_VERSION="{{ BUNDLE_VERSION }}"
+
+  runner_path="/tmp/${BUNDLE_IMAGE_SHORT}-runner-${BUNDLE_VERSION}"
+  if [[ -f "${runner_path}" ]]; then
+    if [[ ! -z "${SILO_DEBUG}" ]]; then
+      echo -e "Runner file already exists.\n"
+    fi
+    command="${runner_path}"
+    for var in "$@"; do
+      command+=" \"${var}\""
+    done
+  else
+    if [[ ! -z "${SILO_DEBUG}" ]]; then
+      echo -e "Requesting runner creation. Starting container with --run.\n"
+    fi
+    command="$(docker run --interactive --tty --rm --volume "/tmp:/tmp" \
+      "${BUNDLE_IMAGE_SHORT}:${BUNDLE_VERSION}" --run "$@")"
+  fi
+
   if [[ ! -z "${SILO_DEBUG}" ]]; then
     echo "Executing: ${command}"
   fi
