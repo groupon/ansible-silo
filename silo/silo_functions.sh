@@ -473,7 +473,9 @@ get_silo_info() {
   echo "ansible $(get_ansible_version)"
 
   # Show ansible-lint version
-  ansible-lint --version
+  if [[ "${SILO_IMAGE_SHORT}" == "ansible-silo" ]]; then
+    ansible-lint --version
+  fi
 
   # If Ansible was installed on a Docker volume, show the volume name/location.
   # SILO_VOLUME can be set by the user to point to a specific volume where
