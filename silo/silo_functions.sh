@@ -54,8 +54,8 @@ source /silo/exit_codes.sh
 #######################################
 check_compatibility() {
   if [[ ! -d "/silo/userspace" ]]; then
-    echo "Unexpected directory structure. To fix run: docker volume rm" \
-      "${SILO_VOLUME}" >&2
+    echo "Unexpected directory structure. To fix run:" \
+      "SILO_VOLUME=${SILO_VOLUME} ansible-silo --reset" >&2
     exit "${EX_INCVOL}"
   fi
   if [[ -d "/silo/ansible" ]]; then
