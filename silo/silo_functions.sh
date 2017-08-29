@@ -541,7 +541,7 @@ create_runner() {
   local command runner_path var
 
   render_template "/silo/runner" "/runner"
-  runner_path="/tmp/${SILO_IMAGE_SHORT}-runner-${SILO_VERSION}"
+  runner_path="/tmp/${SILO_IMAGE_SHORT}-runner-${BUNDLE_VERSION:-${SILO_VERSION}}"
   if [[ ! -f "${runner_path}" ]]; then
     mv "/runner" "${runner_path}"
     chmod +x "${runner_path}"
