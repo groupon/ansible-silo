@@ -39,7 +39,8 @@ if [[ ! -d /silo_install_path ]]; then
   exit "${EX_CANTCREAT}"
 fi
 
-echo "Installing from ${SILO_IMAGE_SHORT} ${SILO_VERSION}:"
+echo "Installing from ${SILO_IMAGE_SHORT} ${BUNDLE_VERSION:-${SILO_VERSION}}:"
+
 for src in /silo/bin/*; do
   file="$(basename "${src}")"
   target="/silo_install_path/${file}"
