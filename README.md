@@ -220,7 +220,7 @@ ansible installed on volume silo.some.user
 
 ### Extending runner script
 
-The docker command which gets executed for calling Ansible is stored inside the image itself, so it cannot be modified. To inject additional parameters into the command you can define functions in your `~/.ansible-silo` or globally in `/etc/ansible/ansible-silo/ansible-silo` file matching the pattern `silo_*` or `_silo_*`. The runner script will execute all `silo_*` and `_silo_*` functions and append their output to the docker command.
+The docker command which gets executed for calling Ansible is stored inside the image itself, so it cannot be modified. To inject additional parameters into the command you can define functions in `./.ansible-silo`, your `~/.ansible-silo` or globally in `/etc/ansible/ansible-silo/ansible-silo` file matching the pattern `silo_*` or `_silo_*`. The runner script will execute all `silo_*` and `_silo_*` functions and append their output to the docker command.
 
 For instance, if you need to mount an additional volume, you can add a method like this to your `~/.ansible-silo` file:
 
@@ -233,7 +233,7 @@ silo_custom_volume_mounting() {
 }
 ```
 
-In bundle mode, silo will also include files matching the image name. If, for example, you run a bundle called `foo-bar`, silo will search for the files `~/.foo-bar` and `/etc/ansible/ansible-silo/foo-bar` and append the output of all functions matching the pattern `foo_bar_*` to the docker command.
+In bundle mode, silo will also include files matching the image name. If, for example, you run a bundle called `foo-bar`, silo will search for the files `./.foo-bar`, `~/.foo-bar` and `/etc/ansible/ansible-silo/foo-bar` and append the output of all functions matching the pattern `foo_bar_*` to the docker command.
 
 Functions matching `_silo_*` will not be included in bundle mode. Functions matching `silo_*` will.
 

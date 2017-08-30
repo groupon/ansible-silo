@@ -46,6 +46,12 @@
 silo() {
   local SILO_IMAGE SILO_IMAGE_SHORT command var
 
+  # If an .ansible-silo file exists in the current working directory, load it
+  if [[ -f ".ansible-silo" ]]; then
+    # shellcheck disable=SC1091
+    source ".ansible-silo"
+  fi
+
   # SILO_DEBUG can be set by the user to enable debug output
   if [[ ! -z "${SILO_DEBUG}" ]]; then
     # Output all defined evn vars starting with SILO_

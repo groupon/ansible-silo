@@ -294,3 +294,9 @@ if [[ -f "${HOME}/.${SILO_IMAGE_SHORT}" ]]; then
   # shellcheck disable=SC1090
   source "${HOME}/.${SILO_IMAGE_SHORT}"
 fi
+
+# If an .ansible-silo file exists in the current working directory, load it
+if [[ -f ".${SILO_IMAGE_SHORT}" ]]; then
+  # shellcheck disable=SC1091
+  source ".${SILO_IMAGE_SHORT}"
+fi
