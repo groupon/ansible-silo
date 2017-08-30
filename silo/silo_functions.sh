@@ -541,10 +541,11 @@ bundle_create() {
 #   None
 #######################################
 create_runner() {
-  local command runner_path var
+  local command runner_path var version
 
   render_template "/silo/runner" "/runner"
-  runner_path="/tmp/${SILO_IMAGE_SHORT}-runner-${BUNDLE_VERSION:-${SILO_VERSION}}"
+  version="${BUNDLE_VERSION:-${SILO_VERSION}}"
+  runner_path="/tmp/${SILO_IMAGE_SHORT}-runner-${version}"
   if [[ ! -f "${runner_path}" ]]; then
     mv "/runner" "${runner_path}"
     chmod +x "${runner_path}"
