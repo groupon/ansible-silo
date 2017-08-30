@@ -78,7 +78,7 @@ ansible_silo_bundle_starter() {
     fi
     # shellcheck disable=SC2031
     command="$(docker run --interactive --tty --rm --volume "/tmp:/tmp" \
-      "${BUNDLE_IMAGE_SHORT}:${BUNDLE_VERSION}" --run "$@")"
+      "${BUNDLE_IMAGE}:${BUNDLE_VERSION}" --run "$@")"
   fi
 
   if [[ ! -z "${SILO_DEBUG}" ]]; then
