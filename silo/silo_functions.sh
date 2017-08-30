@@ -44,25 +44,28 @@ source /silo/exit_codes.sh
 
 
 #######################################
-# Validates volume content
+# Validates volume content and attempts to fix
 # Globals:
-#   SILO_VOLUME
+#   None
 # Arguments:
 #   None
 # Returns:
 #   None
 #######################################
 check_compatibility() {
-  if [[ ! -d "/silo/userspace" ]]; then
-    echo "Unexpected directory structure. To fix run:" \
-      "SILO_VOLUME=${SILO_VOLUME} ansible-silo --reset" >&2
-    exit "${EX_INCVOL}"
-  fi
-  if [[ -d "/silo/ansible" ]]; then
-    echo "Unexpected directory structure. It looks like you're running and" \
-      "older ansible-silo version. Update your starter scripts per:" \
-      "ansible-silo --update" >&2
-    exit "${EX_INCVOL}"
+  # If userspace directly contains ansible, this is a volume mounted from Silo
+  # 1.x.x. We convert it to the new directory layout, introduced with Silo
+  # 2.0.0
+  if [[ -d "/silo/userspace/.git" ]] && grep -q "github.com/ansible/ansible" \
+    /silo/userspace/.git/config; then
+    echo "Found old volume layout. Converted directory structure."
+    cp -R /silo/userspace /tmp/ansible
+    cd /silo/userspace || exit
+    # shellcheck disable=SC2046
+    rm -rf $(ls -A /silo/userspace)
+    mkdir bin lib
+    chmod 777 bin lib
+    mv /tmp/ansible /silo/userspace/ansible
   fi
 }
 

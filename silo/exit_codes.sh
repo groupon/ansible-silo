@@ -44,4 +44,3 @@ export EX_GFETCH=70 # git fetch error
 export EX_GCHECKOUT=71 # git checkout error
 export EX_GSUB=72 # git submodule error
 export EX_MISSINGC=73 # missing constant
-export EX_INCVOL=74 # Incompatible volume detected
