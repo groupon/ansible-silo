@@ -299,6 +299,23 @@ This enables the user to define custom behavior per playbook location, per user 
 
 If defined, enables debug mode. In debug mode Silo will list all `SILO_*` env vars and the Docker command which is executed to start the Silo container.
 
+```bash
+SILO_DEBUG=true ansible-silo --shell exit
+```
+
+Which will show something along these lines:
+
+    SILO vars:
+     - SILO_DEBUG=true
+
+    Runner file already exists.
+
+    Executing: /tmp/ansible-silo-runner-2.0.0 "--shell" "exit"
+
+    Executing: /usr/bin/docker run --interactive --tty --rm --volume "/home/daniel.schroeder/ansible-silo:/home/user/playbooks" --volume "silo.some.user:/silo/userspace" --env "SILO_VOLUME=silo.some.user" --hostname "silo.example.com" --volume /var/run/docker.sock:/var/run/docker.sock --privileged  --volume "/home/some.user/.ssh:/home/user/._ssh" --volume "/tmp/ssh-6k3r1bCpCi":"/tmp/ssh-6k3r1bCpCi" --env SSH_AUTH_SOCK --env USER_NAME="some.user" --env USER_ID="1234" "grpn/ansible-silo:2.0.0" "--shell" "exit"
+
+The first _Executing_ line shows the location of the generated runner script. The last line shows the Docker command executed by the runner script.
+
 
 #### SILO_DOCKER_CMD
 
@@ -497,18 +514,7 @@ If anything goes wrong, try to reset your Silo volume.
 ansible-silo --reset
 ```
 
-You can see the actual generated and executed `docker run` commands by setting `SILO_DEBUG`:
-
-```bash
-SILO_DEBUG=true ansible --shell exit
-```
-
-Which will show something along these lines:
-
-    Executing: /tmp/ansible-silo-runner-OTgyNGY3NGIyYjczMmM3Nzk5NGQ3ZTgy "--shell" "exit"
-    Executing: /usr/bin/docker run --interactive --tty --rm --volume "/tmp:/home/user/playbooks" --env SILO_DEBUG --volume "silo.some.user:/silo/userspace/ansible" --env "SILO_VOLUME=silo.some.user" --hostname "silo.host.example" --volume "/tmp/ssh-vKRVrRCSMA":"/tmp/ssh-vKRVrRCSMA" --env SSH_AUTH_SOCK --env USER_NAME="some.user" --env USER_ID="1234" "ansible-silo:2.0.0" "--shell" "exit"
-
-The first line shows the location of the generated runner script. The second line shows the Docker command executed by the runner script.
+You can see the actual generated and executed `docker run` commands and all defined `SILO_*` environment vars by enabling [debug mode](#silo_debug).
 
 
 ## Versioning
