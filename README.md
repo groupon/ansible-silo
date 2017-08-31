@@ -29,6 +29,13 @@ Table of Contents
     - [Install ansible-silo](#install-ansible-silo)
     - [Updating](#updating)
     - [Extending runner script](#extending-runner-script)
+- [Configuration](#configuration)
+    - [List of configuration options](#list-of-configuration-options)
+        - [SILO_DEBUG](#silo_debug)
+        - [SILO_DOCKER_CMD](#silo_docker_cmd)
+        - [SILO_PATH](#silo_path)
+        - [SILO_VERSION](#silo_version)
+        - [SILO_VOLUME](#silo_volume)
 - [Usage](#usage)
     - [`--version` Show current Silo & Ansible version](#--version-show-current-silo--ansible-version)
     - [`--switch` Switch to any Ansible version](#--switch-switch-to-any-ansible-version)
@@ -243,6 +250,52 @@ Functions matching `_silo_*` will not be included in bundle mode. Functions matc
 | silo_*       | ✓          | ✓      |
 | \_silo\_*    | ✓          | ✗      |
 | image_name_* | ✗          | ✓      |
+
+
+## Configuration
+
+Ansible Silo can be configured per bash environment variables. Variables will also be picked up from three files (bash):
+
+* `./.ansible-silo` (in current working directory)
+* `~/.ansible-silo` (in users home directory)
+* `/etc/ansible/ansible-silo/ansible-silo`
+
+For Silo bundles also the following files will be loaded:
+
+* `./.bundle-name`
+* `~/.bundle-name`
+* `/etc/ansible/ansible-silo/bundle-name`
+
+This enables the user to define custom behavior per playbook location, per user and globally.
+
+### List of configuration options
+
+#### SILO_DEBUG
+
+If defined, enables debug mode. In debug mode Silo will list all `SILO_*` env vars and the Docker command which is executed to start the Silo container.
+
+
+#### SILO_DOCKER_CMD
+
+The base Docker command that will be executed. This simply defaults to `docker`.
+
+
+#### SILO_PATH
+
+Can be used to specify a custom location where Silo starter scripts will be installed during [update](#update).
+
+```bash
+SILO_PATH=/tmp/ansible ansible-silo --update
+```
+
+#### SILO_VERSION
+
+If set to a valid Silo version, that specific version of Silo container will be started. This does not change the installed `ansible-silo` command. Most functionality though is inside the container and not the starter script.
+
+
+#### SILO_VOLUME
+
+Specifies the name of the used Silo volume. This defaults to the name of the current user.
 
 
 ## Usage
