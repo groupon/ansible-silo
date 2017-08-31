@@ -183,7 +183,7 @@ You need to be on a system where you have installed Docker (minimum version 1.9)
 To install the `ansible-silo` executable along with ansible replacements run:
 
 ```bash
-docker run -it --rm -v "$HOME/bin:/silo_install_path" -i grpn/ansible-silo:latest --install
+docker run --interactive --tty --rm --volume "$HOME/bin:/silo_install_path" grpn/ansible-silo:latest --install
 ```
 
 This command mounts your `~/bin` directory so Silo can place its executables there. Select any location you like but make sure it is in your `$PATH`.
@@ -191,7 +191,7 @@ This command mounts your `~/bin` directory so Silo can place its executables the
 To install `ansibe-silo` for all users you can mount `/usr/local/bin`:
 
 ```bash
-docker run -it --rm -v "/usr/local/bin:/silo_install_path" -i grpn/ansible-silo:latest --install
+docker run --interactive --tty --rm --volume "/usr/local/bin:/silo_install_path" grpn/ansible-silo:latest --install
 ```
 
 ### Updating
@@ -236,7 +236,7 @@ For instance, if you need to mount an additional volume, you can add a method li
 silo_custom_volume_mounting() {
   local VOLUME_PATH="$HOME/some/path"
   if [[ -n "$VOLUME_PATH" && -d "$VOLUME_PATH" ]]; then
-    echo "-v '$(cd "$VOLUME_PATH" && pwd -P):/tmp/custom-volume'"
+    echo "--volume '$(cd "$VOLUME_PATH" && pwd -P):/tmp/custom-volume'"
   fi
 }
 ```
@@ -435,7 +435,7 @@ Store your playbooks, roles, inventory, `ansible.cfg` etc. inside `foo/playbooks
 The `foo` package also inherits most of silos functionality. To install an executable for the bundle run:
 
 ```bash
-docker run -it --rm -v "$HOME/bin:/silo_install_path" -i foo:latest --install
+docker run --interactive --tty --rm --volume "$HOME/bin:/silo_install_path" foo:latest --install
 ```
 
 Now you can simply call `foo` to run your playbooks.
