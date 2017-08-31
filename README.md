@@ -474,6 +474,12 @@ tests/style
 
 Be aware, tests modify the Ansible version of your default ansible-silo volume!
 
+We also validate URLs inside all files for positive results via [awesome_bot] (1.17.1). After installing `awesome_bot` call:
+
+```bash
+tests/links
+```
+
 
 ### Base image
 
@@ -521,5 +527,6 @@ To ensure we are never forced to update any dependency when we build the silo do
   [ansible-lint]: https://github.com/willthames/ansible-lint
   [bats]: https://github.com/sstephenson/bats
   [shellcheck]: https://github.com/koalaman/shellcheck
+  [awesome_bot]: https://github.com/dkhamsing/awesome_bot
   [privileged mode]: https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities
   [SemVer]: http://semver.org/
