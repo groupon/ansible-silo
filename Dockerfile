@@ -28,16 +28,20 @@
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-FROM grpn/ansible-silo-base:1.2.2
+FROM grpn/ansible-silo-base:2.0.0
 
-ENV ANSIBLE_VERSION v2.3.1.0-1
+ENV ANSIBLE_VERSION v2.3.2.0-1
 ENV SILO_IMAGE grpn/ansible-silo
 
 ADD silo /silo/
 
+# Install pip modules from requirements file
+ADD pip/requirements /tmp/pip-requirements.txt
+RUN pip install -r /tmp/pip-requirements.txt
+
 # Installing Ansible from source
-RUN git clone --progress git://github.com/ansible/ansible.git /silo/ansible 2>&1 &&\
-    cd /silo/ansible &&\
+RUN git clone --progress git://github.com/ansible/ansible.git /silo/userspace/ansible 2>&1 &&\
+    cd /silo/userspace/ansible &&\
     git checkout --force ${ANSIBLE_VERSION} 2>&1 &&\
     git submodule update --init --recursive 2>&1 &&\
     git clone --progress https://github.com/willthames/ansible-lint /silo/ansible-lint 2>&1  &&\
@@ -49,7 +53,13 @@ RUN git clone --progress git://github.com/ansible/ansible.git /silo/ansible 2>&1
     echo 'export PS1="[ansible-silo $SILO_VERSION|\w]\\$ "' > /home/user/.bashrc &&\
 
 # Set default control path in ssh config
-    echo "ControlPath  /home/user/.ssh/tmp/%h_%p_%r" > /etc/ssh/ssh_config
+    echo "ControlPath  /home/user/.ssh/tmp/%h_%p_%r" > /etc/ssh/ssh_config &&\
+
+# User pip installs should be written to custom location
+    echo "install-option = --install-scripts=/silo/userspace/bin --prefix=/silo/userspace" >> /etc/pip.conf &&\
+
+# Grant write access to the userspace sub directories
+   chmod 777 /silo/userspace/bin /silo/userspace/lib
 
 ENTRYPOINT ["/silo/entrypoint"]
 

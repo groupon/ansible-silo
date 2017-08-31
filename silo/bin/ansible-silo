@@ -44,7 +44,26 @@
 #   None
 #######################################
 silo() {
-  local SILO_IMAGE SILO_IMAGE_SHORT command
+  local SILO_IMAGE SILO_IMAGE_SHORT command var
+
+  # If an .ansible-silo file exists in the current working directory, load it
+  if [[ -f ".ansible-silo" ]]; then
+    # shellcheck disable=SC1091
+    source ".ansible-silo"
+  fi
+
+  # SILO_DEBUG can be set by the user to enable debug output
+  if [[ ! -z "${SILO_DEBUG}" ]]; then
+    # Output all defined evn vars starting with SILO_
+    echo "SILO vars:"
+    # shellcheck disable=SC2030
+    for var in $( (set -o posix; set) | grep = | cut -d '=' -f 1 ); do
+      if [[ "${var}" == "SILO_"* ]]; then
+        echo " - ${var}=${!var}"
+      fi
+    done
+    echo ""
+  fi
 
   # SILO_IMAGE is replaced with the value defined in Dockerfile
   SILO_IMAGE="{{ SILO_IMAGE }}"
@@ -69,19 +88,23 @@ silo() {
     docker run -it --rm -v "${SILO_PATH}:/silo_install_path" \
       -i grpn/ansible-silo:latest --install
     exit
+  elif [[ "$1" == "--reset" ]]; then
+    docker volume rm "silo.${SILO_VOLUME:-$(whoami)}"
+    exit
   fi
 
   tool="$(basename "$0")"
   # If this is one of the symlinks, e.g. ansible-playbook
   if [[ "${tool}" != "ansible-silo" ]]; then
     # Prepend it to the args
+    # shellcheck disable=SC2031
     set -- "${tool}" "$@"
   fi
 
   runner_path="/tmp/${SILO_IMAGE_SHORT}-runner-${SILO_VERSION}"
   if [[ -f "${runner_path}" ]]; then
     if [[ ! -z "${SILO_DEBUG}" ]]; then
-      echo "Runner file already exists."
+      echo -e "Runner file already exists.\n"
     fi
     command="${runner_path}"
     for var in "$@"; do
@@ -89,15 +112,14 @@ silo() {
     done
   else
     if [[ ! -z "${SILO_DEBUG}" ]]; then
-      echo "Requesting runner creation. Starting container with --run."
+      echo -e "Requesting runner creation. Starting container with --run.\n"
     fi
     command="$(docker run -it --rm -v "/tmp:/tmp" -i \
       "${SILO_IMAGE}:${SILO_VERSION}" --run "$@")"
   fi
 
-  # SILO_DEBUG can be set by the user to enable debug output
   if [[ ! -z "${SILO_DEBUG}" ]]; then
-    echo "Executing: ${command}"
+    echo -e "Executing: ${command}\n"
   fi
   bash -c "$(echo "${command}" | tr -d "\r")"
   exit

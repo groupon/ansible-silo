@@ -6,7 +6,7 @@
 # Functions in this file will be available in the runner scripts of silo AND
 # child images of silo. Functions starting with _silo_* will be executed and
 # their output will be appended to the docker starting command of silo.
-# Functions starting with  silo_* will be executed and their output will be
+# Functions starting with silo_* will be executed and their output will be
 # appended to the docker starting command of silo and its child images.
 #
 # The file ~/.ansible-silo will be sourced, so the user additionally can define
@@ -130,7 +130,7 @@ silo_ssh_key_forwarding() {
 #   --hostname option
 #######################################
 silo_hostname() {
-    echo "--hostname \"silo.$(hostname -f)\""
+  echo "--hostname \"silo.$(hostname -f)\""
 }
 
 #######################################
@@ -149,7 +149,8 @@ _silo_var_forwarding() {
   var_filter=("_" "_fzf_"* "BASH"* "command" "EDITOR" "func" "FUNCNAME" "FZF"*
     "GROUPS" "HOME" "HOSTNAME" "i" "ID" "IFS" "LOGNAME" "LS_COLORS" "MACHTYPE"
     "OLDPWD" "OSTYPE" "PATH" "SILO_"* "PWD" "return" "SHELL" "SSH_"* "TERM"
-    "TMPDIR" "UID" "USER" "var" "var_filter" "var_filter_item" "XDG_"*)
+    "TMPDIR" "UID" "USER" "var" "var_filter" "var_filter_item" "XDG_"* "EX_"*
+    "GIT_"*)
   for var in $( (set -o posix; set) | grep = | cut -d '=' -f 1 ); do
     for var_filter_item in "${var_filter[@]}"; do
       # shellcheck disable=SC2053
@@ -172,24 +173,20 @@ _silo_var_forwarding() {
 #   --env and --volume options for mounting the silo volume
 #######################################
 _silo_volume() {
-  local whoami return=""
+  local return=""
 
   # SILO_VOLUME can be set by the user to point to a specific volume where
   # ansible was/will be installed. It defaults to a volume named after the
   # user.
-  if [[ -z "${SILO_VOLUME}" ]]; then
-    whoami="$(whoami)"
-    SILO_VOLUME=silo."${whoami}"
-  else
-    SILO_VOLUME=silo."${SILO_VOLUME}"
-  fi
+  SILO_VOLUME="silo.${SILO_VOLUME:-$(whoami)}"
+
   if ! docker volume inspect "${SILO_VOLUME}" > /dev/null 2>&1; then
     if ! docker volume create --name "${SILO_VOLUME}" > /dev/null; then
       echo "Failed to create docker volume ${SILO_VOLUME}" >&2
       exit "${EX_DVOLUME}"
     fi
   fi
-  return+="--volume \"${SILO_VOLUME}:/silo/ansible\" "
+  return+="--volume \"${SILO_VOLUME}:/silo/userspace\" "
   return+="--env \"SILO_VOLUME=${SILO_VOLUME}\""
   echo "${return}"
 }
@@ -247,6 +244,34 @@ silo_mount_logfile() {
   fi
 }
 
+#######################################
+# Mounts docker socket
+# Globals:
+#   SILO_NO_PRIVILEGED
+# Arguments:
+#   None
+# Returns:
+#   --volume and --privileged options for mounting docker socket
+#######################################
+silo_mount_docker_socket() {
+  local docker_socket check_paths
+
+  # SILO_NO_PRIVILEGED may be set by the user to prevent the container to
+  # run in privileged mode. As a result this disables forwarding of the docker
+  # socket
+  if [[ ! -z "${SILO_NO_PRIVILEGED}" ]]; then
+    return
+  fi
+
+  check_paths=("/var/run/docker.sock" "/private/var/run/docker.sock")
+  for docker_socket in "${check_paths[@]}"; do
+    if [[ -S "/var/run/docker.sock" ]]; then
+      echo "--volume ${docker_socket}:/var/run/docker.sock --privileged"
+      break
+    fi
+  done
+}
+
 # Load any potential silo extensions
 # The files ~/.ansible-silo and /etc/ansible/ansible-silo/ansible-silo are
 # going to be loaded in any case. If the container is a child of silo,
@@ -268,4 +293,10 @@ fi
 if [[ -f "${HOME}/.${SILO_IMAGE_SHORT}" ]]; then
   # shellcheck disable=SC1090
   source "${HOME}/.${SILO_IMAGE_SHORT}"
+fi
+
+# If an .ansible-silo file exists in the current working directory, load it
+if [[ -f ".${SILO_IMAGE_SHORT}" ]]; then
+  # shellcheck disable=SC1090
+  source ".${SILO_IMAGE_SHORT}"
 fi

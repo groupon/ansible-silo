@@ -93,21 +93,25 @@ test_silo_bundle_function() {
   # home directory
   result2=$("$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible" -i localhost, -c local \
     -m setup all | grep ANSIBLE_HOME)
-  [[ "${result2}" =~ /silo/ansible ]]
+  [[ "${result2}" =~ /silo/userspace/ansible ]]
 }
 
-#@test "Run specific ansible-silo version" {
-#
-#  # Define which Silo version to use
-#  export SILO_VERSION="1.2.1"
-#
-#  # Get info from Silo and check it is the expected version
-#  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --info
-#  [[ "${lines[0]}" == 'Silo 1.2.1'* ]]
-#
-#  # Cleanup
-#  unset SILO_VERSION
-#}
+@test "Run specific ansible-silo version" {
+
+  # Define which Silo version to use
+  export SILO_VERSION="1.3.3"
+  export SILO_VOLUME="silo_1.3.3"
+
+  # Get info from Silo and check it is the expected version
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --version
+  [[ "${lines[-4]}" == 'ansible-silo 1.3.3'* ]]
+
+  # Cleanup
+  unset SILO_VERSION
+  run ansible-silo --reset
+  [[ "${status}" -eq 0 ]]
+  unset SILO_VOLUME
+}
 
 @test "Fail when no options were provided" {
   run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo"
@@ -173,11 +177,31 @@ test_silo_bundle_function() {
   [[ "${status}" -eq 0 ]]
   [[ "${lines[-1]}" == *$'ansible installed on volume silo.test'* ]]
 
-  # Delete the test volume through Docker API
-  run docker volume rm "silo.test"
-
   # Reset volume
   unset SILO_VOLUME
+}
+
+@test "Reset volume" {
+
+  # Set volume used by silo
+  export SILO_VOLUME="test"
+
+  # Delete the test volume
+  run ansible-silo --reset
+  [[ "${status}" -eq 0 ]]
+  [[ "${lines[-1]}" == silo.test* ]]
+
+  # Reset volume, will use default volume
+  unset SILO_VOLUME
+
+  # Delete the default volume
+  run ansible-silo --reset
+  [[ "${status}" -eq 0 ]]
+  [[ "${lines[-1]}" == silo.$(whoami)* ]]
+
+  # Switch again to a specific version, so further tests do not run with the latest version
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --switch v2.3.2.0-1
+  [[ "${status}" -eq 0 ]]
 }
 
 @test "Switch to Ansible 1.9.6 on a separate volume" {
@@ -194,16 +218,42 @@ test_silo_bundle_function() {
   [[ "${status}" -eq 0 ]]
   [[ "${lines[0]}" =~ ^ansible[[:space:]]1\.9\.6.*detached[[:space:]]HEAD ]]
 
+  # Delete the test volume
+  run ansible-silo --reset
+  [[ "${status}" -eq 0 ]]
+
   # Reset volume, will use default volume
   unset SILO_VOLUME
 
-  # Confirm silo on default volume is still 2.3.0.0
+  # Confirm silo on default volume is still 2.3.2.0
   run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible" --version
   [[ "${status}" -eq 0 ]]
-  [[ "${lines[0]}" =~ ^ansible[[:space:]]2\.3\.0\.0.*detached[[:space:]]HEAD ]]
+  [[ "${lines[0]}" =~ ^ansible[[:space:]]2\.3\.2\.0.*detached[[:space:]]HEAD ]]
+}
 
-  # Delete the test volume through Docker API
-  run docker volume rm "silo.test.1.9.6"
+@test "Docker socket forwarding" {
+
+  # Disable
+  export SILO_NO_PRIVILEGED=true
+
+  # Make sure the socket does not exist
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --shell\
+    [[ -S /var/run/docker.sock ]]
+  [[ "${status}" -eq 1 ]]
+
+  # Enable
+  unset SILO_NO_PRIVILEGED
+
+  # Make sure the socket does exist
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --shell\
+    [[ -S /var/run/docker.sock ]]
+  [[ "${status}" -eq 0 ]]
+}
+
+@test "Docker implementation" {
+  cd "${BATS_TEST_DIRNAME}/playbooks"
+  run ansible-playbook -i inventory docker.yml --tags create
+  [[ "${status}" -eq 0 ]]
 }
 
 @test "Silo containers are not persistent" {
@@ -228,7 +278,7 @@ test_silo_bundle_function() {
   [[ "${status}" -eq 0 ]]
 }
 
-@test "Ansible command through ssh" {
+@test "Ansible command through ssh w/ key authentication" {
 
   # Delete the test file, if it exists
   rm -f /tmp/silo.test
@@ -244,6 +294,22 @@ test_silo_bundle_function() {
   # Cleanup
   unset ANSIBLE_HOST_KEY_CHECKING
   rm -f /tmp/silo.test
+}
+
+@test "Ansible command through ssh w/ password authentication" {
+  cd "${BATS_TEST_DIRNAME}/playbooks"
+  run ansible-playbook -i inventory docker.yml --tags test_ssh
+  [[ "${status}" -eq 0 ]]
+}
+
+@test "Ansible command through docker socket connection" {
+  cd "${BATS_TEST_DIRNAME}/playbooks"
+  run ansible-playbook -i inventory docker.yml --tags test_socket
+  [[ "${status}" -eq 0 ]]
+
+  # Cleanup: we no longer need the test container
+  run ansible-playbook -i inventory docker.yml --tags create
+  [[ "${status}" -eq 0 ]]
 }
 
 @test "User name/id forwarding" {
@@ -424,8 +490,10 @@ test_silo_bundle_function() {
   export SILO_DEBUG=true
   run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible" --version
   [[ "${status}" -eq 0 ]]
-  [[ "${lines[1]}" =~ ^Executing:[[:space:]]/tmp/ansible-silo-runner-.*[[:space:]]\"ansible\"[[:space:]]\"--version\" ]]
-  [[ "${lines[2]}" =~ ^Executing:[[:space:]].*/docker[[:space:]]run ]]
+  [[ "${lines[0]}" == "SILO vars:" ]]
+  [[ "${lines[1]}" == " - SILO_DEBUG=true" ]]
+  [[ "${lines[-7]}" =~ ^Executing:[[:space:]]/tmp/ansible-silo-runner-.*[[:space:]]\"ansible\"[[:space:]]\"--version\" ]]
+  [[ "${lines[-6]}" =~ ^Executing:[[:space:]].*/docker[[:space:]]run ]]
   unset SILO_DEBUG
 }
 
@@ -473,4 +541,24 @@ test_silo_bundle_function() {
 
   # Cleanup
   rm -f "$BATS_ANSIBLE_SILO_LOGFILE"
+}
+
+@test "Install pip module" {
+
+  # Install a module through pip
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --shell pip install pbr==3.1.1
+  [[ "${status}" -eq 0 ]]
+
+  # Make sure we can import the just installed module
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --shell "python -c 'import pbr; print pbr'"
+  [[ "${status}" -eq 0 ]]
+  [[ "${lines[-1]}" == *$"<module 'pbr' from '/silo/userspace/lib/python2.7/site-packages/pbr/__init__.py"* ]]
+
+  # pbr also installs an executable. Make sure we can call it
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --shell pbr -h
+  [[ "${status}" -eq 0 ]]
+
+  # Uninstall pbr
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --shell pip uninstall -y pbr
+  [[ "${status}" -eq 0 ]]
 }

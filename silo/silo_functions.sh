@@ -42,21 +42,51 @@ readonly SILO_IMAGE_SHORT="${SILO_IMAGE##*/}"
 # shellcheck disable=SC1091
 source /silo/exit_codes.sh
 
+
+#######################################
+# Validates volume content and attempts to fix
+# Globals:
+#   None
+# Arguments:
+#   None
+# Returns:
+#   None
+#######################################
+check_compatibility() {
+  # If userspace directly contains ansible, this is a volume mounted from Silo
+  # 1.x.x. We convert it to the new directory layout, introduced with Silo
+  # 2.0.0
+  if [[ -d "/silo/userspace/.git" ]] && grep -q "github.com/ansible/ansible" \
+    /silo/userspace/.git/config; then
+    echo "Found old volume layout. Converted directory structure."
+    cp -R /silo/userspace /tmp/ansible
+    cd /silo/userspace || exit
+    # shellcheck disable=SC2046
+    rm -rf $(ls -A /silo/userspace)
+    mkdir bin lib
+    chmod 777 bin lib
+    mv /tmp/ansible /silo/userspace/ansible
+  fi
+}
+
 #######################################
 # Sets up Ansible from cloned source and put logfile into place
 # Globals:
 #   ANSIBLE_LOG_PATH
+#   PYTHONPATH
 # Arguments:
 #   None
 # Returns:
 #   None
 #######################################
 prepare_ansible() {
-  local log_path
-
-  chmod +x /silo/ansible/hacking/env-setup
+  local log_path user_modules
+  chmod +x /silo/userspace/ansible/hacking/env-setup
   # shellcheck disable=SC1091
-  source /silo/ansible/hacking/env-setup silent
+  source /silo/userspace/ansible/hacking/env-setup silent
+  user_modules="/silo/userspace/lib/python2.7/site-packages"
+  # PYTHONPATH defines the search path for Python module files
+  export PYTHONPATH="${user_modules}:${PYTHONPATH}"
 
   # If ANSIBLE_LOG_PATH was already set by the user.
   # ANSIBLE_LOG_PATH is used by Ansible to define log file location.
@@ -192,9 +222,22 @@ prepare_user() {
 #######################################
 prepare_ansible_lint() {
   # PYTHONPATH defines the search path for Python module files
-  export PYTHONPATH="${PYTHONPATH}:/silo/ansible-lint/lib"
+  export PYTHONPATH="/silo/ansible-lint/lib:${PYTHONPATH}"
   ln -fs /silo/ansible-lint/lib/ansiblelint/main/__init__.py \
-    /silo/ansible/bin/ansible-lint
+    /silo/userspace/bin/ansible-lint
+}
+
+#######################################
+# Sets up user environemnt
+# Globals:
+#   PATH
+# Arguments:
+#   None
+# Returns:
+#   None
+#######################################
+prepare_environment() {
+  export PATH="/silo/userspace/bin:${PATH}"
 }
 
 #######################################
@@ -271,7 +314,7 @@ get_ansible_version() {
 #   None
 #######################################
 switch_ansible_version() {
-  cd /silo/ansible || exit
+  cd /silo/userspace/ansible || exit
   find . -name "*.pyc" -delete
   rm -rf v2/ansible/modules/core v2/ansible/modules/extras \
     lib/ansible/modules/core lib/ansible/modules/extras
@@ -416,6 +459,8 @@ render_template() {
 get_silo_info() {
   prepare_user
   prepare_ansible
+  prepare_environment
+  prepare_ansible_lint
 
   # If this is a bundle, a version might have been specified
   if [[ ! -z "${BUNDLE_VERSION}" ]]; then
@@ -431,8 +476,9 @@ get_silo_info() {
   echo "ansible $(get_ansible_version)"
 
   # Show ansible-lint version
-  prepare_ansible_lint
-  ansible-lint --version
+  if [[ "${SILO_IMAGE_SHORT}" == "ansible-silo" ]]; then
+    ansible-lint --version
+  fi
 
   # If Ansible was installed on a Docker volume, show the volume name/location.
   # SILO_VOLUME can be set by the user to point to a specific volume where
@@ -495,10 +541,11 @@ bundle_create() {
 #   None
 #######################################
 create_runner() {
-  local command runner_path var
+  local command runner_path var version
 
   render_template "/silo/runner" "/runner"
-  runner_path="/tmp/${SILO_IMAGE_SHORT}-runner-${SILO_VERSION}"
+  version="${BUNDLE_VERSION:-${SILO_VERSION}}"
+  runner_path="/tmp/${SILO_IMAGE_SHORT}-runner-${version}"
   if [[ ! -f "${runner_path}" ]]; then
     mv "/runner" "${runner_path}"
     chmod +x "${runner_path}"

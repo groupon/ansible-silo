@@ -47,7 +47,7 @@ shellcheck ${bash_files}
 result=$((result +$?))
 
 # shellcheck disable=SC2086
-long_lines=$(grep --color=always '.\{80\}' ${bash_files})
+long_lines=$(grep -n --color=always '.\{80\}' ${bash_files})
 
 if [[ -n ${long_lines} ]]; then
   echo "${long_lines}"

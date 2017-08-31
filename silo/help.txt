@@ -9,6 +9,8 @@ Options:
   --switch              switches to the specified Ansible version. You need to
                         provide the git tag or branch you want to switch to
   --shell               opens a bash shell inside the running Silo container
+  --reset               deletes the default silo volume or the volume
+                        specified per SILO_VOLUME
   --bundle              creates a new Silo bundle
   --update              updates Silo to the latest version. This does not
                         change the configured Ansible version

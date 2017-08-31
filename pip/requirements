@@ -1,0 +1,12 @@
+docker==2.5.1
+docker-compose==1.15
+docker-py==1.10.6
+ecdsa==0.13
+httplib2==0.9.2
+jinja2==2.8
+markupsafe==0.23
+netaddr==0.7.19
+paramiko==1.16.0
+pexpect==4.2.1
+ptyprocess==0.5.2
+pyyaml==3.11

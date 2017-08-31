@@ -1,0 +1,8 @@
+---
+
+rules:
+# We ignore missing -virtual options, as this currently is not possible together
+# with version pinning: https://github.com/gliderlabs/docker-alpine/issues/205
+  apkadd-missing-virtual: off
+
+...

@@ -50,6 +50,7 @@ case "$1" in
   "--shell")
     prepare_user
     prepare_ansible
+    prepare_environment
     prepare_ansible_lint
     shift
     if [[ $# -eq 0 ]]; then
@@ -61,7 +62,8 @@ case "$1" in
   *)
     prepare_user
     prepare_ansible
+    prepare_environment
     cd /home/user/playbooks || exit
-    run_as_user_with_SSH "/silo/ansible/bin/ansible-playbook" "$@"
+    run_as_user_with_SSH "/silo/userspace/ansible/bin/ansible-playbook" "$@"
     ;;
 esac

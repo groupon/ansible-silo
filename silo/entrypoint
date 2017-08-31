@@ -35,6 +35,8 @@
 # shellcheck disable=SC1091
 source /silo/silo_functions.sh
 
+check_compatibility
+
 case "$1" in
   "--version")
     get_silo_info
@@ -53,6 +55,7 @@ case "$1" in
   "--shell")
     prepare_user
     prepare_ansible
+    prepare_environment
     prepare_ansible_lint
     shift
     if [[ $# -eq 0 ]]; then
@@ -73,12 +76,17 @@ case "$1" in
   *)
     prepare_user
     prepare_ansible
+    prepare_environment
     prepare_ansible_lint
     cd /home/user/playbooks || exit
-    if [[ -x "/silo/ansible/bin/$1" ]]; then
+    if [[ -x "/silo/userspace/ansible/bin/$1" ]]; then
       ansible_command="$1"
       shift
       run_as_user_with_SSH "${ansible_command}" "$@"
+    elif [[ -x "/silo/userspace/bin/$1" ]]; then
+      command="$1"
+      shift
+      run_as_user_with_SSH "${command}" "$@"
     else
       echo "Unknown option: $1" >&2
       cat /silo/help.txt

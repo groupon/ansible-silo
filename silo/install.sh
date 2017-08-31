@@ -39,13 +39,15 @@ if [[ ! -d /silo_install_path ]]; then
   exit "${EX_CANTCREAT}"
 fi
 
+echo "Installing from ${SILO_IMAGE_SHORT} ${BUNDLE_VERSION:-${SILO_VERSION}}:"
+
 for src in /silo/bin/*; do
   file="$(basename "${src}")"
   target="/silo_install_path/${file}"
   if [[ -f "${target}" ]]; then
-    echo "${file} will be updated"
+    echo " - ${file} will be updated"
   else
-    echo "${file} will be created"
+    echo " - ${file} will be created"
   fi
   if [[ -L "${src}" ]]; then
     cp -a "${src}" "${target}"
