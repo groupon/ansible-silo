@@ -40,7 +40,7 @@ Table of Contents
     - [`--version` Show current Silo & Ansible version](#--version-show-current-silo--ansible-version)
     - [`--switch` Switch to any Ansible version](#--switch-switch-to-any-ansible-version)
     - [`--reset` Resets a Silo volume](#--reset-resets-a-silo-volume)
-    - [`--shell` Log into container](#--shell-log-into-container)
+    - [`--shell` Log into container / execute command in container](#--shell-log-into-container--execute-command-in-container)
     - [Run Silo with different Ansible versions](#run-silo-with-different-ansible-versions)
     - [Using Ansible](#using-ansible)
         - [Examples](#examples)
@@ -340,13 +340,27 @@ $ SILO_VOLUME="foo" ansible-silo --reset
 ```
 
 
-### `--shell` Log into container
+### `--shell` Log into container / execute command in container
 
-You can log into the running Silo container by calling Silo with the `--shell` option. This feature is implemented for debugging purpose.
+You can log into the running Silo container by calling Silo with the `--shell` option. This can be used to install custom software in a Silo volume.
 
 ```bash
 $ ansible-silo --shell
 [ansible-silo 2.0.0|~/playbooks]$
+```
+
+All arguments after the `--shell` option will be directly executed.
+
+```bash
+$ ansible-silo --shell pip install pbr==3.1.1
+/usr/lib/python2.7/site-packages/pip/commands/install.py:194: UserWarning: Disabling all use of wheels due to the use of --build-options / --global-options / --install-options.
+  cmdoptions.check_install_build_global(options)
+Collecting pbr==3.1.1
+  Downloading pbr-3.1.1.tar.gz (102kB)
+    100% |████████████████████████████████| 112kB 7.9MB/s
+Installing collected packages: pbr
+  Running setup.py install for pbr ... done
+Successfully installed pbr
 ```
 
 
