@@ -29,6 +29,7 @@ Table of Contents
     - [Install ansible-silo](#install-ansible-silo)
     - [Updating](#updating)
     - [Extending runner script](#extending-runner-script)
+    - [Installing custom software](#installing-custom-software)
 - [Configuration](#configuration)
     - [List of configuration options](#list-of-configuration-options)
         - [SILO_DEBUG](#silo_debug)
@@ -252,6 +253,30 @@ Functions matching `_silo_*` will not be included in bundle mode. Functions matc
 | image_name_* | ✗          | ✓      |
 
 
+### Installing custom software
+
+You can install custom software in any Silo volume. The mountpoint for Silo volumes is `/silo/userspace/`.
+
+Inside any volume you will have a `lib` and a `bin` directory.
+
+pip is pre-configured to install packages into the volume:
+
+```bash
+$ ansible-silo --shell pip install pbr==3.1.1
+/usr/lib/python2.7/site-packages/pip/commands/install.py:194: UserWarning: Disabling all use of wheels due to the use of --build-options / --global-options / --install-options.
+  cmdoptions.check_install_build_global(options)
+Collecting pbr==3.1.1
+  Downloading pbr-3.1.1.tar.gz (102kB)
+    100% |████████████████████████████████| 112kB 7.9MB/s
+Installing collected packages: pbr
+  Running setup.py install for pbr ... done
+Successfully installed pbr
+
+$ ansible-silo --shell which pbr
+/silo/userspace/bin/pbr
+```
+
+
 ## Configuration
 
 Ansible Silo can be configured per bash environment variables. Variables will also be picked up from three files (bash):
@@ -472,7 +497,7 @@ If anything goes wrong, try to reset your Silo volume.
 ansible-silo --reset
 ```
 
-You can see the actual generated and executed `docker` run` commands by setting `SILO_DEBUG`:
+You can see the actual generated and executed `docker run` commands by setting `SILO_DEBUG`:
 
 ```bash
 SILO_DEBUG=true ansible --shell exit
