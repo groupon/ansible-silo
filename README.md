@@ -44,6 +44,7 @@ Table of Contents
 - [Troubleshooting](#troubleshooting)
 - [Versioning](#versioning)
 - [Version history](#version-history)
+    - [v2.0.0 (Aug 31, 2017)](#v200-aug-31-2017)
     - [v1.3.3 (July 20, 2017)](#v133-july-20-2017)
     - [v1.3.2 (July 17, 2017)](#v132-july-17-2017)
     - [v1.3.1 (July 13, 2017)](#v131-july-13-2017)
@@ -424,17 +425,41 @@ Ansible Silo uses [SemVer]. Since Ansible Silo is the promise of a stable enviro
 
 ## Version history
 
+### v2.0.0 (Aug 31, 2017)
+
+* Updates Alpine Linux from 3.4 to 3.6 - as well uses latest apk’s.
+* Adds support for pip module installation.
+* Introduces _userspace_ in volumes. Now custom software can be installed beside Ansible.
+* Loads `.ansible-silo` (or `.bundle-name`) file from current working directory.
+* Adds Docker support (Docker in Docker / DinD) - now can manage Docker containers and run Ansible against containers.
+* Silo container by default now is started in privileged mode.
+* Adds `sshpass` to support Ansible authentication via password.
+* Introduces new `--reset` option. Can be used instead of `docker volume rm`.
+* Improves output in installation routine - now shows image name and version from which software is installed.
+* Updates default Ansible version to 2.3.2.0.
+* Changes runner script file name - now is based on image-name and -version. This permits to skip runner script creation if it already exists, therefore improves container start time.
+* Prevents forwarding of Silo exit codes as env vars into the container.
+* Prevents forwarding of `GIT_*` env vars into the container to prevent potential git conflicts.
+* Debug output now lists all `SILO_*` env vars.
+* Fixes exit code declaration.
+* Fixes order in `PYTHONPATH`.
+* Removes `ansible-lint` from bundle `--version` output.
+* Adds `pyyaml`.
+
+
 ### v1.3.3 (July 20, 2017)
 
 * Converts starter scripts to symlinks
 * Fixes help message command name
-* Minor readme cleanup
+
 
 ### v1.3.2 (July 17, 2017)
 
 * Fixes version number in automated docker build
 
+
 ### v1.3.1 (July 13, 2017)
+
 
 * Initial public release
 
