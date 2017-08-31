@@ -247,7 +247,7 @@ silo_mount_logfile() {
 #######################################
 # Mounts docker socket
 # Globals:
-#   ANSIBLE_NO_PRIVILEGED
+#   SILO_NO_PRIVILEGED
 # Arguments:
 #   None
 # Returns:
@@ -256,10 +256,10 @@ silo_mount_logfile() {
 silo_mount_docker_socket() {
   local docker_socket check_paths
 
-  # ANSIBLE_NO_PRIVILEGED may be set by the user to prevent the container to
+  # SILO_NO_PRIVILEGED may be set by the user to prevent the container to
   # run in privileged mode. As a result this disables forwarding of the docker
   # socket
-  if [[ ! -z "${ANSIBLE_NO_PRIVILEGED}" ]]; then
+  if [[ ! -z "${SILO_NO_PRIVILEGED}" ]]; then
     return
   fi
 

@@ -34,6 +34,7 @@ Table of Contents
     - [List of configuration options](#list-of-configuration-options)
         - [SILO_DEBUG](#silo_debug)
         - [SILO_DOCKER_CMD](#silo_docker_cmd)
+        - [SILO_NO_PRIVILEGED](#silo_no_privileged)
         - [SILO_PATH](#silo_path)
         - [SILO_VERSION](#silo_version)
         - [SILO_VOLUME](#silo_volume)
@@ -322,6 +323,11 @@ The first _Executing_ line shows the location of the generated runner script. Th
 The base Docker command that will be executed. This simply defaults to `docker`.
 
 
+#### SILO_NO_PRIVILEGED
+
+Disables [privileged mode]. Consequently will not forward the Docker socket into the container and any interaction with Docker will not work.
+
+
 #### SILO_PATH
 
 Can be used to specify a custom location where Silo starter scripts will be installed during [update](#update).
@@ -473,7 +479,7 @@ ansible-silo ansible-lint some-playbook.yml
 
 ### Disabling privileged mode
 
-By default, Silo forwards the Docker socket into the container to be able to run Ansible against other containers. This requires the Silo container to run in [privileged mode]. To disable this you can define the environment variable `ANSIBLE_NO_PRIVILEGED`.
+By default, Silo forwards the Docker socket into the container to be able to run Ansible against other containers. This requires the Silo container to run in [privileged mode]. To disable this you can define the environment variable `SILO_NO_PRIVILEGED`.
 
 
 ## Bundle mode

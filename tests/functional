@@ -234,7 +234,7 @@ test_silo_bundle_function() {
 @test "Docker socket forwarding" {
 
   # Disable
-  export ANSIBLE_NO_PRIVILEGED=true
+  export SILO_NO_PRIVILEGED=true
 
   # Make sure the socket does not exist
   run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --shell\
@@ -242,7 +242,7 @@ test_silo_bundle_function() {
   [[ "${status}" -eq 1 ]]
 
   # Enable
-  unset ANSIBLE_NO_PRIVILEGED
+  unset SILO_NO_PRIVILEGED
 
   # Make sure the socket does exist
   run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --shell\
