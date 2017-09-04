@@ -54,7 +54,7 @@ if [[ -n ${long_lines} ]]; then
   result=$((result +1))
 fi
 
-dockerfilelint Dockerfile base.Dockerfile
+dockerfilelint Dockerfile base.Dockerfile docs/demo-source/example.com
 result=$((result +$?))
 
 exit ${result}

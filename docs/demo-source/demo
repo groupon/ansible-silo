@@ -1,0 +1,224 @@
+#!/usr/bin/env bash
+#
+# Script creates the asciinema demo
+#
+# Functions in this file will be available in the runner scripts of silo AND
+# child images of silo. Functions starting with _silo_* will be executed and
+# their output will be appended to the docker starting command of silo.
+# Functions starting with silo_* will be executed and their output will be
+# appended to the docker starting command of silo and its child images.
+#
+# The file ~/.ansible-silo will be sourced, so the user additionally can define
+# custom functions
+# For child images additionally the file ~/.$IMAGE_NAME will be sourced, e.g.
+# for an image named foo-bar the file ~/.foo-bar will be loaded and all
+# functions starting with silo_* and foo_bar* will be loaded
+#
+# Copyright (c) 2017, Groupon, Inc.
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#
+# Redistributions of source code must retain the above copyright notice,
+# this list of conditions and the following disclaimer.
+#
+# Redistributions in binary form must reproduce the above copyright
+# notice, this list of conditions and the following disclaimer in the
+# documentation and/or other materials provided with the distribution.
+#
+# Neither the name of GROUPON nor the names of its contributors may be
+# used to endorse or promote products derived from this software without
+# specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+# IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+# TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+# PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+# TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+# PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+# LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+# NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+WHOAMI="$(whoami)"
+WANNABE="some.user"
+
+MYID="$(id -u "${WHOAMI}")"
+NEWID="1234"
+
+HOST="$(hostname -f)"
+SPOOF="example.com"
+
+first=false
+
+
+info() {
+  if $first; then
+    echo -e "\n"
+  else
+    first=true
+  fi
+  sleep "$PROMPT_TIMEOUT"
+  printf "⭐ "
+  printf "%b $1\n" "${CYAN}" | pv -qL $((TYPE_SPEED+(-2 + RANDOM%5)));
+}
+
+pec() {
+  p "$1"
+  bash -c "${2:-$1} | sed -e 's/${WHOAMI}/${WANNABE}/g' \
+    -e 's/${MYID}/${NEWID}/g' -e 's/${HOST}/${SPOOF}/g'"
+}
+
+# shellcheck disable=SC1091
+. ./demo-magic
+TYPE_SPEED=20
+export DEMO_PROMPT="✏️  ${CYAN}"
+
+clear
+
+info "On this system neither Ansible nor Ansible Silo are yet installed:"
+pec "ansible --version || ansible-silo --version"
+
+info "Let's install Ansible Silo:"
+p "docker run --interactive --tty --rm --volume\
+ \"\$HOME/bin:/silo_install_path\" grpn/ansible-silo:2.0.0 --install"
+docker run --interactive --tty --rm --volume "$HOME/bin:/silo_install_path" \
+  grpn/ansible-silo:2.0.0 --install
+
+info "Now Ansible is installed in \$HOME/bin:"
+pec "which ansible"
+
+info "ansible points to ansible-silo:"
+pec "ls -hago \$HOME/bin/ansible*" "ls -hago --color=always $HOME/bin/ansible*"
+
+info "Confirm the installation worked:"
+pec "ansible-silo --version"
+
+info "Once installed, updating to the latest version is even simpler:"
+pec "ansible-silo --update"
+
+info "By default, Silo is running the latest version of Ansible:"
+pec "ansible --version"
+
+info "Let's switch to a different version:"
+pec "ansible-silo --switch v2.0.0.2-1"
+pec "ansible --version"
+
+info "Let's see what other versions are available:"
+p "ansible-silo --switch | more"
+expect <<- EOF
+  spawn -noecho bash -c "ansible-silo --switch | more"
+  expect {
+    -ex "--More--" { sleep 1.5; send -- " "; exp_continue }
+  }
+EOF
+
+info "The --switch option will list all stable releases. You as well can\
+ switch to any release candidate, the devel or any other git branch:"
+pec "ansible-silo --switch devel"
+pec "ansible --version"
+
+info "Let's reset the volume to get back to the latest stable release:"
+pec "ansible-silo --reset"
+pec "ansible --version"
+
+info "Now let's install another version on a separate volume:"
+pec "SILO_VOLUME=1.9.6 ansible-silo --switch v1.9.6-1"
+pec "SILO_VOLUME=1.9.6 ansible --version"
+
+info "The version on the default volume was not affected:"
+pec "ansible --version"
+
+info "Let's create an inventory file and run a ping against a remote host:"
+p "cat << EOF > inventory
+[all]
+example.com
+EOF"
+p "ansible -i inventory all -m ping"
+cat << EOF > inventory
+[all]
+example.com
+
+[all:vars]
+ansible_host=example.com
+ansible_connection=docker
+ansible_user=root
+EOF
+ansible -i inventory all -m ping
+
+info "Ansible runs in a contained environment. Let's compare Python versions:"
+pec "python --version"
+pec "ansible-silo --shell python --version"
+pec "ansible -i \"localhost,\" -c local all -a \"python --version\""
+
+info "Silo automatically mounts your current working directory. Even though\
+ Ansible is running in a Docker container, you can interact with your  \
+ current working dir:"
+pec "mkdir roles"
+pec "ansible-galaxy install --roles-path ./roles geerlingguy.apache"
+pec "tree roles"
+
+info "Let's create and run a very simple playbook:"
+pe "cat << EOF > playbook.yml
+---
+
+- name: Install Apache
+  hosts: all
+  become: yes
+  roles:
+    - geerlingguy.apache
+
+...
+EOF"
+pec "ansible-playbook -i inventory playbook.yml"
+
+info "Silo also includes the great ansible-lint tool:"
+pec "ansible-lint playbook.yml"
+
+info "You can create Silo bundles. A Silo bundle is a Docker image which is\
+ based on the ansible-silo image and packs all your ansible playbooks,\
+ roles, config, inventory, group-vars etc. Let's create a bundle:"
+pec "ansible-silo --bundle example"
+rm -rf "example/playbooks/galaxy"
+pec "tree example"
+
+info "Any of above files can be adapted to your needs. Inside the playbooks\
+ directory you can store all your playbooks, roles etc. See the README\
+ for detailed info. Let's move our playbook, roles and inventory in there:"
+pec "mv -ft example/playbooks playbook.yml roles inventory"
+
+info "Now let's build the bundle image:"
+pe "cd example"
+pec "./build 0.0.1"
+pec "docker images" 'docker images | grep "grpn\|REPOSITORY\|example "'
+
+info "The source directory is no longer needed to run the playbook. All\
+ files are packed inside the bundle:"
+pe "cd .."
+p "rm -rf example"
+
+info "The example image inherits most functionality from the ansible-silo\
+ image. One of the embedded features is the same install routine:"
+p "docker run --interactive --tty --rm --volume\
+ \"\$HOME/bin:/silo_install_path\" example:latest --install"
+docker run --interactive --tty --rm --volume "$HOME/bin:/silo_install_path" \
+  example:latest --install
+pec "which example"
+pec "example --version"
+
+info "Let's see what's inside the bundle:"
+pec "example --shell ls"
+
+info "And now let's run the bundle:"
+pec "example -i inventory playbook.yml"
+
+info "The command to run the Silo container is generated by Silo itself. To\
+ debug potential issues or understand what's happening under the hood \
+ you can enable debug mode:"
+pec "SILO_DEBUG=1 ansible --version"
+
+info "That's all. Thanks for watching!"
