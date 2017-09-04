@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+cols="$(tput cols)"
+lines="$(tput lines)"
+
+if [[ $lines -ne 39 ]] || [[ $cols -ne 143 ]]; then
+  echo "Resize window to 143 x 39"
+  exit 1
+fi
+
+# Cleanup old resources
+ansible-silo --reset
+docker kill example.com && docker rm example.com
+docker rmi -f alpine:3.6 \
+              grpn/ansible-silo:2.0.0 \
+              grpn/ansible-silo:latest \
+              grpn/ansible-silo-base:2.0.0 \
+              grpn/ansible-silo-base:latest \
+              example:0.0.1 \
+              example:latest
+
+rm -rf ~/bin/ansible* example ~/bin/example roles playbook.yml
+
+docker build -f example.com --tag "example.com" .
+docker run -d \
+   --name=example.com \
+   --cap-add=SYS_ADMIN \
+   -e "container=docker" \
+   -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
+   --tmpfs /run \
+   --tmpfs /run/lock \
+   example.com
+
+asciinema rec "../demo.json" -c "./demo -w1 -d" -w1

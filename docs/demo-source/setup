@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+magic_repo="https://raw.githubusercontent.com/paxtonhare/demo-magic"
+magic_version="13999b3873d930868df650e354c26a3f2917ed23"
+magic_file="${magic_repo}/${magic_version}/demo-magic.sh"
+
+sudo yum install asciinema pv tree expect
+
+echo "Fetching ${magic_file}"
+curl "${magic_file}" > ./demo-magic
+
+echo "Done"
