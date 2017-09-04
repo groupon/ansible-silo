@@ -39,4 +39,4 @@ awesome_bot --allow-redirect --allow-dupe --skip-save-results \
     -type f \
     -not \( -name '*.png' -o -name '*.jpg' \) \
     -print\
-  )
+  ) --white-list raw.githubusercontent.com/paxtonhare/demo-magic
