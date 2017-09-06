@@ -53,6 +53,7 @@ Table of Contents
 - [Troubleshooting](#troubleshooting)
 - [Versioning](#versioning)
 - [Version history](#version-history)
+    - [v2.0.1 (Sep 6, 2017)](#v201-sep-6-2017)
     - [v2.0.0 (Aug 31, 2017)](#v200-aug-31-2017)
     - [v1.3.3 (July 20, 2017)](#v133-july-20-2017)
     - [v1.3.2 (July 17, 2017)](#v132-july-17-2017)
@@ -529,6 +530,10 @@ You can see the actual generated and executed `docker run` commands and all defi
 Ansible Silo uses [SemVer]. Since Ansible Silo is the promise of a stable environment, we consider the smallest update of any contained dependency to be a potential breaking change and indicate such change by incrementing the major version number.
 
 ## Version history
+
+### v2.0.1 (Sep 6, 2017)
+
+* Adds [jmespath](https://pypi.python.org/pypi/jmespath) and therefore fixes support for [JSON Query Filter](http://docs.ansible.com/ansible/latest/playbooks_filters.html#json-query-filter)
 
 ### v2.0.0 (Aug 31, 2017)
 
