@@ -162,6 +162,7 @@ The following Python modules are installed via pip:
  - idna 2.5
  - ipaddress 1.0.18
  - jinja2 2.8
+ - jmespath 0.9.3
  - markupsafe 0.23
  - netaddr 0.7.19
  - paramiko 1.16.0
