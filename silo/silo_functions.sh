@@ -286,7 +286,7 @@ run_as_user_with_SSH() {
 #######################################
 get_ansible_tags() {
   echo "List of available tags:"
-  git tag --list | egrep -v "rc|alpha|beta" | sed 's/^/  /'
+  git tag --list | grep -vE "rc|alpha|beta" | sed 's/^/  /'
 }
 
 #######################################
