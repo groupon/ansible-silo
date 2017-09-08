@@ -2,7 +2,7 @@ Ansible Silo
 ============
 
 [![GitHub release](https://img.shields.io/github/tag/groupon/ansible-silo.svg?style=flat&colorB=4183C4&label=Latest%20release)](https://github.com/groupon/ansible-silo/releases/latest)
-[![Commits since v2.0.0](https://img.shields.io/github/commits-since/groupon/ansible-silo/v2.0.0.svg?style=flat&colorB=4183C4&label=Commits%20since%20v2.0.0)](https://github.com/groupon/ansible-silo/commits/master)
+[![Commits since v2.0.2](https://img.shields.io/github/commits-since/groupon/ansible-silo/v2.0.2.svg?style=flat&colorB=4183C4&label=Commits%20since%20v2.0.2)](https://github.com/groupon/ansible-silo/commits/master)
 [![GitHub Stars](https://img.shields.io/github/stars/groupon/ansible-silo.svg?style=flat&colorB=4183C4&label=GitHub%20Stars)](https://github.com/groupon/ansible-silo/stargazers)
 [![Build Status](https://img.shields.io/travis/groupon/ansible-silo.svg?style=flat&label=Tests)](https://travis-ci.org/groupon/ansible-silo)
 [![Docker Build Status](https://img.shields.io/docker/build/grpn/ansible-silo.svg?style=flat&label=Build)](https://hub.docker.com/r/grpn/ansible-silo/builds/)
@@ -53,6 +53,7 @@ Table of Contents
 - [Troubleshooting](#troubleshooting)
 - [Versioning](#versioning)
 - [Version history](#version-history)
+    - [v2.0.2 (Sep 8, 2017)](#v202-sep-8-2017)
     - [v2.0.1 (Sep 6, 2017)](#v201-sep-6-2017)
     - [v2.0.0 (Aug 31, 2017)](#v200-aug-31-2017)
     - [v1.3.3 (July 20, 2017)](#v133-july-20-2017)
@@ -313,9 +314,9 @@ Which will show something along these lines:
 
     Runner file already exists.
 
-    Executing: /tmp/ansible-silo-runner-2.0.0 "--shell" "exit"
+    Executing: /tmp/ansible-silo-runner-2.0.2 "--shell" "exit"
 
-    Executing: /usr/bin/docker run --interactive --tty --rm --volume "/home/daniel.schroeder/ansible-silo:/home/user/playbooks" --volume "silo.some.user:/silo/userspace" --env "SILO_VOLUME=silo.some.user" --hostname "silo.example.com" --volume /var/run/docker.sock:/var/run/docker.sock --privileged  --volume "/home/some.user/.ssh:/home/user/._ssh" --volume "/tmp/ssh-6k3r1bCpCi":"/tmp/ssh-6k3r1bCpCi" --env SSH_AUTH_SOCK --env USER_NAME="some.user" --env USER_ID="1234" "grpn/ansible-silo:2.0.0" "--shell" "exit"
+    Executing: /usr/bin/docker run --interactive --tty --rm --volume "/home/daniel.schroeder/ansible-silo:/home/user/playbooks" --volume "silo.some.user:/silo/userspace" --env "SILO_VOLUME=silo.some.user" --hostname "silo.example.com" --volume /var/run/docker.sock:/var/run/docker.sock --privileged  --volume "/home/some.user/.ssh:/home/user/._ssh" --volume "/tmp/ssh-6k3r1bCpCi":"/tmp/ssh-6k3r1bCpCi" --env SSH_AUTH_SOCK --env USER_NAME="some.user" --env USER_ID="1234" "grpn/ansible-silo:2.0.2" "--shell" "exit"
 
 The first _Executing_ line shows the location of the generated runner script. The last line shows the Docker command executed by the runner script.
 
@@ -354,7 +355,7 @@ Specifies the name of the used Silo volume. This defaults to the name of the cur
 
 ```bash
 $ ansible-silo --version
-ansible-silo 2.0.0
+ansible-silo 2.0.2
 ansible 2.3.2.0
 ansible-lint 3.4.13
 ansible installed on volume silo.some.user
@@ -396,7 +397,7 @@ You can log into the running Silo container by calling Silo with the `--shell` o
 
 ```bash
 $ ansible-silo --shell
-[ansible-silo 2.0.0|~/playbooks]$
+[ansible-silo 2.0.2|~/playbooks]$
 ```
 
 All arguments after the `--shell` option will be directly executed.
@@ -425,13 +426,13 @@ $ SILO_VOLUME="1.9.6" ansible-silo --switch v1.9.6-1
 Switched to Ansible 1.9.6
 
 $ ansible-silo --version
-ansible-silo 2.0.0
+ansible-silo 2.0.2
 ansible 2.3.2.0
 ansible-lint 3.4.13
 ansible installed on volume silo.1.9.6
 
 $ SILO_VOLUME="1.9.6" ansible-silo --version
-ansible-silo 2.0.0
+ansible-silo 2.0.2
 ansible 1.9.6
 ansible-lint 3.4.13
 ansible installed on volume silo.1.9.6
@@ -531,9 +532,15 @@ Ansible Silo uses [SemVer]. Since Ansible Silo is the promise of a stable enviro
 
 ## Version history
 
+### v2.0.2 (Sep 8, 2017)
+
+* Switches git cloning of Ansible repository from git: protocol to https:
+
+
 ### v2.0.1 (Sep 6, 2017)
 
 * Adds [jmespath](https://pypi.python.org/pypi/jmespath) and therefore fixes support for [JSON Query Filter](http://docs.ansible.com/ansible/latest/playbooks_filters.html#json-query-filter)
+
 
 ### v2.0.0 (Aug 31, 2017)
 
