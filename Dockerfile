@@ -40,7 +40,7 @@ ADD pip/requirements /tmp/pip-requirements.txt
 RUN pip install -r /tmp/pip-requirements.txt
 
 # Installing Ansible from source
-RUN git clone --progress git://github.com/ansible/ansible.git /silo/userspace/ansible 2>&1 &&\
+RUN git clone --progress https://github.com/ansible/ansible.git /silo/userspace/ansible 2>&1 &&\
     cd /silo/userspace/ansible &&\
     git checkout --force ${ANSIBLE_VERSION} 2>&1 &&\
     git submodule update --init --recursive 2>&1 &&\
