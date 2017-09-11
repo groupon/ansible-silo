@@ -133,6 +133,8 @@ Silo is based on **[Alpine Linux] 3.6** and includes the following APK packages:
  - libbz2 1.0.6-r5
  - libcurl 7.55.0-r0
  - libffi 3.2.1-r3
+ - libxml2 2.9.4-r4
+ - libxslt 1.1.29-r3
  - libssh2 1.8.0-r1
  - ncurses-libs 6.0-r8
  - ncurses-terminfo 6.0-r8
