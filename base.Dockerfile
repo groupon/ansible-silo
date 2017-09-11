@@ -103,7 +103,9 @@ RUN echo "@testing http://dl-4.alpinelinux.org/alpine/edge/testing" >> /etc/apk/
                        zlib-dev=1.2.11-r0\
                        python2-dev=2.7.13-r1\
                        openssl-dev=1.0.2k-r0\
-                       libffi-dev=3.2.1-r3 &&\
+                       libffi-dev=3.2.1-r3\
+                       libxml2-dev=2.9.4-r4\
+                       libxslt-dev=1.1.29-r3 &&\
 
     pip install asn1crypto==0.22.0\
                 cffi==1.10.0\
@@ -111,6 +113,8 @@ RUN echo "@testing http://dl-4.alpinelinux.org/alpine/edge/testing" >> /etc/apk/
                 enum34==1.1.6\
                 idna==2.5\
                 ipaddress==1.0.18\
+                ncclient==0.5.3\
+                paramiko==1.16.0\
                 pycparser==2.18\
                 pycrypto==2.6.1\
                 six==1.10.0 &&\
@@ -131,7 +135,9 @@ RUN echo "@testing http://dl-4.alpinelinux.org/alpine/edge/testing" >> /etc/apk/
                        zlib-dev\
                        python2-dev\
                        openssl-dev\
-                       libffi-dev &&\
+                       libffi-dev\
+                       libxml2-dev\
+                       libxslt-dev &&\
 
  # Install docker command and ensure it's always executed w/ sudo
     curl -fL -o /tmp/docker.tgz "https://download.docker.com/linux/static/stable/x86_64/docker-17.06.0-ce.tgz" &&\
