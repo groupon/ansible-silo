@@ -319,7 +319,7 @@ Which will show something along these lines:
 
     Executing: /tmp/ansible-silo-runner-2.0.3 "--shell" "exit"
 
-    Executing: /usr/bin/docker run --interactive --tty --rm --volume "/home/daniel.schroeder/ansible-silo:/home/user/playbooks" --volume "silo.some.user:/silo/userspace" --env "SILO_VOLUME=silo.some.user" --hostname "silo.example.com" --volume /var/run/docker.sock:/var/run/docker.sock --privileged  --volume "/home/some.user/.ssh:/home/user/._ssh" --volume "/tmp/ssh-6k3r1bCpCi":"/tmp/ssh-6k3r1bCpCi" --env SSH_AUTH_SOCK --env USER_NAME="some.user" --env USER_ID="1234" "grpn/ansible-silo:2.0.2" "--shell" "exit"
+    Executing: /usr/bin/docker run --interactive --tty --rm --volume "/home/daniel.schroeder/ansible-silo:/home/user/playbooks" --volume "silo.some.user:/silo/userspace" --env "SILO_VOLUME=silo.some.user" --hostname "silo.example.com" --volume /var/run/docker.sock:/var/run/docker.sock --privileged  --volume "/home/some.user/.ssh:/home/user/._ssh" --volume "/tmp/ssh-6k3r1bCpCi":"/tmp/ssh-6k3r1bCpCi" --env SSH_AUTH_SOCK --env USER_NAME="some.user" --env USER_ID="1234" "grpn/ansible-silo:2.0.3" "--shell" "exit"
 
 The first _Executing_ line shows the location of the generated runner script. The last line shows the Docker command executed by the runner script.
 
@@ -358,7 +358,7 @@ Specifies the name of the used Silo volume. This defaults to the name of the cur
 
 ```bash
 $ ansible-silo --version
-ansible-silo 2.0.2
+ansible-silo 2.0.3
 ansible 2.3.2.0
 ansible-lint 3.4.13
 ansible installed on volume silo.some.user
