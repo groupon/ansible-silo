@@ -424,12 +424,6 @@ test_silo_bundle_function() {
   run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible" -i localhost, -c local \
     -m blockinfile -a "dest=/tmp/blockinfile.test block=content create=yes" all
   [[ "${status}" -eq 0 ]]
-
-  # TODO: commented out until ansible-silo-base is updated
-  # # Make sure we can import the ncclient module added to ansible-silo-base
-  # run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --shell "python -c 'import ncclient; print ncclient'"
-  # [[ "${status}" -eq 0 ]]
-  # [[ "${lines[-1]}" == *$"<module 'ncclient' from '/silo/userspace/lib/python2.7/site-packages/ncclient/__init__.py"* ]]
 }
 
 @test "Shell execution" {
@@ -567,4 +561,13 @@ test_silo_bundle_function() {
   # Uninstall pbr
   run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --shell pip uninstall -y pbr
   [[ "${status}" -eq 0 ]]
+}
+
+
+@test "Ansible module requirements exist" {
+
+  # Make sure we can import the ncclient module added to ansible-silo-base
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --shell "python -c 'import ncclient; print ncclient'"
+  [[ "${status}" -eq 0 ]]
+  [[ "${lines[-1]}" == *$"<module 'ncclient' from '/usr/lib/python2.7/site-packages/ncclient/__init__.py"* ]]
 }
