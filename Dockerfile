@@ -30,7 +30,7 @@
 
 FROM grpn/ansible-silo-base:2.0.1
 
-ENV ANSIBLE_VERSION v2.3.2.0-1
+ENV ANSIBLE_VERSION v2.4.0.0-1
 ENV SILO_IMAGE grpn/ansible-silo
 
 ADD silo /silo/
