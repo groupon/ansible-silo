@@ -223,7 +223,7 @@ prepare_user() {
 prepare_ansible_lint() {
   # PYTHONPATH defines the search path for Python module files
   export PYTHONPATH="/silo/ansible-lint/lib:${PYTHONPATH}"
-  ln -fs /silo/ansible-lint/lib/ansiblelint/main/__init__.py \
+  ln -fs /silo/ansible-lint/lib/ansiblelint/__main__.py \
     /silo/userspace/bin/ansible-lint
 }
 
