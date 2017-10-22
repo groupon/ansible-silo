@@ -31,6 +31,7 @@
 FROM grpn/ansible-silo-base:2.0.1
 
 ENV ANSIBLE_VERSION v2.4.0.0-1
+ENV ANSIBLE_LINT_VERSION v3.4.13
 ENV SILO_IMAGE grpn/ansible-silo
 
 ADD silo /silo/
@@ -45,6 +46,8 @@ RUN git clone --progress https://github.com/ansible/ansible.git /silo/userspace/
     git checkout --force ${ANSIBLE_VERSION} 2>&1 &&\
     git submodule update --init --recursive 2>&1 &&\
     git clone --progress https://github.com/willthames/ansible-lint /silo/ansible-lint 2>&1  &&\
+    cd /silo/ansible-lint &&\
+    git checkout --force ${ANSIBLE_LINT_VERSION} 2>&1 &&\
 
 # Create directory for storing ssh ControlPath
     mkdir -p /home/user/.ssh/tmp &&\
