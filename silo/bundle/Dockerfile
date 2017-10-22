@@ -51,6 +51,6 @@ RUN chmod +x /silo/entrypoint
 ADD playbooks /home/user/playbooks
 RUN chmod -R 777 /home/user/playbooks
 
-# Set a version for your bundle. This will be shown when your bundle is called with the --info flag
+# Set a version for your bundle. This will be shown when your bundle is called with the --version flag
 ARG v
 ENV BUNDLE_VERSION ${v}
