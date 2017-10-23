@@ -67,6 +67,17 @@ check_compatibility() {
     chmod 777 bin lib
     mv /tmp/ansible /silo/userspace/ansible
   fi
+
+  # Clone ansible-lint if not present in userspace. ansible-lint used to be
+  # installed in /silo/ansible-lint until v2.0.3
+  if [ ! -d /silo/userspace/ansible-lint ]; then
+    echo "ansible-lint not found. Installing into user userspace."
+    git clone --progress https://github.com/willthames/ansible-lint\
+      /silo/userspace/ansible-lint 2>&1
+    cd /silo/userspace/ansible-lint || exit
+    git checkout "${ANSIBLE_LINT_VERSION}"
+  fi
+
 }
 
 #######################################
@@ -222,13 +233,13 @@ prepare_user() {
 #######################################
 prepare_ansible_lint() {
   # PYTHONPATH defines the search path for Python module files
-  export PYTHONPATH="/silo/ansible-lint/lib:${PYTHONPATH}"
+  export PYTHONPATH="/silo/userspace/ansible-lint/lib:${PYTHONPATH}"
   # Depending on ansible-lint version, the main file differs
-  if [ -f /silo/ansible-lint/lib/ansiblelint/main/__init__.py ]; then
-    ln -fs /silo/ansible-lint/lib/ansiblelint/main/__init__.py \
+  if [ -f /silo/userspace/ansible-lint/lib/ansiblelint/main/__init__.py ]; then
+    ln -fs /silo/userspace/ansible-lint/lib/ansiblelint/main/__init__.py \
       /silo/userspace/bin/ansible-lint
-  elif [ -f /silo/ansible-lint/lib/ansiblelint/__main__.py ]; then
-    ln -fs /silo/ansible-lint/lib/ansiblelint/__main__.py \
+  elif [ -f /silo/userspace/ansible-lint/lib/ansiblelint/__main__.py ]; then
+    ln -fs /silo/userspace/ansible-lint/lib/ansiblelint/__main__.py \
       /silo/userspace/bin/ansible-lint
   fi
 }

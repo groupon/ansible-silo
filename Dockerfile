@@ -45,8 +45,8 @@ RUN git clone --progress https://github.com/ansible/ansible.git /silo/userspace/
     cd /silo/userspace/ansible &&\
     git checkout --force ${ANSIBLE_VERSION} 2>&1 &&\
     git submodule update --init --recursive 2>&1 &&\
-    git clone --progress https://github.com/willthames/ansible-lint /silo/ansible-lint 2>&1  &&\
-    cd /silo/ansible-lint &&\
+    git clone --progress https://github.com/willthames/ansible-lint /silo/userspace/ansible-lint 2>&1  &&\
+    cd /silo/userspace/ansible-lint &&\
     git checkout --force ${ANSIBLE_LINT_VERSION} 2>&1 &&\
 
 # Create directory for storing ssh ControlPath
@@ -62,7 +62,7 @@ RUN git clone --progress https://github.com/ansible/ansible.git /silo/userspace/
     echo "install-option = --install-scripts=/silo/userspace/bin --prefix=/silo/userspace" >> /etc/pip.conf &&\
 
 # Grant write access to the userspace sub directories
-   chmod 777 /silo/userspace/bin /silo/userspace/lib
+    chmod 777 /silo/userspace/bin /silo/userspace/lib
 
 ENTRYPOINT ["/silo/entrypoint"]
 
