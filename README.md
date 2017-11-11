@@ -27,6 +27,7 @@ Table of Contents
 - [Installation](#installation)
     - [Prerequisites](#prerequisites)
     - [Install ansible-silo](#install-ansible-silo)
+    - [Uninstall ansible-silo](#uninstall-ansible-silo)
     - [Updating](#updating)
     - [Extending runner script](#extending-runner-script)
     - [Installing custom software](#installing-custom-software)
@@ -201,6 +202,28 @@ To install `ansibe-silo` for all users you can mount `/usr/local/bin`:
 ```bash
 docker run --interactive --tty --rm --volume "/usr/local/bin:/silo_install_path" grpn/ansible-silo:latest --install
 ```
+
+### Uninstall ansible-silo
+
+During installation two things happened:
+
+- A Docker image was downloaded
+- A file and a couple of symlinks were created
+
+Where the files/links are stored depends on which path you have mounted during the installation process (see above, e.g. `$HOME/bin` or `/usr/local/bin`).
+
+You can use this command to delete all files and symlinks:
+
+```bash
+find -L "$(dirname $(command -v ansible-silo))" -samefile "$(command -v ansible-silo)" -exec rm -f {} +
+```
+
+All versions of the ansible-silo images can be deleted per:
+
+```bash
+docker rmi --force $(docker images -q grpn/ansible-silo | uniq)
+```
+
 
 ### Updating
 
