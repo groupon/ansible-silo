@@ -1,0 +1,178 @@
+---
+---
+html,
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, FreeSans, sans-serif;
+}
+
+header {
+    height: 135px;
+    background: #53a318;
+    position: relative;
+    #logo {
+        display: inline-block;
+        margin-top: 38px;
+        img {
+            height: 23px;
+        }
+    }
+    #team {
+        color: white;
+        font-weight: 300;
+        font-size: 31px;
+    }
+}
+
+#nav {
+    height: 46px;
+    background-color: #fff;
+    border-bottom: 1px solid #d5d8db;
+    margin-top: 20px;
+    display: block;
+    ul {
+        height: 46px;
+        padding: 0;
+        display: block;
+        li {
+            margin: 0;
+            list-style-type: none;
+            display: inline-block;
+            margin-right: 30px;
+            a {
+                font-size: 14px;
+                font-weight: 400;
+                color: rgb(117, 120, 123);
+                text-decoration: none;
+                height: 43px;
+                line-height: 46px;
+                display: block;
+                &:hover {
+                    border-bottom: 3px solid #53a318;
+                }
+            }
+            &:last-child {
+                float: right;
+                margin-right: 0;
+            }
+            &.active {
+                a {
+                    border-bottom: 3px solid #53a318;
+                }
+            }
+        }
+    }
+}
+
+.min_width {
+    width: 1095px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#wrapper {
+    position: realtive;
+    #sidebar {
+        width: 250px;
+        position: absolute;
+        margin-left: -10px;
+        #sidenav>ul {
+            margin-bottom: 20px;
+            &>li {
+                position: relative;
+            }
+        }
+        ul {
+            width: 250px;
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
+            li {
+                padding-left: 10px;
+                font-size: 14px;
+                font-weight: 400;
+                line-height: 130%;
+                a {
+                    color: #53a318;
+                    text-decoration: none;
+                    padding-bottom: 3px;
+                    padding-top: 3px;
+                    display: inline-block;
+                    height: 100%;
+                    &:hover {
+                        text-decoration: underline;
+                    }
+                    &::before {
+                        background-color: #EEE;
+                        content: ' ';
+                        display: inline-block;
+                        height: inherit;
+                        left: 0;
+                        margin-top: -1px;
+                        position: absolute;
+                        width: 3px;
+                    }
+                    &.active {
+                        font-weight: normal;
+                        &::before {
+                            background-color: #53a318;
+                        }
+                    }
+                }
+            }
+        }
+        #sidenav {
+            ul {
+                li {
+                    &.header {
+                        text-transform: uppercase;
+                        font-weight: bold;
+                        padding-top: 15px;
+                        color: rgb(117, 120, 123);
+                        &:first-child {
+                            padding-top: 10px;
+                        }
+                    }
+                }
+            }
+            a {
+                &::before {
+                    height: 0px;
+                }
+                &.active {
+                    &::before {
+                        height: inherit;
+                    }
+                }
+            }
+        }
+        #toc {
+            &::before {
+                text-transform: uppercase;
+                font-weight: bold;
+                content: "Table of Contents";
+                color: #75787b;
+                font-size: 14px;
+                padding-left: 10px;
+            }
+            &.is-position-fixed {
+                margin-top: 20px;
+            }
+            position: absolute;
+            overflow-y: hidden;
+            overflow-x: hidden;
+        }
+    }
+    #content {
+        padding-bottom: 20px;
+    }
+    #sidebar+#content {
+        margin-left: 270px;
+    }
+}
+
+#view_source {
+    font-style: italic;
+    font-size: 13px;
+}

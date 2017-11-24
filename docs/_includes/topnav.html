@@ -1,0 +1,14 @@
+{% if site.top_navigation %}
+    <div id="nav">
+        <ul class="min_width">
+            {% for item in site.top_navigation %}
+                {% unless item.url contains '://' %}
+                    {% assign url = item.url | relative_url %}
+                {% else %}
+                    {% assign url = item.url %}
+                {% endunless %}
+                <li{% if item.url == page.url or item.active == true %} class="active"{% endif %}><a href="{{ url }}">{{ item.title }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
