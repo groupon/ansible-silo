@@ -11,6 +11,10 @@
     <title>{% if page.title %}{{ page.title }} | {% endif %}{{ site.title }} | Groupon</title>
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="{% if page.title %}{{ page.title }} | {% endif %}{{ site.title }} | Groupon">
+    <meta property="og:image" content="https://groupon.github.io/ansible-silo/preview.png">
+    <meta property="og:description" content="{{ site.description }}">
+    <meta property="og:url" content="https://groupon.github.io/ansible-silo/">
     <link rel="apple-touch-icon" sizes="152x152" href="//www2.grouponcdn.com/layout/assets/grpn-favicon-152x152-ed288e134e.png">
     <link rel="mask-icon" href="//www2.grouponcdn.com/layout/assets/grpn-favicon-319296fcd8.svg" color="#53a318">
     <link rel="icon" type="image/png" href="//www2.grouponcdn.com/layout/assets/grpn-favicon-96x96-65e46e4853.png" sizes="96x96">
