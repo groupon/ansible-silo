@@ -30,6 +30,10 @@
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+whitelist[0]="raw.githubusercontent.com/paxtonhare/demo-magic"
+whitelist[1]="github.com/groupon/ansible-silo/blob/master"
+w=$(printf ",%s" "${whitelist[@]}")
+
 # shellcheck disable=SC2046
 awesome_bot --allow-redirect --allow-dupe --skip-save-results \
   $(find . \
@@ -39,4 +43,4 @@ awesome_bot --allow-redirect --allow-dupe --skip-save-results \
     -type f \
     -not \( -name '*.png' -o -name '*.jpg' \) \
     -print\
-  ) --white-list raw.githubusercontent.com/paxtonhare/demo-magic
+  ) --white-list "${w:1}"
