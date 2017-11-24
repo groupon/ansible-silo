@@ -1,0 +1,87 @@
+{% comment %}
+This file contains global variable assignments, helpers to keep the templates clean
+{% endcomment %}
+
+{% comment %}
+This block collects CSS files to include, defined on site, layout and page level.
+The result list will be available as "css"
+{% endcomment %}
+{% assign css = "" | split: "" %}
+{% for f in site.css %}
+    {% assign css = css | push: f %}
+{% endfor %}
+{% for f in layout.css %}
+    {% assign css = css | push: f %}
+{% endfor %}
+{% for f in page.css %}
+    {% assign css = css | push: f %}
+{% endfor %}
+
+{% comment %}
+This block collects JS files to include, defined on site, layout and page level.
+The result list will be available as "js"
+{% endcomment %}
+{% assign js = "" | split: "" %}
+{% for f in site.js %}
+    {% assign js = js | push: f %}
+{% endfor %}
+{% for f in layout.js %}
+    {% assign js = js | push: f %}
+{% endfor %}
+{% for f in page.js %}
+    {% assign js = js | push: f %}
+{% endfor %}
+
+{% comment %}
+This block checks if the Sidebar should be displayed based on settings from layout and page.
+The result (true/false) will be available as sidenav
+{% endcomment %}
+{% assign sidenav = false %}
+{% if page.sidenav == true %}
+    {% assign sidenav = true %}
+{% else %}
+    {% if page.sidenav != true and page.sidenav != false and layout.sidenav == true %}
+        {% assign sidenav = true %}
+    {% endif %}
+{% endif %}
+
+{% comment %}
+This block checks if the Sidebar ToC should be displayed based on settings from layout and page.
+The result (true/false) will be available as sidenav_toc
+{% endcomment %}
+{% assign sidenav_toc = false %}
+{% if page.sidenav_toc == true %}
+    {% assign sidenav_toc = true %}
+{% else %}
+    {% if page.sidenav_toc != true and page.sidenav_toc != false and layout.sidenav_toc == true %}
+        {% assign sidenav_toc = true %}
+    {% endif %}
+{% endif %}
+{% comment %}
+If the sidebar ToC should be shown, additional CSS and JS files will be included
+{% endcomment %}
+{% if sidenav_toc == true %}
+    {% assign js = js   | push: "https://cdnjs.cloudflare.com/ajax/libs/tocbot/3.0.5/tocbot.min.js" %}
+    {% assign css = css | push: "https://cdnjs.cloudflare.com/ajax/libs/tocbot/3.0.5/tocbot.css" %}
+    {% assign js = js   | push: "/assets/toc.js" %}
+{% endif %}
+
+{% comment %}
+This block checks if the asciinema should be loaded based on settings from layout and page.
+The result (true/false) will be available as asciinema
+{% endcomment %}
+{% assign asciinema = false %}
+{% if page.asciinema == true %}
+    {% assign asciinema = true %}
+{% else %}
+    {% if page.asciinema != true and page.asciinema != false and layout.asciinema == true %}
+        {% assign asciinema = true %}
+    {% endif %}
+{% endif %}
+{% comment %}
+If asciinema should be used, additional CSS and JS files will be included
+{% endcomment %}
+{% if asciinema == true %}
+    {% assign js = js   | push: "https://cdnjs.cloudflare.com/ajax/libs/asciinema-player/2.4.1/asciinema-player.min.js" %}
+    {% assign css = css | push: "https://cdnjs.cloudflare.com/ajax/libs/asciinema-player/2.4.1/asciinema-player.min.css" %}
+{% endif %}

@@ -1,0 +1,52 @@
+---
+---
+#content {
+    .swagger-ui {
+        .wrapper {
+            padding: 0;
+        }
+        .topbar {
+            display: none;
+        }
+        .description {
+            display: none;
+        }
+        div.info {
+            .description+div {
+                display: none;
+            }
+            hgroup.main {
+                display: none;
+            }
+            &>a {
+                display: none;
+            }
+        }
+        .body-param-options {
+            label {
+                display: none;
+            }
+        }
+        .response {
+            pre {
+                max-height: 300px;
+                overflow-y: auto;
+            }
+        }
+        .response-content-type {
+            display: none;
+        }
+        .scheme-container {
+            display: none;
+        }
+        .opblock .opblock-section-header label {
+            display: none;
+        }
+        a.nostyle {
+            color: #3b4151;
+            &:hover {
+                text-decoration: none;
+            }
+        }
+    }
+}

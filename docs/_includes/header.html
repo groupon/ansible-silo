@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<!--
+  Groupon Jekyll Theme
+  © 2017 Groupon Inc
+  All rights reserved
+-->
+{% include logic.html %}
+<html lang="{{ page.language }}">
+<head>
+    <meta charset="utf-8">
+    <title>{% if page.title %}{{ page.title }} | {% endif %}{{ site.title }} | Groupon</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="apple-touch-icon" sizes="152x152" href="//www2.grouponcdn.com/layout/assets/grpn-favicon-152x152-ed288e134e.png">
+    <link rel="mask-icon" href="//www2.grouponcdn.com/layout/assets/grpn-favicon-319296fcd8.svg" color="#53a318">
+    <link rel="icon" type="image/png" href="//www2.grouponcdn.com/layout/assets/grpn-favicon-96x96-65e46e4853.png" sizes="96x96">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700,700i|Roboto+Mono" rel="stylesheet">
+    {% for item in css %}
+        {% unless item contains '://' %}
+            {% assign url = item | relative_url %}
+        {% else %}
+            {% assign url = item %}
+        {% endunless %}
+        <link rel="stylesheet" href="{{ url }}">
+    {% endfor %}
+    {% for item in js %}
+        {% unless item contains '://' %}
+            {% assign url = item | relative_url %}
+        {% else %}
+            {% assign url = item %}
+        {% endunless %}
+        <script src="{{ url }}"></script>
+    {% endfor %}
+    <meta name="description" content="{{ site.description }}">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+</head>
+<body>
+    <header>
+        <div class="min_width">
+            <a href="{{ site.baseurl }}/" id="logo" title="Groupon"><img src="https://www2.grouponcdn.com/layout/assets/grpn_logo_white-b8a7246dbd.svg" alt="Groupon"></a>
+            <span id="team">{{ site.title }}</span>
+        </div>
+        {% include topnav.html %}
+    </header>
+    <div class="min_width" id="wrapper">
+        {% include sidenav.html %}
+        <section id="content">
+            <h1>{{ page.title }}</h1>

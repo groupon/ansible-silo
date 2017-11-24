@@ -1,0 +1,70 @@
+
+title: Engineering
+
+baseurl: /ansible-silo
+
+# The repo_url can be used to link to document in your repository.
+# Example {{ site.repo_url }}README.md
+repo_url: https://github.com/groupon/ansible-silo/blob/master/
+
+# The doc_src value will be used to link to the source of the document.
+# Make this point to the branch & path where you documentation is stored.
+# Leave blank to disable source linking.
+doc_src: https://github.com/groupon/ansible-silo/blob/master/docs/
+
+description: >-
+  Silo provides a controlled environment for Ansible and its dependencies.
+  It works as a drop-in replacement for Ansible on your local machine or on any remote host.
+  Silo also makes it easy to run multiple Ansible versions in parallel on the same system.
+  Furthermore you can bundle your playbooks (incl. configuration, roles, plugins etc) in a
+  custom Docker image which inherits Silo and therefore generate a versioned, shippable,
+  complete and self-contained executable package which runs your playbooks in any
+  environment. (where you have access to a Docker daemon)
+
+top_navigation:
+  - title: Documentation
+    active: true
+    url: /
+  - title: GitHub
+    url: https://github.com/groupon/ansible-silo
+  - title: Docker Hub
+    url: https://hub.docker.com/r/grpn/ansible-silo/
+  - title: Travis CI
+    url: https://travis-ci.org/groupon/ansible-silo
+  - title: Engineering Jobs
+    url: http://www.groupon.com/techjobs
+
+markdown: kramdown
+highlighter: rouge
+
+kramdown:
+  input: GFM
+  auto_ids: true
+  hard_wrap: false
+  highlighter: rouge
+
+sass:
+  sass_dir: _sass
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - groupon_jekyll_theme.gemspec
+  - Makefile
+
+css:
+  - /assets/layout.css
+  - /assets/content.css
+  - /assets/syntax.css
+
+js:
+  - https://code.jquery.com/jquery-3.2.1.min.js
+
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
+      language: en
+      css: []
+      js: []

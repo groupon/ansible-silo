@@ -1,0 +1,26 @@
+{% if sidenav or sidenav_toc %}
+    <aside id="sidebar">
+{% endif %}
+{% if site.side_navigation %}
+    <nav id="sidenav">
+        <ul>
+            {% for item in site.side_navigation %}
+                {% if item.header %}
+                    <li class="header">{{ item.header }}</li>
+                {% endif %}
+                {% unless item.url contains '://' %}
+                    {% assign url = item.url | relative_url %}
+                {% else %}
+                    {% assign url = item.url %}
+                {% endunless %}
+                <li><a{% if item.url == page.url %} class="active"{% endif %} href="{{ url }}">{{ item.title }}</a></li>
+            {% endfor %}
+        </ul>
+    </nav>
+{% endif %}
+{% if sidenav_toc %}
+    <nav id="toc"></nav>
+{% endif %}
+{% if sidenav or sidenav_toc %}
+    </aside>
+{% endif %}
