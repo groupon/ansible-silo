@@ -580,13 +580,13 @@ For testing purpose you can also manually build the `ansible-silo` image by runn
 Functional tests are implemented through [bats]. (0.4.0) After installing `bats` call:
 
 ```bash
-tests/functional
+test-function
 ```
 
 Code style tests are implemented via [shellcheck] (0.3.5). After installing `shellcheck` call:
 
 ```bash
-tests/style
+make test-style
 ```
 
 Be aware, tests modify the Ansible version of your default ansible-silo volume!
@@ -594,7 +594,13 @@ Be aware, tests modify the Ansible version of your default ansible-silo volume!
 We also validate URLs inside all files for positive results via [awesome_bot] (1.17.1). After installing `awesome_bot` call:
 
 ```bash
-tests/links
+make test-links
+```
+
+To run all tests call:
+
+```bash
+make test
 ```
 
 
