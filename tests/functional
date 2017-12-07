@@ -39,6 +39,7 @@ readonly BATS_ANSIBLE_SILO_BUNDLE_NAME="test-silo-bundle"
 readonly BATS_ANSIBLE_SILO_BUNDLE_URL="test.example/org/${BATS_ANSIBLE_SILO_BUNDLE_NAME}"
 
 readonly BATS_ANSIBLE_SILO_BUNDLE_PATH="/tmp/${BATS_ANSIBLE_SILO_BUNDLE_NAME}"
+readonly BATS_ANSIBLE_SILO_VAULT_PASSWORD_FILE="/tmp/silo-vault-password"
 
 export PATH="$BATS_ANSIBLE_SILO_INSTALL_PATH:$PATH"
 
@@ -563,11 +564,25 @@ test_silo_bundle_function() {
   [[ "${status}" -eq 0 ]]
 }
 
-
 @test "Ansible module requirements exist" {
 
   # Make sure we can import the ncclient module added to ansible-silo-base
   run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --shell "python -c 'import ncclient; print ncclient'"
   [[ "${status}" -eq 0 ]]
   [[ "${lines[-1]}" == *$"<module 'ncclient' from '/usr/lib/python2.7/site-packages/ncclient/__init__.py"* ]]
+}
+
+@test "Ansible vault w/ ANSIBLE_VAULT_PASSWORD_FILE" {
+
+  # Write password file
+  echo "slartibartfast" > "$BATS_ANSIBLE_SILO_VAULT_PASSWORD_FILE"
+  export ANSIBLE_VAULT_PASSWORD_FILE="$BATS_ANSIBLE_SILO_VAULT_PASSWORD_FILE"
+
+  cd "${BATS_TEST_DIRNAME}/playbooks"
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-playbook" -i inventory vault.yml
+  [[ "${status}" -eq 0 ]]
+
+  # Cleanup
+  rm -rf "$BATS_ANSIBLE_SILO_VAULT_PASSWORD_FILE"
+  unset ANSIBLE_VAULT_PASSWORD_FILE
 }

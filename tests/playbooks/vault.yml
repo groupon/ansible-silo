@@ -1,0 +1,13 @@
+---
+
+- name: Runs vault decryption test
+  tags: create
+  hosts: localhost
+  gather_facts: no
+  vars_files:
+    - vars/encrypted.yml
+  tasks:
+    - fail:
+      when: key!="val"
+
+...

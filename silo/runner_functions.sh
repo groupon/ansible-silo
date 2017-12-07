@@ -272,6 +272,27 @@ silo_mount_docker_socket() {
   done
 }
 
+#######################################
+# Mounts location of ANSIBLE_VAULT_PASSWORD_FILE, if set
+# Globals:
+#   ANSIBLE_VAULT_PASSWORD_FILE
+# Arguments:
+#   None
+# Returns:
+#   --volume and --env options for mounting/rewriting location of password file
+#######################################
+silo_forward_vault_password_file() {
+  local vault_password_dir return=""
+  if [[ ! -z "${ANSIBLE_VAULT_PASSWORD_FILE}" ]]; then
+    vault_password_dir="$(dirname "${ANSIBLE_VAULT_PASSWORD_FILE}")"
+    return+="--volume \"${vault_password_dir}\":"
+    return+="\"/tmp/${vault_password_dir}:ro\" "
+    return+="--env ANSIBLE_VAULT_PASSWORD_FILE="
+    return+="\"/tmp/${ANSIBLE_VAULT_PASSWORD_FILE}\""
+    echo "${return}"
+  fi
+}
+
 # Load any potential silo extensions
 # The files ~/.ansible-silo and /etc/ansible/ansible-silo/ansible-silo are
 # going to be loaded in any case. If the container is a child of silo,
