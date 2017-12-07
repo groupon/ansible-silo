@@ -38,6 +38,8 @@ readonly BATS_ANSIBLE_SILO_LOGFILE="/tmp/ansible.test.log"
 readonly BATS_ANSIBLE_SILO_BUNDLE_NAME="test-silo-bundle"
 readonly BATS_ANSIBLE_SILO_BUNDLE_URL="test.example/org/${BATS_ANSIBLE_SILO_BUNDLE_NAME}"
 
+readonly VERSION="$(cat ${BATS_TEST_DIRNAME}/../VERSION)"
+
 readonly BATS_ANSIBLE_SILO_BUNDLE_PATH="/tmp/${BATS_ANSIBLE_SILO_BUNDLE_NAME}"
 
 export PATH="$BATS_ANSIBLE_SILO_INSTALL_PATH:$PATH"
@@ -71,7 +73,7 @@ test_silo_bundle_function() {
   mkdir -p "$BATS_ANSIBLE_SILO_INSTALL_PATH"
   run docker run -it --rm \
     -v "$BATS_ANSIBLE_SILO_INSTALL_PATH:/silo_install_path" \
-    -i grpn/ansible-silo:latest --install
+    -i grpn/ansible-silo:${VERSION} --install
   [[ "${status}" -eq 0 ]]
 }
 
