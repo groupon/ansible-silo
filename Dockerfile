@@ -30,7 +30,7 @@
 
 FROM grpn/ansible-silo-base:2.0.1
 
-ENV ANSIBLE_VERSION v2.4.0.0-1
+ENV ANSIBLE_VERSION v2.4.2.0-1
 ENV ANSIBLE_LINT_VERSION v3.4.13
 ENV SILO_IMAGE grpn/ansible-silo
 
