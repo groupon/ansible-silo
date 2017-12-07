@@ -62,7 +62,7 @@ test_silo_bundle_function() {
 
 @test "Build Silo image" {
   cd "$(dirname ${BATS_TEST_DIRNAME})" || exit
-  run ./build
+  run make ansible-silo
   [[ "${status}" -eq 0 ]]
 }
 
