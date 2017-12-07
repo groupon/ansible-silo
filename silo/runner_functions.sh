@@ -285,8 +285,10 @@ silo_forward_vault_password_file() {
   local vault_password_dir return=""
   if [[ ! -z "${ANSIBLE_VAULT_PASSWORD_FILE}" ]]; then
     vault_password_dir="$(dirname "${ANSIBLE_VAULT_PASSWORD_FILE}")"
-    return+="--volume \"${vault_password_dir}\":\"/tmp/${vault_password_dir}:ro\" "
-    return+="--env ANSIBLE_VAULT_PASSWORD_FILE=\"/tmp/${ANSIBLE_VAULT_PASSWORD_FILE}\""
+    return+="--volume \"${vault_password_dir}\":"
+    return+="\"/tmp/${vault_password_dir}:ro\" "
+    return+="--env ANSIBLE_VAULT_PASSWORD_FILE="
+    return+="\"/tmp/${ANSIBLE_VAULT_PASSWORD_FILE}\""
     echo "${return}"
   fi
 }
