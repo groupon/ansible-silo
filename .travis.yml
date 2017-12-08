@@ -30,6 +30,7 @@ before_script:
   - cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 
 script:
+  - make ansible-silo
   - make test-style
   - make test-links
   - make test-function
