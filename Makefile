@@ -56,7 +56,7 @@ release: tag
 re-release: untag tag
 
 validate-version:
-	@if [[ ! "$(SILO_VERSION)" =~ ^[0-9]+(\.[0-9]+)+(-[0-9]){0,2}$$ ]]; then\
+	if [[ ! "$(SILO_VERSION)" =~ ^[0-9]+(\.[0-9]+)+(-[0-9]){0,2}$$ ]]; then\
 	  echo "Version must be in format X.Y.Z, e.g. 1.2.3. Given: $(SILO_VERSION)" >&2;\
 	  exit 1;\
 	fi
