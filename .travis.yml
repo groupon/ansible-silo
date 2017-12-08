@@ -31,7 +31,9 @@ before_script:
   - cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 
 script:
-  - make test
+  - make test-style
+  - make test-links
+  - make test-function
 
 after_success:
   - >
