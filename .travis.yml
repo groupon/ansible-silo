@@ -20,7 +20,6 @@ before_script:
   - gem install awesome_bot
   - npm install -g dockerfilelint
   - sudo add-apt-repository ppa:duggan/bats --yes
-  - sudo apt-get update -qq
   - >-
     sudo apt-get install -qq realpath \
                              bats \
