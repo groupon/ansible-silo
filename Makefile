@@ -37,13 +37,13 @@ BASE_IMG := grpn/ansible-silo-base
 BASE_VERSION := 2.0.1
 
 ansible-silo: validate-version
-	docker build --build-arg "v=$(SILO_VERSION)" --tag "${SILO_IMG}:$(SILO_VERSION)" .
+	@docker build --build-arg "v=$(SILO_VERSION)" --tag "${SILO_IMG}:$(SILO_VERSION)" .
 
 ansible-silo-base:
-	docker build --build-arg "v=$(BASE_VERSION)" --file "base.Dockerfile" --tag "${BASE_IMG}:$(BASE_VERSION)" .
+	@docker build --build-arg "v=$(BASE_VERSION)" --file "base.Dockerfile" --tag "${BASE_IMG}:$(BASE_VERSION)" .
 
 push-base:
-	docker push "$(BASE_IMG):$(BASE_VERSION)"
+	@docker push "$(BASE_IMG):$(BASE_VERSION)"
 
 tag: validate-version
 	@git tag -a "v$(SILO_VERSION)" -m 'Creates tag "v$(SILO_VERSION)"'
@@ -58,7 +58,7 @@ release: tag
 re-release: untag tag
 
 validate-version:
-	if [[ ! "$(SILO_VERSION)" =~ ^[0-9]+(\.[0-9]+)+(-[0-9]){0,2}$$ ]]; then\
+	@if [[ ! "$(SILO_VERSION)" =~ ^[0-9]+(\.[0-9]+)+(-[0-9]){0,2}$$ ]]; then\
 	  echo "Version must be in format X.Y.Z, e.g. 1.2.3. Given: $(SILO_VERSION)" >&2;\
 	  exit 1;\
 	fi
