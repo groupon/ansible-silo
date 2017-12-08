@@ -31,9 +31,7 @@ before_script:
   - cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 
 script:
-  - tests/style
-  - tests/links
-  - bats tests/functional
+  - make test
 
 after_success:
   - >
