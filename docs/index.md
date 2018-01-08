@@ -566,13 +566,15 @@ There are custom build hooks in [`./hooks`](https://github.com/groupon/ansible-s
 The `ansible-silo-base` image needs to be built and uploaded manually. You can do this by running a command like:
 
 ```bash
-./build -i base -v 1.2.3 -p
+make ansible-silo-base push-base
 ```
+
+The version of the base image is hardcoded in the Makefile. Update accordingly if you plan to release a new base image.
 
 For testing purpose you can also manually build the `ansible-silo` image by running a command like:
 
 ```bash
-./build -v 1.2.3
+VERSION=1.2.3 make ansible-silo
 ```
 
 ### Testing
@@ -580,16 +582,16 @@ For testing purpose you can also manually build the `ansible-silo` image by runn
 Functional tests are implemented through [bats]. (0.4.0) After installing `bats` call:
 
 ```bash
-test-function
+make test-function
 ```
+
+Be aware, tests modify the Ansible version of your default ansible-silo volume!
 
 Code style tests are implemented via [shellcheck] (0.3.5). After installing `shellcheck` call:
 
 ```bash
 make test-style
 ```
-
-Be aware, tests modify the Ansible version of your default ansible-silo volume!
 
 We also validate URLs inside all files for positive results via [awesome_bot] (1.17.1). After installing `awesome_bot` call:
 
@@ -608,7 +610,7 @@ make test
 
 The APK package repository of Alpine only holds the very latest version of a package. This makes it currently impossible to install exact package versions and building of the image would fail once a new version of a package was released.
 
-To ensure we are never forced to update any dependency when we build the silo Docker image, all APK dependencies are stored in the Docker image [ansible-silo-base]. If required, this image can be built and uploaded with the command `./build -i base -v 1.2.3 -p`. Make sure to afterwards update the tag in the [`Dockerfile`] and release a new version of ansible-silo.
+To ensure we are never forced to update any dependency when we build the silo Docker image, all APK dependencies are stored in the Docker image [ansible-silo-base]. If required, this image can be built and uploaded with the command `make ansible-silo-base push-base`. Make sure to afterwards update the tag in the [`Dockerfile`] and release a new version of ansible-silo.
 
 ## License
 
