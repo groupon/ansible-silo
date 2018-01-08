@@ -195,7 +195,7 @@ Silo will by default run the latest installed version of itself. You also can ru
 SILO_VERSION=1.2.2 ansible-silo --version
 ansible-silo 1.2.2
 ansible 2.3.0.0
-ansible-lint 3.4.13
+ansible-lint 3.4.20
 ansible installed on volume silo.some.user
 ```
 
@@ -326,7 +326,7 @@ Specifies the name of the used Silo volume. This defaults to the name of the cur
 $ ansible-silo --version
 ansible-silo 2.0.3
 ansible 2.3.2.0
-ansible-lint 3.4.13
+ansible-lint 3.4.20
 ansible installed on volume silo.some.user
 ```
 
@@ -397,13 +397,13 @@ Switched to Ansible 1.9.6
 $ ansible-silo --version
 ansible-silo 2.0.3
 ansible 2.3.2.0
-ansible-lint 3.4.13
+ansible-lint 3.4.20
 ansible installed on volume silo.1.9.6
 
 $ SILO_VOLUME="1.9.6" ansible-silo --version
 ansible-silo 2.0.3
 ansible 1.9.6
-ansible-lint 3.4.13
+ansible-lint 3.4.20
 ansible installed on volume silo.1.9.6
 ```
 
