@@ -4,7 +4,7 @@ asciinema: true
 ---
 
 [![GitHub release](https://img.shields.io/github/tag/groupon/ansible-silo.svg?style=flat&colorB=4183C4&label=Latest%20release)](https://github.com/groupon/ansible-silo/releases/latest)
-[![Commits since v2.0.3](https://img.shields.io/github/commits-since/groupon/ansible-silo/v2.0.3.svg?style=flat&colorB=4183C4&label=Commits%20since%20v2.0.3)](https://github.com/groupon/ansible-silo/commits/master)
+[![Commits since v2.0.4](https://img.shields.io/github/commits-since/groupon/ansible-silo/v2.0.4.svg?style=flat&colorB=4183C4&label=Commits%20since%20v2.0.4)](https://github.com/groupon/ansible-silo/commits/master)
 [![GitHub Stars](https://img.shields.io/github/stars/groupon/ansible-silo.svg?style=flat&colorB=4183C4&label=GitHub%20Stars)](https://github.com/groupon/ansible-silo/stargazers)
 [![Build Status](https://img.shields.io/travis/groupon/ansible-silo.svg?style=flat&label=Tests)](https://travis-ci.org/groupon/ansible-silo)
 [![Docker Build Status](https://img.shields.io/docker/build/grpn/ansible-silo.svg?style=flat&label=Build)](https://hub.docker.com/r/grpn/ansible-silo/builds/)
@@ -135,7 +135,7 @@ You need to be on a system where you have installed Docker (minimum version 1.9)
 To install the `ansible-silo` executable along with Ansible replacements run:
 
 ```bash
-docker run --interactive --tty --rm --volume "$HOME/bin:/silo_install_path" grpn/ansible-silo:latest --install
+docker run --interactive --tty --rm --volume "$HOME/bin:/silo_install_path" grpn/ansible-silo:2.0.4 --install
 ```
 
 This command mounts your `~/bin` directory so Silo can place its executables there. Select any location you like but make sure it is in your `$PATH`.
@@ -143,7 +143,7 @@ This command mounts your `~/bin` directory so Silo can place its executables the
 To install `ansibe-silo` for all users you can mount `/usr/local/bin`:
 
 ```bash
-docker run --interactive --tty --rm --volume "/usr/local/bin:/silo_install_path" grpn/ansible-silo:latest --install
+docker run --interactive --tty --rm --volume "/usr/local/bin:/silo_install_path" grpn/ansible-silo:2.0.4 --install
 ```
 
 ### Uninstall ansible-silo
@@ -283,9 +283,9 @@ Which will show something along these lines:
 
     Runner file already exists.
 
-    Executing: /tmp/ansible-silo-runner-2.0.3 "--shell" "exit"
+    Executing: /tmp/ansible-silo-runner-2.0.4 "--shell" "exit"
 
-    Executing: /usr/bin/docker run --interactive --tty --rm --volume "/home/daniel.schroeder/ansible-silo:/home/user/playbooks" --volume "silo.some.user:/silo/userspace" --env "SILO_VOLUME=silo.some.user" --hostname "silo.example.com" --volume /var/run/docker.sock:/var/run/docker.sock --privileged  --volume "/home/some.user/.ssh:/home/user/._ssh" --volume "/tmp/ssh-6k3r1bCpCi":"/tmp/ssh-6k3r1bCpCi" --env SSH_AUTH_SOCK --env USER_NAME="some.user" --env USER_ID="1234" "grpn/ansible-silo:2.0.3" "--shell" "exit"
+    Executing: /usr/bin/docker run --interactive --tty --rm --volume "/home/daniel.schroeder/ansible-silo:/home/user/playbooks" --volume "silo.some.user:/silo/userspace" --env "SILO_VOLUME=silo.some.user" --hostname "silo.example.com" --volume /var/run/docker.sock:/var/run/docker.sock --privileged  --volume "/home/some.user/.ssh:/home/user/._ssh" --volume "/tmp/ssh-6k3r1bCpCi":"/tmp/ssh-6k3r1bCpCi" --env SSH_AUTH_SOCK --env USER_NAME="some.user" --env USER_ID="1234" "grpn/ansible-silo:2.0.4" "--shell" "exit"
 
 The first _Executing_ line shows the location of the generated runner script. The last line shows the Docker command executed by the runner script.
 
@@ -324,8 +324,8 @@ Specifies the name of the used Silo volume. This defaults to the name of the cur
 
 ```bash
 $ ansible-silo --version
-ansible-silo 2.0.3
-ansible 2.3.2.0
+ansible-silo 2.0.4
+ansible 2.4.2.0
 ansible-lint 3.4.20
 ansible installed on volume silo.some.user
 ```
@@ -366,7 +366,7 @@ You can log into the running Silo container by calling Silo with the `--shell` o
 
 ```bash
 $ ansible-silo --shell
-[ansible-silo 2.0.3|~/playbooks]$
+[ansible-silo 2.0.4|~/playbooks]$
 ```
 
 All arguments after the `--shell` option will be directly executed.
@@ -388,20 +388,20 @@ Successfully installed pbr
 
 You can run multiple Ansible versions in parallel by installing Ansible in different volumes. By default, Silo will use the volume `silo.<username>`, e.g. `silo.some.user`.
 
-The name of the volume can be changed by passing the environment variable `SILO_VOLUME`. The volume name will be prepended with `silo.` and automatically be created if it does not exist. It will contain Ansible 2.3.2.0, the latest version as of writing this document. To change the Ansible version in that volume run the switch command:
+The name of the volume can be changed by passing the environment variable `SILO_VOLUME`. The volume name will be prepended with `silo.` and automatically be created if it does not exist. It will contain Ansible 2.4.2.0, the latest version as of writing this document. To change the Ansible version in that volume run the switch command:
 
 ```bash
 $ SILO_VOLUME="1.9.6" ansible-silo --switch v1.9.6-1
 Switched to Ansible 1.9.6
 
 $ ansible-silo --version
-ansible-silo 2.0.3
-ansible 2.3.2.0
+ansible-silo 2.0.4
+ansible 2.4.2.0
 ansible-lint 3.4.20
 ansible installed on volume silo.1.9.6
 
 $ SILO_VOLUME="1.9.6" ansible-silo --version
-ansible-silo 2.0.3
+ansible-silo 2.0.4
 ansible 1.9.6
 ansible-lint 3.4.20
 ansible installed on volume silo.1.9.6
@@ -501,6 +501,15 @@ Ansible Silo uses [SemVer]. Since Ansible Silo is the promise of a stable enviro
 
 ## Version history
 
+### v2.0.4 (Jan 8, 2018)
+
+* Updates default Ansible version to 2.4.2.0.
+* Consequently updates `ansible-lint` to 3.4.20 as 3.4.13 is incompatible.
+* Moves ansible-lint into userspace, so the version in future can/must be managed by the user through `pip`.
+* Adds new `ansible-config` command.
+* Adds support for environment variable `ANSIBLE_VAULT_PASSWORD_FILE`.
+
+
 ### v2.0.3 (Sep 20, 2017)
 
 * Adds Python module [ncclient](https://pypi.python.org/pypi/ncclient/0.5.3) 0.5.3
@@ -566,13 +575,15 @@ There are custom build hooks in [`./hooks`](https://github.com/groupon/ansible-s
 The `ansible-silo-base` image needs to be built and uploaded manually. You can do this by running a command like:
 
 ```bash
-./build -i base -v 1.2.3 -p
+make ansible-silo-base push-base
 ```
+
+The version of the base image is hardcoded in the Makefile. Update accordingly if you plan to release a new base image.
 
 For testing purpose you can also manually build the `ansible-silo` image by running a command like:
 
 ```bash
-./build -v 1.2.3
+VERSION=1.2.3 make ansible-silo
 ```
 
 ### Testing
@@ -580,16 +591,16 @@ For testing purpose you can also manually build the `ansible-silo` image by runn
 Functional tests are implemented through [bats]. (0.4.0) After installing `bats` call:
 
 ```bash
-test-function
+make test-function
 ```
+
+Be aware, tests modify the Ansible version of your default ansible-silo volume!
 
 Code style tests are implemented via [shellcheck] (0.3.5). After installing `shellcheck` call:
 
 ```bash
 make test-style
 ```
-
-Be aware, tests modify the Ansible version of your default ansible-silo volume!
 
 We also validate URLs inside all files for positive results via [awesome_bot] (1.17.1). After installing `awesome_bot` call:
 
@@ -608,7 +619,7 @@ make test
 
 The APK package repository of Alpine only holds the very latest version of a package. This makes it currently impossible to install exact package versions and building of the image would fail once a new version of a package was released.
 
-To ensure we are never forced to update any dependency when we build the silo Docker image, all APK dependencies are stored in the Docker image [ansible-silo-base]. If required, this image can be built and uploaded with the command `./build -i base -v 1.2.3 -p`. Make sure to afterwards update the tag in the [`Dockerfile`] and release a new version of ansible-silo.
+To ensure we are never forced to update any dependency when we build the silo Docker image, all APK dependencies are stored in the Docker image [ansible-silo-base]. If required, this image can be built and uploaded with the command `make ansible-silo-base push-base`. Make sure to afterwards update the tag in the [`Dockerfile`] and release a new version of ansible-silo.
 
 ## License
 
