@@ -583,7 +583,7 @@ The version of the base image is hardcoded in the Makefile. Update accordingly i
 For testing purpose you can also manually build the `ansible-silo` image by running a command like:
 
 ```bash
-VERSION=1.2.3 make ansible-silo
+make ansible-silo
 ```
 
 ### Testing
