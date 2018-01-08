@@ -31,7 +31,7 @@
 FROM grpn/ansible-silo-base:2.0.1
 
 ENV ANSIBLE_VERSION v2.4.2.0-1
-ENV ANSIBLE_LINT_VERSION v3.4.13
+ENV ANSIBLE_LINT_VERSION 3.4.20
 ENV SILO_IMAGE grpn/ansible-silo
 
 ADD silo /silo/
@@ -45,9 +45,6 @@ RUN git clone --progress https://github.com/ansible/ansible.git /silo/userspace/
     cd /silo/userspace/ansible &&\
     git checkout --force ${ANSIBLE_VERSION} 2>&1 &&\
     git submodule update --init --recursive 2>&1 &&\
-    git clone --progress https://github.com/willthames/ansible-lint /silo/userspace/ansible-lint 2>&1  &&\
-    cd /silo/userspace/ansible-lint &&\
-    git checkout --force ${ANSIBLE_LINT_VERSION} 2>&1 &&\
 
 # Create directory for storing ssh ControlPath
     mkdir -p /home/user/.ssh/tmp &&\
@@ -62,7 +59,10 @@ RUN git clone --progress https://github.com/ansible/ansible.git /silo/userspace/
     echo "install-option = --install-scripts=/silo/userspace/bin --prefix=/silo/userspace" >> /etc/pip.conf &&\
 
 # Grant write access to the userspace sub directories
-    chmod 777 /silo/userspace/bin /silo/userspace/lib
+    chmod 777 /silo/userspace/bin /silo/userspace/lib /silo/userspace/lib/python2.7/site-packages &&\
+
+# Install ansible-lint via pip into user-space - means, the version can be managed by the user per pip
+    pip install --no-deps ansible-lint==${ANSIBLE_LINT_VERSION}
 
 ENTRYPOINT ["/silo/entrypoint"]
 

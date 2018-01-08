@@ -68,16 +68,16 @@ check_compatibility() {
     mv /tmp/ansible /silo/userspace/ansible
   fi
 
-  # Clone ansible-lint if not present in userspace. ansible-lint used to be
-  # installed in /silo/ansible-lint until v2.0.3
-  if [ ! -d /silo/userspace/ansible-lint ]; then
-    echo "ansible-lint not found. Installing into user userspace."
-    git clone --progress https://github.com/willthames/ansible-lint\
-      /silo/userspace/ansible-lint 2>&1
-    cd /silo/userspace/ansible-lint || exit
-    git checkout "${ANSIBLE_LINT_VERSION}"
+  # Install ansible-lint if not present in userspace. ansible-lint used to be
+  # installed in /silo/ansible-lint via git until v2.0.3
+  if [[ ! -f "/silo/userspace/bin/ansible-lint" ]]; then
+    echo "ansible-lint is missing, probably due to update of ansible-silo."
+    echo "Since v2.0.4 ansible-lint will be installed in userspace."
+    echo "Installing now..."
+    # Deleting old symlink
+    rm -rf "/silo/userspace/bin/ansible-lint"
+    pip install --no-deps ansible-lint=="${ANSIBLE_LINT_VERSION}"
   fi
-
 }
 
 #######################################
@@ -220,28 +220,6 @@ prepare_user() {
     sed '/^ControlPath/d' "${ssh_conf_orig}" > "${ssh_conf_new}"
   fi
   chown -R "${USER_ID}" "${HOME}/.ssh"
-}
-
-#######################################
-# Makes ansible-lint executable from cloned source
-# Globals:
-#   PYTHONPATH
-# Arguments:
-#   None
-# Returns:
-#   None
-#######################################
-prepare_ansible_lint() {
-  # PYTHONPATH defines the search path for Python module files
-  export PYTHONPATH="/silo/userspace/ansible-lint/lib:${PYTHONPATH}"
-  # Depending on ansible-lint version, the main file differs
-  if [ -f /silo/userspace/ansible-lint/lib/ansiblelint/main/__init__.py ]; then
-    ln -fs /silo/userspace/ansible-lint/lib/ansiblelint/main/__init__.py \
-      /silo/userspace/bin/ansible-lint
-  elif [ -f /silo/userspace/ansible-lint/lib/ansiblelint/__main__.py ]; then
-    ln -fs /silo/userspace/ansible-lint/lib/ansiblelint/__main__.py \
-      /silo/userspace/bin/ansible-lint
-  fi
 }
 
 #######################################
@@ -477,7 +455,6 @@ get_silo_info() {
   prepare_user
   prepare_ansible
   prepare_environment
-  prepare_ansible_lint
 
   # If this is a bundle, a version might have been specified
   if [[ ! -z "${BUNDLE_VERSION}" ]]; then

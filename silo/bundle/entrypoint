@@ -51,7 +51,6 @@ case "$1" in
     prepare_user
     prepare_ansible
     prepare_environment
-    prepare_ansible_lint
     shift
     if [[ $# -eq 0 ]]; then
       run_as_user_with_SSH /bin/bash
