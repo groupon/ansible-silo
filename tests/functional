@@ -350,6 +350,10 @@ test_silo_bundle_function() {
   [[ "${status}" -eq 0 ]]
   [[ -d "$BATS_ANSIBLE_SILO_BUNDLE_PATH" ]]
   [[ -d "$BATS_ANSIBLE_SILO_BUNDLE_PATH/playbooks" ]]
+
+  echo "silo_bundle_extension() {" > "$BATS_ANSIBLE_SILO_BUNDLE_PATH/bundle_extension.sh"
+  echo "  echo \"--env SILO_TEST_EXTENSION_BUNDLE='true'\"" >> "$BATS_ANSIBLE_SILO_BUNDLE_PATH/bundle_extension.sh"
+  echo "}" >> "$BATS_ANSIBLE_SILO_BUNDLE_PATH/bundle_extension.sh"
 }
 
 @test "Bundle build" {
@@ -459,6 +463,13 @@ test_silo_bundle_function() {
   unset silo_test_function_all
   unset _silo_test_function_standalone
   unset test_silo_bundle_function
+}
+
+@test "Bundle extension loading" {
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/$BATS_ANSIBLE_SILO_BUNDLE_NAME" \
+    --shell printenv SILO_TEST_EXTENSION_BUNDLE
+  [[ "${status}" -eq 0 ]]
+  [[ "${lines[0]}" == "true"* ]]
 }
 
 @test "Bundle function loading" {
