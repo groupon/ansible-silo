@@ -19,7 +19,13 @@ docker run -it --rm -v "$HOME/bin:/silo_install_path" -i {{ BUNDLE_IMAGE }}:late
 
 Now you'll be able to simply call `{{ BUNDLE_IMAGE_SHORT }}` to execute your playbooks.
 
-If you have the need to inject additional parameters into the docker call to {{ BUNDLE_IMAGE_SHORT }} like mounting additional docker volumes or passing in environment variables you can do so by defining functions in either `/etc/ansible/ansible-silo/{{ BUNDLE_IMAGE_SHORT }}` or `$HOME/.{{ BUNDLE_IMAGE_SHORT }}`. All contained bash functions matching the pattern `{{ BUNDLE_IMAGE_SHORT }}_*` will be executed and their return value (`echo`) will be appended to the docker command.
+If you have the need to inject additional parameters into the docker call to {{ BUNDLE_IMAGE_SHORT }} like mounting additional docker volumes or passing in environment variables you can do this in two ways:
+
+1. In the bundle: Add custom functions to the file `./bundle_extension.sh`.
+
+2. On the host: Add functions in either `/etc/ansible/ansible-silo/{{ BUNDLE_IMAGE_SHORT }}` or `$HOME/.{{ BUNDLE_IMAGE_SHORT }}`.
+
+All contained bash functions matching the pattern `{{ BUNDLE_IMAGE_SHORT }}_*` will be executed and their return value (`echo`) will be appended to the docker command.
 
 
 # Description of files
@@ -29,6 +35,11 @@ If you have the need to inject additional parameters into the docker call to {{ 
 A bash script to trigger the build process. This is where you can add pre-build steps.
 
 Execute this script to build your Docker image.
+
+
+## bundle_extension.sh
+
+A placeholder file which can be filled with custom functions. Functions starting with `silo_*` or `{{ BUNDLE_IMAGE_SHORT }}_*` will be executed and their return value (`echo`) will be appended to the docker command which invokes the container. For example this can be used to mount additional volumes. See [this file](https://github.com/groupon/ansible-silo/blob/master/silo/runner_functions.sh) for examples.
 
 
 ## Dockerfile

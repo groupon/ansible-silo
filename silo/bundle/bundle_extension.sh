@@ -1,3 +1,9 @@
+#!/usr/bin/env bash
+#
+# Functions in this file will be available in the runner scripts of this
+# bundle. Functions starting with silo_* or _silo_* will be executed and
+# their output will be appended to the docker starting command of the bundle.
+#
 # Copyright (c) 2017, Groupon, Inc.
 # All rights reserved.
 #
@@ -28,30 +34,13 @@
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# This image is based on ansible-silo
-FROM grpn/ansible-silo:{{ SILO_VERSION }}
-
-# Define which Ansible version we want to use. Unlike the base silo image, this image has a hardcoded Ansible version:
-ENV ANSIBLE_VERSION {{ ANSIBLE_VERSION }}
-
-# Define the name of the image. We need to do this since the name is not available
-# from inside the container but we use it in some scripts.
-ENV SILO_IMAGE {{ BUNDLE_IMAGE }}
-
-# Switch to above defined Ansible version
-RUN /silo/entrypoint --switch "${ANSIBLE_VERSION}" silent
-
-# Override functionality
-ADD bundle_extension.sh /silo/bundle_extension.sh
-ADD entrypoint /silo/entrypoint
-RUN rm /silo/bin/*
-ADD bin /silo/bin/
-RUN chmod +x /silo/entrypoint
-
-# Add playbooks etc.
-ADD playbooks /home/user/playbooks
-RUN chmod -R 777 /home/user/playbooks
-
-# Set a version for your bundle. This will be shown when your bundle is called with the --version flag
-ARG v
-ENV BUNDLE_VERSION ${v}
+# Example function, providing persistant storage through a Docker volume.
+# The volume {{ BUNDLE_IMAGE_SHORT }}_persistant_storage is created and
+# mounted, which privides persistance for the path
+# /tmp/{{ BUNDLE_IMAGE_SHORT }}
+#{{ BUNDLE_IMAGE_SHORT }}_persistant_storage() {
+#  local volume="{{ BUNDLE_IMAGE_SHORT }}_persistant_storage"
+#  docker volume create "${volume}" > /dev/null
+#  echo "--volume '${volume}:/tmp/{{ BUNDLE_IMAGE_SHORT }}'"
+#}
+:

@@ -375,6 +375,14 @@ render_template() {
   template="$(< "$1")"
   if [[ "${template}" == *"{{ RUNNER_FUNCTIONS }}"* ]]; then
     runner_functions="$(< /silo/runner_functions.sh)"
+
+    # If bundle_extension.sh exist (=this is a bundle), we also attache the
+    # contents of that file.
+    if [[ -f "/silo/bundle_extension.sh" ]]; then
+      runner_functions+=$'\n'
+      runner_functions+="$(< /silo/bundle_extension.sh)"
+    fi
+
     template="${template//{{ RUNNER_FUNCTIONS \}\}/${runner_functions}}"
   fi
 
@@ -520,6 +528,8 @@ bundle_create() {
   render_template "/silo/bundle/README.md" "/silo/bundle/README.md"
   render_template "/silo/runner" "/silo/runner"
   render_template "/silo/bundle/bin/starter" "/silo/bundle/bin/starter"
+  render_template "/silo/bundle/bundle_extension.sh"\
+    "/silo/bundle/bundle_extension.sh"
   mv "/silo/bundle/bin/starter" "/silo/bundle/bin/${BUNDLE_IMAGE_SHORT}"
   run_as_user cp -R "/silo/bundle" "${bundle_location}"
 }
