@@ -365,7 +365,7 @@ switch_ansible_version() {
 #   None
 #######################################
 render_template() {
-  local template runner_functions
+  local template runner_functions bundle_safe
 
   if [[ ! -f "$1" ]]; then
     echo "File $1 does not exists or is not a file" >&2
@@ -434,8 +434,12 @@ render_template() {
 
   # BUNDLE_IMAGE_SHORT is defined in silo/entrypoint and contains the basename
   # of the bundle Docker image.
+  # BUNDLE_IMAGE_SHORT_SAFE is a safe version, replacing problematic characters
+  # in bundle names.
   if [[ ! -z "${BUNDLE_IMAGE_SHORT}" ]]; then
+    bundle_safe="${BUNDLE_IMAGE_SHORT/-/_}"
     template="${template//{{ BUNDLE_IMAGE_SHORT \}\}/${BUNDLE_IMAGE_SHORT}}"
+    template="${template//{{ BUNDLE_IMAGE_SHORT_SAFE \}\}/${bundle_safe}}"
   fi
 
   # BUNDLE_VERSION is set as buld parameter "v" in docker-build of the bundle.
