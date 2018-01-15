@@ -365,7 +365,7 @@ switch_ansible_version() {
 #   None
 #######################################
 render_template() {
-  local template runner_functions
+  local template runner_functions bundle_safe
 
   if [[ ! -f "$1" ]]; then
     echo "File $1 does not exists or is not a file" >&2
@@ -434,8 +434,12 @@ render_template() {
 
   # BUNDLE_IMAGE_SHORT is defined in silo/entrypoint and contains the basename
   # of the bundle Docker image.
+  # BUNDLE_IMAGE_SHORT_SAFE is a safe version, replacing problematic characters
+  # in bundle names.
   if [[ ! -z "${BUNDLE_IMAGE_SHORT}" ]]; then
+    bundle_safe=$(safe_string "${BUNDLE_IMAGE_SHORT}")
     template="${template//{{ BUNDLE_IMAGE_SHORT \}\}/${BUNDLE_IMAGE_SHORT}}"
+    template="${template//{{ BUNDLE_IMAGE_SHORT_SAFE \}\}/${bundle_safe}}"
   fi
 
   # BUNDLE_VERSION is set as buld parameter "v" in docker-build of the bundle.
@@ -562,4 +566,22 @@ create_runner() {
     command+=" \"${var}\""
   done
   echo "${command}"
+}
+
+#######################################
+# Replaces unsafe characters in a string. Only alphanumeric characters, _
+# and . are allowed. Other characters will be replaces with underscores.
+# Globals:
+#   BASH_REMATCH
+# Arguments:
+#   string to clean up
+# Returns:
+#   Input string with replaces characters
+#######################################
+safe_string() {
+  local string="$1"
+  while [[ $string =~ (.*)[^A-Za-z0-9._]+(.*) ]]; do
+    string=${BASH_REMATCH[1]}_${BASH_REMATCH[2]}
+  done
+  echo "$string"
 }

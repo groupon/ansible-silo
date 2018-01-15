@@ -35,12 +35,12 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 # Example function, providing persistant storage through a Docker volume.
-# The volume {{ BUNDLE_IMAGE_SHORT }}_persistant_storage is created and
+# The volume {{ BUNDLE_IMAGE_SHORT_SAFE }}_persistant_storage is created and
 # mounted, which privides persistance for the path
-# /tmp/{{ BUNDLE_IMAGE_SHORT }}
-#{{ BUNDLE_IMAGE_SHORT }}_persistant_storage() {
-#  local volume="{{ BUNDLE_IMAGE_SHORT }}_persistant_storage"
+# /tmp/{{ BUNDLE_IMAGE_SHORT_SAFE }}
+#{{ BUNDLE_IMAGE_SHORT_SAFE }}_persistant_storage() {
+#  local volume="{{ BUNDLE_IMAGE_SHORT_SAFE }}_persistant_storage"
 #  docker volume create "${volume}" > /dev/null
-#  echo "--volume '${volume}:/tmp/{{ BUNDLE_IMAGE_SHORT }}'"
+#  echo "--volume '${volume}:/tmp/{{ BUNDLE_IMAGE_SHORT_SAFE }}'"
 #}
 :
