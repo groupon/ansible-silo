@@ -437,7 +437,7 @@ render_template() {
   # BUNDLE_IMAGE_SHORT_SAFE is a safe version, replacing problematic characters
   # in bundle names.
   if [[ ! -z "${BUNDLE_IMAGE_SHORT}" ]]; then
-    bundle_safe="${BUNDLE_IMAGE_SHORT/-/_}"
+    bundle_safe=$(safe_string "${BUNDLE_IMAGE_SHORT}")
     template="${template//{{ BUNDLE_IMAGE_SHORT \}\}/${BUNDLE_IMAGE_SHORT}}"
     template="${template//{{ BUNDLE_IMAGE_SHORT_SAFE \}\}/${bundle_safe}}"
   fi
@@ -566,4 +566,22 @@ create_runner() {
     command+=" \"${var}\""
   done
   echo "${command}"
+}
+
+#######################################
+# Replaces unsafe characters in a string. Only alphanumeric characters, _
+# and . are allowed. Other characters will be replaces with underscores.
+# Globals:
+#   BASH_REMATCH
+# Arguments:
+#   string to clean up
+# Returns:
+#   Input string with replaces characters
+#######################################
+safe_string() {
+  local string="$1"
+  while [[ $string =~ (.*)[^A-Za-z0-9._]+(.*) ]]; do
+    string=${BASH_REMATCH[1]}_${BASH_REMATCH[2]}
+  done
+  echo "$string"
 }
