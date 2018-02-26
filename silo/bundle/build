@@ -43,6 +43,13 @@ if [[ -f "playbooks/requirements.yml" ]]; then
   cd ..
 fi
 
+# If there is a PIP requirements file, install it using pip
+if [[ -f "playbooks/requirements.txt" ]]; then
+  cd playbooks || exit
+  pip install -r requirements.txt || exit
+  cd ..
+fi
+
 # Build as "latest" image
 docker build --build-arg "v=${bundle_version}" \
   --tag "${bundle_image}:${bundle_version}" . || exit
