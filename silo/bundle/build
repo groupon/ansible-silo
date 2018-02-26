@@ -43,9 +43,24 @@ if [[ -f "playbooks/requirements.yml" ]]; then
   cd ..
 fi
 
+# If there is a PIP requirements file, install it using pip
+if [[ -f "playbooks/requirements.txt" ]]; then
+  cd playbooks || exit
+  pip install -r requirements.txt || exit
+  cd ..
+fi
+
 # Build as "latest" image
 docker build --build-arg "v=${bundle_version}" \
   --tag "${bundle_image}:${bundle_version}" . || exit
 
 docker tag "$(docker images --quiet "${bundle_image}:${bundle_version}")" \
   "${bundle_image}:latest"  || exit
+
+# Show installation instructions
+echo ""
+echo "To install '${bundle_image}:${bundle_version}' for just your user, run the following command:"
+echo "  docker run --interactive --tty --rm --volume \"${HOME}/bin:/silo_install_path\" ${bundle_image}:${bundle_version} --install"
+echo ""
+echo "To install '${bundle_image}:${bundle_version}' for all users, run the following command:"
+echo "  docker run --interactive --tty --rm --volume \"/usr/local/bin:/silo_install_path\" ${bundle_image}:${bundle_version} --install"
