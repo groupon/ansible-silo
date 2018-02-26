@@ -28,7 +28,7 @@
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-FROM grpn/ansible-silo-base:2.0.1
+FROM grpn/ansible-silo-base:3.0.0
 
 ENV ANSIBLE_VERSION v2.4.2.0-1
 ENV ANSIBLE_LINT_VERSION 3.4.20
@@ -36,21 +36,24 @@ ENV SILO_IMAGE grpn/ansible-silo
 
 ADD silo /silo/
 
-# Install pip modules from requirements file
-ADD pip/requirements /tmp/pip-requirements.txt
-RUN pip install -r /tmp/pip-requirements.txt
-
 # Installing Ansible from source
 RUN git clone --progress https://github.com/ansible/ansible.git /silo/userspace/ansible 2>&1 &&\
     cd /silo/userspace/ansible &&\
     git checkout --force ${ANSIBLE_VERSION} 2>&1 &&\
-    git submodule update --init --recursive 2>&1 &&\
+    git submodule update --init --recursive 2>&1
+
+# Install pip modules from requirements file
+ADD pip/requirements /tmp/pip-requirements.txt
+RUN pip install -r /tmp/pip-requirements.txt
 
 # Create directory for storing ssh ControlPath
-    mkdir -p /home/user/.ssh/tmp &&\
+RUN mkdir -p /home/user/.ssh/tmp &&\
 
 # Give the user a custom shell prompt
     echo 'export PS1="[ansible-silo $SILO_VERSION|\w]\\$ "' > /home/user/.bashrc &&\
+
+# Add alias for 'ls -l'
+    echo "alias ll='ls -l'" >> /home/user/.bashrc &&\
 
 # Set default control path in ssh config
     echo "ControlPath  /home/user/.ssh/tmp/%h_%p_%r" > /etc/ssh/ssh_config &&\
