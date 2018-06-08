@@ -9,6 +9,11 @@ rvm: 2.4.1
 services:
   - docker
 
+addons:
+  apt:
+    sources:
+      - debian-sid
+
 before_script:
   - scversion="stable"
   - wget "https://storage.googleapis.com/shellcheck/shellcheck-$scversion.linux.x86_64.tar.xz"
