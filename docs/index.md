@@ -4,7 +4,7 @@ asciinema: true
 ---
 
 [![GitHub release](https://img.shields.io/github/tag/groupon/ansible-silo.svg?style=flat&colorB=4183C4&label=Latest%20release)](https://github.com/groupon/ansible-silo/releases/latest)
-[![Commits since v2.1.2](https://img.shields.io/github/commits-since/groupon/ansible-silo/v2.1.2.svg?style=flat&colorB=4183C4&label=Commits%20since%20v2.1.2)](https://github.com/groupon/ansible-silo/commits/master)
+[![Commits since v2.2.0](https://img.shields.io/github/commits-since/groupon/ansible-silo/v2.2.0.svg?style=flat&colorB=4183C4&label=Commits%20since%20v2.2.0)](https://github.com/groupon/ansible-silo/commits/master)
 [![GitHub Stars](https://img.shields.io/github/stars/groupon/ansible-silo.svg?style=flat&colorB=4183C4&label=GitHub%20Stars)](https://github.com/groupon/ansible-silo/stargazers)
 [![Build Status](https://img.shields.io/travis/groupon/ansible-silo.svg?style=flat&label=Tests)](https://travis-ci.org/groupon/ansible-silo)
 [![Docker Build Status](https://img.shields.io/docker/build/grpn/ansible-silo.svg?style=flat&label=Build)](https://hub.docker.com/r/grpn/ansible-silo/builds/)
@@ -135,7 +135,7 @@ You need to be on a system where you have installed Docker (minimum version 1.9)
 To install the `ansible-silo` executable along with Ansible replacements run:
 
 ```bash
-docker run --interactive --tty --rm --volume "$HOME/bin:/silo_install_path" grpn/ansible-silo:2.1.2 --install
+docker run --interactive --tty --rm --volume "$HOME/bin:/silo_install_path" grpn/ansible-silo:2.2.0 --install
 ```
 
 This command mounts your `~/bin` directory so Silo can place its executables there. Select any location you like but make sure it is in your `$PATH`.
@@ -143,7 +143,7 @@ This command mounts your `~/bin` directory so Silo can place its executables the
 To install `ansibe-silo` for all users you can mount `/usr/local/bin`:
 
 ```bash
-docker run --interactive --tty --rm --volume "/usr/local/bin:/silo_install_path" grpn/ansible-silo:2.1.2 --install
+docker run --interactive --tty --rm --volume "/usr/local/bin:/silo_install_path" grpn/ansible-silo:2.2.0 --install
 ```
 
 ### Uninstall ansible-silo
@@ -283,9 +283,9 @@ Which will show something along these lines:
 
     Runner file already exists.
 
-    Executing: /tmp/ansible-silo-runner-2.1.2 "--shell" "exit"
+    Executing: /tmp/ansible-silo-runner-2.2.0 "--shell" "exit"
 
-    Executing: /usr/bin/docker run --interactive --tty --rm --volume "/home/daniel.schroeder/ansible-silo:/home/user/playbooks" --volume "silo.some.user:/silo/userspace" --env "SILO_VOLUME=silo.some.user" --hostname "silo.example.com" --volume /var/run/docker.sock:/var/run/docker.sock --privileged  --volume "/home/some.user/.ssh:/home/user/._ssh" --volume "/tmp/ssh-6k3r1bCpCi":"/tmp/ssh-6k3r1bCpCi" --env SSH_AUTH_SOCK --env USER_NAME="some.user" --env USER_ID="1234" "grpn/ansible-silo:2.1.2" "--shell" "exit"
+    Executing: /usr/bin/docker run --interactive --tty --rm --volume "/home/daniel.schroeder/ansible-silo:/home/user/playbooks" --volume "silo.some.user:/silo/userspace" --env "SILO_VOLUME=silo.some.user" --hostname "silo.example.com" --volume /var/run/docker.sock:/var/run/docker.sock --privileged  --volume "/home/some.user/.ssh:/home/user/._ssh" --volume "/tmp/ssh-6k3r1bCpCi":"/tmp/ssh-6k3r1bCpCi" --env SSH_AUTH_SOCK --env USER_NAME="some.user" --env USER_ID="1234" "grpn/ansible-silo:2.2.0" "--shell" "exit"
 
 The first _Executing_ line shows the location of the generated runner script. The last line shows the Docker command executed by the runner script.
 
@@ -324,7 +324,7 @@ Specifies the name of the used Silo volume. This defaults to the name of the cur
 
 ```bash
 $ ansible-silo --version
-ansible-silo 2.1.2
+ansible-silo 2.2.0
 ansible 2.4.2.0
 ansible-lint 3.4.20
 ansible installed on volume silo.some.user
@@ -366,7 +366,7 @@ You can log into the running Silo container by calling Silo with the `--shell` o
 
 ```bash
 $ ansible-silo --shell
-[ansible-silo 2.1.2|~/playbooks]$
+[ansible-silo 2.2.0|~/playbooks]$
 ```
 
 All arguments after the `--shell` option will be directly executed.
@@ -395,13 +395,13 @@ $ SILO_VOLUME="1.9.6" ansible-silo --switch v1.9.6-1
 Switched to Ansible 1.9.6
 
 $ ansible-silo --version
-ansible-silo 2.1.2
+ansible-silo 2.2.0
 ansible 2.4.2.0
 ansible-lint 3.4.20
 ansible installed on volume silo.1.9.6
 
 $ SILO_VOLUME="1.9.6" ansible-silo --version
-ansible-silo 2.1.2
+ansible-silo 2.2.0
 ansible 1.9.6
 ansible-lint 3.4.20
 ansible installed on volume silo.1.9.6
@@ -500,6 +500,16 @@ You can see the actual generated and executed `docker run` commands and all defi
 Ansible Silo uses [SemVer]. Since Ansible Silo is the promise of a stable environment, we consider the smallest update of any contained dependency to be a potential breaking change and indicate such change by incrementing the major version number.
 
 ## Version history
+
+### v2.2.0 (Jun 8, 2018)
+
+* Adds support for non-tty environments.
+* Adds `ansible-inventory` command.
+* Adds support for ssh socket forwarded via [uber/ssh-agent-forward](https://hub.docker.com/r/uber/ssh-agent-forward/) (pinata).
+
+### v2.1.1 (Jan 15, 2018)
+
+* Fixes name of example function in bundle extension.
 
 ### v2.1.0 (Jan 9, 2018)
 

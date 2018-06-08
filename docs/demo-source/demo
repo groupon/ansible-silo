@@ -85,9 +85,9 @@ pec "ansible --version || ansible-silo --version"
 
 info "Let's install Ansible Silo:"
 p "docker run --interactive --tty --rm --volume\
- \"\$HOME/bin:/silo_install_path\" grpn/ansible-silo:2.1.2 --install"
+ \"\$HOME/bin:/silo_install_path\" grpn/ansible-silo:2.2.0 --install"
 docker run --interactive --tty --rm --volume "$HOME/bin:/silo_install_path" \
-  grpn/ansible-silo:2.1.2 --install
+  grpn/ansible-silo:2.2.0 --install
 
 info "Now Ansible is installed in \$HOME/bin:"
 pec "which ansible"

@@ -19,7 +19,10 @@ Commands:
   ansible-console       Calls ansible-console
   ansible-doc           Calls ansible-doc
   ansible-galaxy        Calls ansible-galaxy
+  ansible-inventory     Calls ansible-inventory
   ansible-lint          Calls ansible-lint
   ansible-playbook      Calls ansible-playbook
   ansible-pull          Calls ansible-pull
   ansible-vault         Calls ansible-vault
+
+ansible-config

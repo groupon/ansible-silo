@@ -12,7 +12,7 @@ fi
 ansible-silo --reset
 docker kill example.com && docker rm example.com
 docker rmi -f alpine:3.6 \
-              grpn/ansible-silo:2.1.2 \
+              grpn/ansible-silo:2.2.0 \
               grpn/ansible-silo:latest \
               grpn/ansible-silo-base:2.0.1 \
               grpn/ansible-silo-base:latest \
