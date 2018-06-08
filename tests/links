@@ -35,10 +35,16 @@ whitelist[1]="github.com/groupon/ansible-silo/blob/master"
 whitelist[2]="https://storage.googleapis.com/shellcheck"
 w=$(printf ",%s" "${whitelist[@]}")
 
+./shellcheck-stable
+
 # shellcheck disable=SC2046
 awesome_bot --allow-redirect --allow-dupe --skip-save-results \
   $(find . \
-    -path ./.git \
+    \( \
+      -path "./.git" \
+      -o \
+      -path "./shellcheck*" \
+    \) \
     -prune \
     -o \
     -type f \
