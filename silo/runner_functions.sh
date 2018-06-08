@@ -98,6 +98,9 @@ silo_ssh_config() {
 #######################################
 # Mounts location of a potentially forwarded ssh key and forwards the
 # SSH_AUTH_SOCK env var
+# As socket forwarding is still not supported on Docker 4 Mac, this function
+# has support for pinata-ssh-mount. See:
+# https://github.com/groupon/ansible-silo/issues/2
 # Globals:
 #   SSH_AUTH_SOCK
 # Arguments:
@@ -105,18 +108,27 @@ silo_ssh_config() {
 # Returns:
 #   --env and --volume options for mounting and forwarding the SSH_AUTH_SOCK
 #######################################
-silo_ssh_key_forwarding() {
-  local auth_sock_link_dir auth_sock_dir return=""
 
-  if [[ ! -z "${SSH_AUTH_SOCK}" ]]; then
-    if [[ -L "${SSH_AUTH_SOCK}" ]]; then
-      auth_sock_link_dir="$(dirname "$(cd "${SSH_AUTH_SOCK}" && pwd -P)")"
-      return+="--volume \"${auth_sock_link_dir}\":\"${auth_sock_link_dir}\" "
+silo_ssh_key_forwarding() {
+  local auth_sock_link_dir auth_sock_dir forwarding_status return=""
+
+  if command -v pinata-ssh-mount >/dev/null 2>&1; then
+    forwarding_status=$(docker inspect -f "{{.State.Running}}" pinata-sshd)
+    if [[ "$forwarding_status" == "true" ]]; then
+      return=$(pinata-ssh-mount)
     fi
-    auth_sock_dir="$(dirname "${SSH_AUTH_SOCK}")"
-    return+="--volume \"${auth_sock_dir}\":\"${auth_sock_dir}\" "
-    return+="--env SSH_AUTH_SOCK"
+  else
+    if [[ ! -z "${SSH_AUTH_SOCK}" ]]; then
+      if [[ -L "${SSH_AUTH_SOCK}" ]]; then
+        auth_sock_link_dir="$(dirname "$(cd "${SSH_AUTH_SOCK}" && pwd -P)")"
+        return+="--volume \"${auth_sock_link_dir}\":\"${auth_sock_link_dir}\" "
+      fi
+      auth_sock_dir="$(dirname "${SSH_AUTH_SOCK}")"
+      return+="--volume \"${auth_sock_dir}\":\"${auth_sock_dir}\" "
+      return+="--env SSH_AUTH_SOCK"
+    fi
   fi
+
   echo "${return}"
 }
 
