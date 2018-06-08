@@ -12,12 +12,10 @@ services:
 addons:
   apt:
     sources:
-      - sourceline: 'ppa:duggan/bats'
+      - sourceline: ppa:duggan/bats
     packages:
       - bats
       - bc
-      - make
-      - realpath
 
 before_script:
   - scversion="stable"
@@ -26,7 +24,7 @@ before_script:
   - shellcheck() { "shellcheck-$scversion/shellcheck" "$@"; }
   - gem install awesome_bot
   - npm install -g dockerfilelint
-  - sudo add-apt-repository ppa:duggan/bats --yes
+  - sudo apt-get install -qq realpath make
   - ssh-keygen -b 2048 -t rsa -f ~/.ssh/id_rsa -q -N ""
   - eval `ssh-agent -s`
   - ssh-add ~/.ssh/id_rsa
@@ -39,9 +37,9 @@ script:
 
 after_success:
   - >
-    [ -n "$TRAVIS_TAG" ]
+    [ -n "${TRAVIS_TAG}" ]
     && curl -X POST -H "Content-Type: application/json"
-    --data "{\"source_type\": \"Tag\", \"source_name\": \"$TRAVIS_TAG\"}"
+    --data "{\"source_type\": \"Tag\", \"source_name\": \"${TRAVIS_TAG}\"}"
     https://registry.hub.docker.com/u/grpn/ansible-silo/trigger/$DOCKER_HUB_TOKEN/
 
 ...

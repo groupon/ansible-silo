@@ -32,6 +32,7 @@
 
 whitelist[0]="raw.githubusercontent.com/paxtonhare/demo-magic"
 whitelist[1]="github.com/groupon/ansible-silo/blob/master"
+whitelist[2]="https://storage.googleapis.com/shellcheck"
 w=$(printf ",%s" "${whitelist[@]}")
 
 # shellcheck disable=SC2046
