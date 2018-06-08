@@ -10,9 +10,10 @@ services:
   - docker
 
 before_script:
-  - sudo apt-get install cabal-install
-  - cabal update
-  - cabal install shellcheck
+  - scversion="stable"
+  - wget "https://storage.googleapis.com/shellcheck/shellcheck-$scversion.linux.x86_64.tar.xz"
+  - tar --xz -xvf "shellcheck-$scversion.linux.x86_64.tar.xz"
+  - shellcheck() { "shellcheck-$scversion/shellcheck" "$@"; }
   - gem install awesome_bot
   - npm install -g dockerfilelint
   - sudo add-apt-repository ppa:duggan/bats --yes
