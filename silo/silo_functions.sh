@@ -109,7 +109,7 @@ prepare_ansible() {
   # If we have a mounted ansible.cfg ...
   if [[ -f "/home/user/playbooks/ansible.cfg" ]]; then
     # and if it contains a log_path option
-    if grep -q "^log_path\s*=" "/home/user/playbooks/ansible.cfg"; then
+    if grep -q "^log_path\\s*=" "/home/user/playbooks/ansible.cfg"; then
       # shellcheck disable=SC1090
       source <(grep log_path /home/user/playbooks/ansible.cfg \
         | sed 's/ *= */=/g')

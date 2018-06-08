@@ -12,18 +12,19 @@ services:
 addons:
   apt:
     sources:
-      - debian-sid
+      - sourceline: ppa:duggan/bats
     packages:
-      - shellcheck
+      - bats
+      - bc
 
 before_script:
+  - scversion="stable"
+  - wget "https://storage.googleapis.com/shellcheck/shellcheck-$scversion.linux.x86_64.tar.xz"
+  - tar --xz -xvf "shellcheck-$scversion.linux.x86_64.tar.xz"
+  - shellcheck() { "shellcheck-$scversion/shellcheck" "$@"; }
   - gem install awesome_bot
   - npm install -g dockerfilelint
-  - sudo add-apt-repository ppa:duggan/bats --yes
-  - >-
-    sudo apt-get install -qq realpath \
-                             bats \
-                             make
+  - sudo apt-get install -qq realpath make
   - ssh-keygen -b 2048 -t rsa -f ~/.ssh/id_rsa -q -N ""
   - eval `ssh-agent -s`
   - ssh-add ~/.ssh/id_rsa
@@ -36,9 +37,9 @@ script:
 
 after_success:
   - >
-    [ -n "$TRAVIS_TAG" ]
+    [ -n "${TRAVIS_TAG}" ]
     && curl -X POST -H "Content-Type: application/json"
-    --data "{\"source_type\": \"Tag\", \"source_name\": \"$TRAVIS_TAG\"}"
+    --data "{\"source_type\": \"Tag\", \"source_name\": \"${TRAVIS_TAG}\"}"
     https://registry.hub.docker.com/u/grpn/ansible-silo/trigger/$DOCKER_HUB_TOKEN/
 
 ...

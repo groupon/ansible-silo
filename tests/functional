@@ -599,3 +599,7 @@ test_silo_bundle_function() {
   rm -rf "$BATS_ANSIBLE_SILO_VAULT_PASSWORD_FILE"
   unset ANSIBLE_VAULT_PASSWORD_FILE
 }
+
+@test "Run ansible without tty" {
+  true | ansible --version
+}

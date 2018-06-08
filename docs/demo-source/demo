@@ -58,13 +58,13 @@ first=false
 
 info() {
   if $first; then
-    echo -e "\n"
+    echo -e "\\n"
   else
     first=true
   fi
   sleep "$PROMPT_TIMEOUT"
   printf "⭐ "
-  printf "%b $1\n" "${CYAN}" | pv -qL $((TYPE_SPEED+(-2 + RANDOM%5)));
+  printf "%b $1\\n" "${CYAN}" | pv -qL $((TYPE_SPEED+(-2 + RANDOM%5)));
 }
 
 pec() {
@@ -85,9 +85,9 @@ pec "ansible --version || ansible-silo --version"
 
 info "Let's install Ansible Silo:"
 p "docker run --interactive --tty --rm --volume\
- \"\$HOME/bin:/silo_install_path\" grpn/ansible-silo:2.0.0 --install"
+ \"\$HOME/bin:/silo_install_path\" grpn/ansible-silo:2.1.2 --install"
 docker run --interactive --tty --rm --volume "$HOME/bin:/silo_install_path" \
-  grpn/ansible-silo:2.0.0 --install
+  grpn/ansible-silo:2.1.2 --install
 
 info "Now Ansible is installed in \$HOME/bin:"
 pec "which ansible"

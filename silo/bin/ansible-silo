@@ -44,7 +44,7 @@
 #   None
 #######################################
 silo() {
-  local SILO_IMAGE SILO_IMAGE_SHORT command var
+  local SILO_IMAGE SILO_IMAGE_SHORT command tty var
 
   # If an .ansible-silo file exists in the current working directory, load it
   if [[ -f ".ansible-silo" ]]; then
@@ -69,11 +69,15 @@ silo() {
   SILO_IMAGE="{{ SILO_IMAGE }}"
   SILO_IMAGE_SHORT="${SILO_IMAGE##*/}"
 
-  # SILO_VERSION is set as buld parameter "v" in docker-build
+  # SILO_VERSION is set as build parameter "v" in docker-build
   # It can be defined by the user as environment var to run a specific
   # ansible-silo version
   if [[ -z "${SILO_VERSION}" ]]; then
     SILO_VERSION="{{ SILO_VERSION }}"
+  fi
+
+  if [ -t 0 ]; then
+    tty="--tty"
   fi
 
   if [[ "$1" == "--update" ]]; then
@@ -85,8 +89,9 @@ silo() {
       # absolute path to the parent directory of this script.
       SILO_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     fi
-    docker run -it --rm -v "${SILO_PATH}:/silo_install_path" \
-      -i grpn/ansible-silo:latest --install
+
+    docker run --interactive --rm --volume "${SILO_PATH}:/silo_install_path" \
+      ${tty} grpn/ansible-silo:latest --install
     exit
   elif [[ "$1" == "--reset" ]]; then
     docker volume rm "silo.${SILO_VOLUME:-$(whoami)}"
@@ -104,7 +109,7 @@ silo() {
   runner_path="/tmp/${SILO_IMAGE_SHORT}-runner-${SILO_VERSION}"
   if [[ -f "${runner_path}" ]]; then
     if [[ ! -z "${SILO_DEBUG}" ]]; then
-      echo -e "Runner file already exists.\n"
+      echo -e "Runner file already exists.\\n"
     fi
     command="${runner_path}"
     for var in "$@"; do
@@ -112,16 +117,16 @@ silo() {
     done
   else
     if [[ ! -z "${SILO_DEBUG}" ]]; then
-      echo -e "Requesting runner creation. Starting container with --run.\n"
+      echo -e "Requesting runner creation. Starting container with --run.\\n"
     fi
-    command="$(docker run -it --rm -v "/tmp:/tmp" -i \
+    command="$(docker run --interactive ${tty} --rm --volume "/tmp:/tmp" \
       "${SILO_IMAGE}:${SILO_VERSION}" --run "$@")"
   fi
 
   if [[ ! -z "${SILO_DEBUG}" ]]; then
-    echo -e "Executing: ${command}\n"
+    echo -e "Executing: ${command}\\n"
   fi
-  bash -c "$(echo "${command}" | tr -d "\r")"
+  bash -c "$(echo "${command}" | tr -d "\\r")"
   exit
 }
 
