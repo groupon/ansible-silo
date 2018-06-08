@@ -9,14 +9,8 @@ rvm: 2.4.1
 services:
   - docker
 
-addons:
-  apt:
-    sources:
-      - debian-sid
-    packages:
-      - cabal-install
-
 before_script:
+  - sudo install cabal-install
   - cabal update
   - cabal install shellcheck
   - gem install awesome_bot
