@@ -16,6 +16,8 @@ addons:
     packages:
       - bats
       - bc
+      - make
+      - realpath
 
 before_script:
   - scversion="stable"
@@ -25,9 +27,6 @@ before_script:
   - gem install awesome_bot
   - npm install -g dockerfilelint
   - sudo add-apt-repository ppa:duggan/bats --yes
-  - >-
-    sudo apt-get install -qq realpath \
-                             make
   - ssh-keygen -b 2048 -t rsa -f ~/.ssh/id_rsa -q -N ""
   - eval `ssh-agent -s`
   - ssh-add ~/.ssh/id_rsa
