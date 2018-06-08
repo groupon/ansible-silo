@@ -119,7 +119,7 @@ run() {
 
   # SILO_DEBUG can be set by the user to enable debug output
   if [[ ! -z "${SILO_DEBUG}" ]]; then
-    echo -e "Executing: ${command}\n"
+    echo -e "Executing: ${command}\\n"
   fi
 
   /bin/bash -c "${command}"

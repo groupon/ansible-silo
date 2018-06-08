@@ -69,7 +69,7 @@ ansible_silo_bundle_starter() {
   runner_path="/tmp/${BUNDLE_IMAGE_SHORT}-runner-${BUNDLE_VERSION}"
   if [[ -f "${runner_path}" ]]; then
     if [[ ! -z "${SILO_DEBUG}" ]]; then
-      echo -e "Runner file already exists.\n"
+      echo -e "Runner file already exists.\\n"
     fi
     command="${runner_path}"
     # shellcheck disable=SC2031
@@ -78,7 +78,7 @@ ansible_silo_bundle_starter() {
     done
   else
     if [[ ! -z "${SILO_DEBUG}" ]]; then
-      echo -e "Requesting runner creation. Starting container with --run.\n"
+      echo -e "Requesting runner creation. Starting container with --run.\\n"
     fi
     # shellcheck disable=SC2031
     command="$(docker run --interactive ${tty} --rm --volume "/tmp:/tmp" \
@@ -89,7 +89,7 @@ ansible_silo_bundle_starter() {
     echo "Executing: ${command}"
   fi
 
-  bash -c "$(echo "${command}" | tr -d "\r")"
+  bash -c "$(echo "${command}" | tr -d "\\r")"
   exit
 }
 

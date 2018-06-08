@@ -58,13 +58,13 @@ first=false
 
 info() {
   if $first; then
-    echo -e "\n"
+    echo -e "\\n"
   else
     first=true
   fi
   sleep "$PROMPT_TIMEOUT"
   printf "⭐ "
-  printf "%b $1\n" "${CYAN}" | pv -qL $((TYPE_SPEED+(-2 + RANDOM%5)));
+  printf "%b $1\\n" "${CYAN}" | pv -qL $((TYPE_SPEED+(-2 + RANDOM%5)));
 }
 
 pec() {

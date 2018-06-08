@@ -227,7 +227,7 @@ silo_mount_logfile() {
     pwd="$(pwd -P)"
     config="${pwd}/ansible.cfg"
     if [[ -f "${config}" ]]; then
-      if grep -q "^log_path\s*=" "${config}"; then
+      if grep -q "^log_path\\s*=" "${config}"; then
         # shellcheck disable=SC1090
         source <(grep log_path "${config}" | sed 's/ *= */=/g')
         logfile="${log_path}"
