@@ -9,6 +9,11 @@ rvm: 2.4.1
 services:
   - docker
 
+addons:
+  apt:
+    sources:
+      - debian-sid
+
 before_script:
   - sudo install cabal-install
   - cabal update
