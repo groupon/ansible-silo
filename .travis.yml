@@ -12,7 +12,10 @@ services:
 addons:
   apt:
     sources:
-      - debian-sid
+      - sourceline: 'ppa:duggan/bats'
+    packages:
+      - bats
+      - bc
 
 before_script:
   - scversion="stable"
@@ -24,7 +27,6 @@ before_script:
   - sudo add-apt-repository ppa:duggan/bats --yes
   - >-
     sudo apt-get install -qq realpath \
-                             bats \
                              make
   - ssh-keygen -b 2048 -t rsa -f ~/.ssh/id_rsa -q -N ""
   - eval `ssh-agent -s`
