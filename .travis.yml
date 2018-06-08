@@ -14,9 +14,11 @@ addons:
     sources:
       - debian-sid
     packages:
-      - shellcheck
+      - cabal-install
 
 before_script:
+  - cabal update
+  - cabal install shellcheck
   - gem install awesome_bot
   - npm install -g dockerfilelint
   - sudo add-apt-repository ppa:duggan/bats --yes
