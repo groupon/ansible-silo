@@ -73,7 +73,10 @@ run() {
   # command
   docker_default="$(command -v docker)"
   docker_cmd="${SILO_DOCKER_CMD:-${docker_default}}"
-  command="${docker_cmd} run --interactive --tty --rm"
+  command="${docker_cmd} run --interactive --rm"
+  if [ -t 0 ]; then
+    command+=" --tty"
+  fi
 
   # SILO_IMAGE_SHORT is defined in silo/runner_functions.sh and contains the
   # basename of the Docker image. Below test checks if this is the ansible-silo
@@ -87,7 +90,7 @@ run() {
       | grep -e "^silo_" -e "^_silo_" \
       | grep -v "^silo_run")
 
-    # SILO_VERSION is set as buld parameter "v" in docker-build. It can be
+    # SILO_VERSION is set as build parameter "v" in docker-build. It can be
     # defined by the user as environment var to run a specific ansible-silo
     # version.
     command+=" \"${SILO_IMAGE}:${SILO_VERSION}\""
@@ -106,7 +109,7 @@ run() {
       | grep -v "^silo_run")
     # SILO_IMAGE is defined in silo/runner_functions.sh and contains the
     # name of the Docker image, including the repository path.
-    # BUNDLE_VERSION is set as buld parameter "v" in docker-build.
+    # BUNDLE_VERSION is set as build parameter "v" in docker-build.
     command+=" \"${SILO_IMAGE}:{{ BUNDLE_VERSION }}\""
   fi
 
