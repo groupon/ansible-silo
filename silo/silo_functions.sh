@@ -209,12 +209,20 @@ prepare_user() {
     return
   fi
 
+  # If the user has no known_hosts file, create it. Otherwise we would not have
+  # a symlink later, but an actual file in .ssh, which will be lost after the
+  # current ansible run
+  if [[ ! -e "${HOME}/._ssh/known_hosts" ]]; then
+    touch "${HOME}/._ssh/known_hosts"
+    chown -R "${USER_ID}" "${HOME}/._ssh/known_hosts"
+  fi
+
   ln -s "${HOME}"/._ssh/* "${HOME}/.ssh" > /dev/null 2>&1
   ssh_conf_orig="${HOME}/._ssh/config"
   ssh_conf_new="${HOME}/.ssh/config"
   if [[ -f "${ssh_conf_orig}" ]]; then
     rm -f "${ssh_conf_new}"
-    # We remove any occurence of ControlPath from the ssh config, as the
+    # We remove any occurrence of ControlPath from the ssh config, as the
     # location might not be available inside the silo container. Furthermore
     # the ControlPath is defined in the global ssh config.
     sed '/^ControlPath/d' "${ssh_conf_orig}" > "${ssh_conf_new}"
@@ -223,7 +231,7 @@ prepare_user() {
 }
 
 #######################################
-# Sets up user environemnt
+# Sets up user environment
 # Globals:
 #   PATH
 # Arguments:
