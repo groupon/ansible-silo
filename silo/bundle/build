@@ -49,3 +49,17 @@ docker build --build-arg "v=${bundle_version}" \
 
 docker tag "$(docker images --quiet "${bundle_image}:${bundle_version}")" \
   "${bundle_image}:latest"  || exit
+
+# Show installation instructions
+echo ""
+echo "To install '${bundle_image}:${bundle_version}' for just your user," \
+   "run the following command:"
+echo "  docker run --interactive --tty --rm --volume" \
+   "\"\${HOME}/bin:/silo_install_path\" ${bundle_image}:${bundle_version}" \
+   "--install"
+echo ""
+echo "To install '${bundle_image}:${bundle_version}' for all users," \
+   "run the following command:"
+echo "  docker run --interactive --tty --rm --volume" \
+   " \"/usr/local/bin:/silo_install_path\" ${bundle_image}:${bundle_version}" \
+   " --install"
