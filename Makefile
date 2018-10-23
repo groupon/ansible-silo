@@ -38,6 +38,12 @@ BASE_VERSION := 2.0.1
 
 ansible-silo: validate-version
 	@docker build --build-arg "v=$(SILO_VERSION)" --tag "${SILO_IMG}:$(SILO_VERSION)" .
+	@echo ""
+	@echo "To install '${SILO_IMG}:${SILO_VERSION}' for just your user, run the following command:"
+	@echo "  docker run --interactive --tty --rm --volume \"\$${HOME}/bin:/silo_install_path\" ${SILO_IMG}:${SILO_VERSION} --install"
+	@echo ""
+	@echo "To install '${SILO_IMG}:${SILO_VERSION}' for all users, run the following command:"
+	@echo "  docker run --interactive --tty --rm --volume \"/usr/local/bin:/silo_install_path\" ${SILO_IMG}:${SILO_VERSION} --install"
 
 ansible-silo-base:
 	@docker build --build-arg "v=$(BASE_VERSION)" --file "base.Dockerfile" --tag "${BASE_IMG}:$(BASE_VERSION)" .
