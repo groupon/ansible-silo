@@ -45,24 +45,32 @@ RUN git clone --progress https://github.com/ansible/ansible.git /silo/userspace/
     cd /silo/userspace/ansible &&\
     git checkout --force ${ANSIBLE_VERSION} 2>&1 &&\
     git submodule update --init --recursive 2>&1 &&\
-
-# Create directory for storing ssh ControlPath
+    #
+    # Create directory for storing ssh ControlPath
     mkdir -p /home/user/.ssh/tmp &&\
-
-# Give the user a custom shell prompt
+    #
+    # Give the user a custom shell prompt
     echo 'export PS1="[ansible-silo $SILO_VERSION|\w]\\$ "' > /home/user/.bashrc &&\
-
-# Set default control path in ssh config
+    #
+    # Set default control path in ssh config
     echo "ControlPath  /home/user/.ssh/tmp/%h_%p_%r" > /etc/ssh/ssh_config &&\
-
-# User pip installs should be written to custom location
+    #
+    # User pip installs should be written to custom location
     echo "install-option = --install-scripts=/silo/userspace/bin --prefix=/silo/userspace" >> /etc/pip.conf &&\
-
-# Grant write access to the userspace sub directories
+    #
+    # Grant write access to the userspace sub directories
     chmod 777 /silo/userspace/bin /silo/userspace/lib /silo/userspace/lib/python2.7/site-packages &&\
-
-# Install ansible-lint via pip into user-space - means, the version can be managed by the user per pip
-    pip install --no-deps ansible-lint==${ANSIBLE_LINT_VERSION}
+    #
+    # Install ansible-lint via pip into user-space - means, the version can be managed by the user per pip
+    pip install --no-deps ansible-lint==${ANSIBLE_LINT_VERSION} &&\
+    #
+    # Show installed APK packages and their versions (to be copied into docs)
+    echo "----------------------------------------" &&\
+    apk info -v | sort | sed -E 's/-([0-9])/ \1/; s/^/- /' >&2 &&\
+    #
+    # Show installed pip packages and their versions (to be copied into docs)
+    echo "----------------------------------------" &&\
+    pip list --format freeze | sed -e 's/==/ /; s/^/- /' >&2
 
 ENTRYPOINT ["/silo/entrypoint"]
 
