@@ -686,5 +686,6 @@ test_silo_bundle_function() {
 }
 
 @test "Run ansible without tty" {
-  true | ansible --version
+  run bash -c "true | ansible --version"
+  [[ "${status}" -eq 0 ]]
 }
