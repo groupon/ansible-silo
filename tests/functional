@@ -103,7 +103,7 @@ test_silo_bundle_function() {
 @test "ansible is pointing to ansible-silo" {
 
   # Make sure the ansible* commands are symbolic links pointing to ansible-silo
-  for tool in "ansible" "ansible-config" "ansible-console" "ansible-doc" "ansible-galaxy" "ansible-inventory" "ansible-lint" "ansible-playbook" "ansible-pull" "ansible-vault"; do
+  for tool in "ansible" "ansible-config" "ansible-console" "ansible-connection" "ansible-doc" "ansible-galaxy" "ansible-inventory" "ansible-lint" "ansible-playbook" "ansible-pull" "ansible-vault"; do
     [[ -L "$BATS_ANSIBLE_SILO_INSTALL_PATH/$tool" ]]
     [[ "$(readlink -- "$BATS_ANSIBLE_SILO_INSTALL_PATH/$tool")" = "ansible-silo" ]]
   done
