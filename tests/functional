@@ -134,7 +134,7 @@ test_silo_bundle_function() {
 
   # Cleanup
   unset SILO_VERSION
-  run ansible-silo --reset
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --reset
   debug "${status}" "${output}" "${lines}"
   [[ "${status}" -eq 0 ]]
   unset SILO_VOLUME
@@ -223,7 +223,7 @@ test_silo_bundle_function() {
   export SILO_VOLUME="test"
 
   # Delete the test volume
-  run ansible-silo --reset
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --reset
   debug "${status}" "${output}" "${lines}"
   [[ "${status}" -eq 0 ]]
   [[ "${lines[-1]}" == silo.test* ]]
@@ -232,7 +232,7 @@ test_silo_bundle_function() {
   unset SILO_VOLUME
 
   # Delete the default volume
-  run ansible-silo --reset
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --reset
   debug "${status}" "${output}" "${lines}"
   [[ "${status}" -eq 0 ]]
   [[ "${lines[-1]}" == silo.$(whoami)* ]]
@@ -260,7 +260,7 @@ test_silo_bundle_function() {
   [[ "${lines[0]}" =~ ^ansible[[:space:]]1\.9\.6.*detached[[:space:]]HEAD ]]
 
   # Delete the test volume
-  run ansible-silo --reset
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --reset
   debug "${status}" "${output}" "${lines}"
   [[ "${status}" -eq 0 ]]
 
@@ -297,7 +297,7 @@ test_silo_bundle_function() {
 
 @test "Docker implementation" {
   cd "${BATS_TEST_DIRNAME}/playbooks"
-  run ansible-playbook -i inventory docker.yml --tags create
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-playbook" -i inventory docker.yml --tags create
   debug "${status}" "${output}" "${lines}"
   [[ "${status}" -eq 0 ]]
 }
@@ -347,19 +347,19 @@ test_silo_bundle_function() {
 
 @test "Ansible command through ssh w/ password authentication" {
   cd "${BATS_TEST_DIRNAME}/playbooks"
-  run ansible-playbook -i inventory docker.yml --tags test_ssh
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-playbook" -i inventory docker.yml --tags test_ssh
   debug "${status}" "${output}" "${lines}"
   [[ "${status}" -eq 0 ]]
 }
 
 @test "Ansible command through docker socket connection" {
   cd "${BATS_TEST_DIRNAME}/playbooks"
-  run ansible-playbook -i inventory docker.yml --tags test_socket
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-playbook" -i inventory docker.yml --tags test_socket
   debug "${status}" "${output}" "${lines}"
   [[ "${status}" -eq 0 ]]
 
   # Cleanup: we no longer need the test container
-  run ansible-playbook -i inventory docker.yml --tags create
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-playbook" -i inventory docker.yml --tags create
   debug "${status}" "${output}" "${lines}"
   [[ "${status}" -eq 0 ]]
 }
@@ -439,14 +439,14 @@ test_silo_bundle_function() {
 
 @test "ansible-lint" {
   cd "$BATS_ANSIBLE_SILO_BUNDLE_PATH/playbooks"
-  run ansible-lint playbook.yml
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-lint" playbook.yml
   debug "${status}" "${output}" "${lines}"
   [[ "${status}" -eq 0 ]]
 }
 
 @test "Execute Playbook" {
   cd "$BATS_ANSIBLE_SILO_BUNDLE_PATH/playbooks"
-  run ansible-playbook playbook.yml
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-playbook" playbook.yml
   debug "${status}" "${output}" "${lines}"
   [[ "${status}" -eq 0 ]]
 }
@@ -457,12 +457,12 @@ test_silo_bundle_function() {
   rm -rf /tmp/geerlingguy.apache /tmp/ansible-role-apache
 
   cd /tmp
-  run ansible-galaxy install --roles-path . geerlingguy.apache
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-galaxy" install --roles-path . geerlingguy.apache
   debug "${status}" "${output}" "${lines}"
   [[ "${status}" -eq 0 ]]
   [[ -d "/tmp/geerlingguy.apache" ]]
 
-  run ansible-galaxy install --roles-path . git+$role_url,$role_hash
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-galaxy" install --roles-path . git+$role_url,$role_hash
   debug "${status}" "${output}" "${lines}"
   [[ "${status}" -eq 0 ]]
   [[ -d "ansible-role-apache" ]]
@@ -498,7 +498,7 @@ test_silo_bundle_function() {
 }
 
 @test "Shell execution" {
-  run ansible-silo --shell hostname -f
+  run "$BATS_ANSIBLE_SILO_INSTALL_PATH/ansible-silo" --shell hostname -f
   debug "${status}" "${output}" "${lines}"
   [[ "${status}" -eq 0 ]]
   [[ "${lines[0]}" == "silo.$(hostname -f)"* ]]
