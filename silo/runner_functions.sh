@@ -317,7 +317,7 @@ if [[ "${SILO_IMAGE_SHORT}" != "ansible-silo" ]]; then
     source "/etc/ansible/ansible-silo/ansible-silo"
   fi
   if [[ -f "${HOME}/.ansible-silo" ]]; then
-    # shellcheck disable=SC1090
+    # shellcheck disable=SC1090,SC1091
     source "${HOME}/.ansible-silo"
   fi
 fi
