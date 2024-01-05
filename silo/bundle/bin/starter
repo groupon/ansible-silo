@@ -45,7 +45,7 @@ ansible_silo_bundle_starter() {
   local command runner_path tty
 
   # SILO_DEBUG can be set by the user to enable debug output
-  if [[ ! -z "${SILO_DEBUG}" ]]; then
+  if [[ -n "${SILO_DEBUG}" ]]; then
     # Output all defined evn vars starting with SILO_
     echo "SILO vars:"
     # shellcheck disable=SC2030
@@ -68,7 +68,7 @@ ansible_silo_bundle_starter() {
 
   runner_path="/tmp/${BUNDLE_IMAGE_SHORT}-runner-${BUNDLE_VERSION}"
   if [[ -f "${runner_path}" ]]; then
-    if [[ ! -z "${SILO_DEBUG}" ]]; then
+    if [[ -n "${SILO_DEBUG}" ]]; then
       echo -e "Runner file already exists.\\n"
     fi
     command="${runner_path}"
@@ -77,7 +77,7 @@ ansible_silo_bundle_starter() {
       command+=" \"${var}\""
     done
   else
-    if [[ ! -z "${SILO_DEBUG}" ]]; then
+    if [[ -n "${SILO_DEBUG}" ]]; then
       echo -e "Requesting runner creation. Starting container with --run.\\n"
     fi
     # shellcheck disable=SC2031
@@ -85,7 +85,7 @@ ansible_silo_bundle_starter() {
       "${BUNDLE_IMAGE}:${BUNDLE_VERSION}" --run "$@")"
   fi
 
-  if [[ ! -z "${SILO_DEBUG}" ]]; then
+  if [[ -n "${SILO_DEBUG}" ]]; then
     echo "Executing: ${command}"
   fi
 

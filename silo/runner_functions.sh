@@ -118,7 +118,7 @@ silo_ssh_key_forwarding() {
       return=$(pinata-ssh-mount)
     fi
   else
-    if [[ ! -z "${SSH_AUTH_SOCK}" ]]; then
+    if [[ -n "${SSH_AUTH_SOCK}" ]]; then
       if [[ -L "${SSH_AUTH_SOCK}" ]]; then
         auth_sock_link_dir="$(dirname "$(cd "${SSH_AUTH_SOCK}" && pwd -P)")"
         return+="--volume \"${auth_sock_link_dir}\":\"${auth_sock_link_dir}\" "
@@ -271,7 +271,7 @@ silo_mount_docker_socket() {
   # SILO_NO_PRIVILEGED may be set by the user to prevent the container to
   # run in privileged mode. As a result this disables forwarding of the docker
   # socket
-  if [[ ! -z "${SILO_NO_PRIVILEGED}" ]]; then
+  if [[ -n "${SILO_NO_PRIVILEGED}" ]]; then
     return
   fi
 
@@ -295,7 +295,7 @@ silo_mount_docker_socket() {
 #######################################
 silo_forward_vault_password_file() {
   local vault_password_dir return=""
-  if [[ ! -z "${ANSIBLE_VAULT_PASSWORD_FILE}" ]]; then
+  if [[ -n "${ANSIBLE_VAULT_PASSWORD_FILE}" ]]; then
     vault_password_dir="$(dirname "${ANSIBLE_VAULT_PASSWORD_FILE}")"
     return+="--volume \"${vault_password_dir}\":"
     return+="\"/tmp/${vault_password_dir}:ro\" "

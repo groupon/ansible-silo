@@ -53,7 +53,7 @@ silo() {
   fi
 
   # SILO_DEBUG can be set by the user to enable debug output
-  if [[ ! -z "${SILO_DEBUG}" ]]; then
+  if [[ -n "${SILO_DEBUG}" ]]; then
     # Output all defined evn vars starting with SILO_
     echo "SILO vars:"
     # shellcheck disable=SC2030
@@ -108,7 +108,7 @@ silo() {
 
   runner_path="/tmp/${SILO_IMAGE_SHORT}-runner-${SILO_VERSION}"
   if [[ -f "${runner_path}" ]]; then
-    if [[ ! -z "${SILO_DEBUG}" ]]; then
+    if [[ -n "${SILO_DEBUG}" ]]; then
       echo -e "Runner file already exists.\\n"
     fi
     command="${runner_path}"
@@ -116,14 +116,14 @@ silo() {
       command+=" \"${var}\""
     done
   else
-    if [[ ! -z "${SILO_DEBUG}" ]]; then
+    if [[ -n "${SILO_DEBUG}" ]]; then
       echo -e "Requesting runner creation. Starting container with --run.\\n"
     fi
     command="$(docker run --interactive ${tty} --rm --volume "/tmp:/tmp" \
       "${SILO_IMAGE}:${SILO_VERSION}" --run "$@")"
   fi
 
-  if [[ ! -z "${SILO_DEBUG}" ]]; then
+  if [[ -n "${SILO_DEBUG}" ]]; then
     echo -e "Executing: ${command}\\n"
   fi
   bash -c "$(echo "${command}" | tr -d "\\r")"

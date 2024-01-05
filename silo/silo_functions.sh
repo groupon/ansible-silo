@@ -401,7 +401,7 @@ render_template() {
 
   # ANSIBLE_VERSION is an environment var defined in the Dockerfile and
   # specifies which Ansible version is running by default in the container.
-  if [[ ! -z "${ANSIBLE_VERSION}" ]]; then
+  if [[ -n "${ANSIBLE_VERSION}" ]]; then
     template="${template//{{ ANSIBLE_VERSION \}\}/${ANSIBLE_VERSION}}"
   else
     echo "ANSIBLE_VERSION not set" >&2
@@ -409,7 +409,7 @@ render_template() {
   fi
 
   # SILO_VERSION is set as buld parameter "v" in docker-build.
-  if [[ ! -z "${SILO_VERSION}" ]]; then
+  if [[ -n "${SILO_VERSION}" ]]; then
     template="${template//{{ SILO_VERSION \}\}/${SILO_VERSION}}"
   else
     echo "SILO_VERSION not set" >&2
@@ -418,7 +418,7 @@ render_template() {
 
   # SILO_IMAGE is defined in silo/runner_functions.sh and contains the name
   # of the Docker image, including the repository path.
-  if [[ ! -z "${SILO_IMAGE}" ]]; then
+  if [[ -n "${SILO_IMAGE}" ]]; then
     template="${template//{{ SILO_IMAGE \}\}/${SILO_IMAGE}}"
   else
     echo "SILO_IMAGE not set" >&2
@@ -427,7 +427,7 @@ render_template() {
 
   # SILO_IMAGE_SHORT is defined in silo/runner_functions.sh and contains the
   # basename of the Docker image.
-  if [[ ! -z "${SILO_IMAGE_SHORT}" ]]; then
+  if [[ -n "${SILO_IMAGE_SHORT}" ]]; then
     template="${template//{{ SILO_IMAGE_SHORT \}\}/${SILO_IMAGE_SHORT}}"
   else
     echo "SILO_IMAGE_SHORT not set" >&2
@@ -436,7 +436,7 @@ render_template() {
 
   # BUNDLE_IMAGE is defined in silo/bundle/Dockerfile and contains the name of
   # the bundle Docker image, including the repository path.
-  if [[ ! -z "${BUNDLE_IMAGE}" ]]; then
+  if [[ -n "${BUNDLE_IMAGE}" ]]; then
     template="${template//{{ BUNDLE_IMAGE \}\}/${BUNDLE_IMAGE}}"
   fi
 
@@ -444,14 +444,14 @@ render_template() {
   # of the bundle Docker image.
   # BUNDLE_IMAGE_SHORT_SAFE is a safe version, replacing problematic characters
   # in bundle names.
-  if [[ ! -z "${BUNDLE_IMAGE_SHORT}" ]]; then
+  if [[ -n "${BUNDLE_IMAGE_SHORT}" ]]; then
     bundle_safe=$(safe_string "${BUNDLE_IMAGE_SHORT}")
     template="${template//{{ BUNDLE_IMAGE_SHORT \}\}/${BUNDLE_IMAGE_SHORT}}"
     template="${template//{{ BUNDLE_IMAGE_SHORT_SAFE \}\}/${bundle_safe}}"
   fi
 
   # BUNDLE_VERSION is set as buld parameter "v" in docker-build of the bundle.
-  if [[ ! -z "${BUNDLE_VERSION}" ]]; then
+  if [[ -n "${BUNDLE_VERSION}" ]]; then
     template="${template//{{ BUNDLE_VERSION \}\}/${BUNDLE_VERSION}}"
   fi
 
@@ -477,7 +477,7 @@ get_silo_info() {
   prepare_environment
 
   # If this is a bundle, a version might have been specified
-  if [[ ! -z "${BUNDLE_VERSION}" ]]; then
+  if [[ -n "${BUNDLE_VERSION}" ]]; then
     echo "${SILO_IMAGE_SHORT} ${BUNDLE_VERSION}"
   fi
 
@@ -497,7 +497,7 @@ get_silo_info() {
   # If Ansible was installed on a Docker volume, show the volume name/location.
   # SILO_VOLUME can be set by the user to point to a specific volume where
   # ansible was installed.
-  if [[ ! -z "${SILO_VOLUME}" ]]; then
+  if [[ -n "${SILO_VOLUME}" ]]; then
     echo "ansible installed on volume ${SILO_VOLUME}"
   fi
 }
