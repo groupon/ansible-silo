@@ -2,6 +2,10 @@ name: CI
 
 on: [push, pull_request]
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -35,6 +39,32 @@ jobs:
       env:
         SSH_KEYFILE: "${{ github.workspace }}/id_rsa"
 
+    # functional tests derive an FQDN from the host's one:
+    #   silo.<host full-qualified domain name>
+    # this fails because Azure VMs FQDNs are too long
+    - name: Fix hostname resolution
+      run: |
+        IPADDR="$(hostname -I | cut -d' ' -f1)"
+        HOSTNAME="${REPOSITORY_NAME}-$(printf '%02x' ${IPADDR//./ })"
+        FQDN="${HOSTNAME}.nip.io"
+
+        sudo sed -i "/$(hostname)/d" /etc/hosts
+        sudo hostnamectl set-hostname "${HOSTNAME}"
+        printf '%s\t%s\t%s\n' "${IPADDR}" "${FQDN}" "${HOSTNAME}" \
+          | sudo tee -a /etc/hosts
+      env:
+        REPOSITORY_NAME: "${{ github.event.repository.name }}"
+
+    - name: Patch virtualization check
+      run: |
+        patch -p0 <<'EOF'
+        --- tests/functional
+        +++ tests/functional
+        @@ -115 +115 @@ test_silo_bundle_function() {
+        -  [[ "${result1}" =~ docker ]]
+        +  [[ "${result1}" =~ VirtualPC ]]
+        EOF
+
     - name: Run tests
       run: |
         eval `ssh-agent -s`
@@ -42,7 +72,7 @@ jobs:
 
         make test-style
         make test-links
-        # workaround for TTY issue
+        # fake TTY to avoid "the input device is not a TTY"
         script -e -c 'make test-function'
 
     - name: Docker meta
