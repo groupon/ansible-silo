@@ -1,0 +1,66 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 2.4.1
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y -qq \
+          bats bc \
+          shellcheck \
+          make
+        gem install awesome_bot
+        npm install -g dockerfilelint
+
+    - name: Generate SSH key
+      id: ssh-keygen
+      run: |
+        mkdir -p ~/.ssh
+        ssh-keygen -b 2048 -t rsa -f "${SSH_KEYFILE}" -q -N ""
+        cat "${SSH_KEYFILE}.pub" >> ~/.ssh/authorized_keys
+        echo "ssh-keyfile=${SSH_KEYFILE}" >> "$GITHUB_OUTPUT"
+      env:
+        SSH_KEYFILE: "${{ github.workspace }}/id_rsa"
+
+    - name: Run tests
+      run: |
+        eval `ssh-agent -s`
+        ssh-add ${{ steps.ssh-keygen.outputs.ssh-keyfile }}
+
+        make test-style
+        make test-links
+        make test-function
+
+    - name: Docker meta
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}
+
+    - name: Login to DockerHub
+      if: github.event_name != 'pull_request'
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: Build and push
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        push: ${{ github.event_name != 'pull_request' }}
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
