@@ -42,7 +42,8 @@ jobs:
 
         make test-style
         make test-links
-        make test-function
+        # workaround for TTY issue
+        script -e -c 'make test-function'
 
     - name: Docker meta
       id: meta
