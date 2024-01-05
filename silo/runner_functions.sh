@@ -163,7 +163,7 @@ _silo_var_forwarding() {
     "OLDPWD" "OSTYPE" "PATH" "SILO_"* "PWD" "return" "SHELL" "SSH_"* "TERM"
     "TMPDIR" "UID" "USER" "var" "var_filter" "var_filter_item" "XDG_"* "EX_"*
     "GIT_"*)
-  for var in $( (set -o posix; set) | grep = | cut -d '=' -f 1 ); do
+  for var in $( (set -o posix; set) | grep '=' | cut -d '=' -f 1 ); do
     for var_filter_item in "${var_filter[@]}"; do
       # shellcheck disable=SC2053
       if [[ "${var}" == ${var_filter_item} ]]; then

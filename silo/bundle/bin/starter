@@ -49,7 +49,7 @@ ansible_silo_bundle_starter() {
     # Output all defined evn vars starting with SILO_
     echo "SILO vars:"
     # shellcheck disable=SC2030
-    for var in $( (set -o posix; set) | grep = | cut -d '=' -f 1 ); do
+    for var in $( (set -o posix; set) | grep '=' | cut -d '=' -f 1 ); do
       if [[ "${var}" == "SILO_"* ]]; then
         echo " - ${var}=${!var}"
       fi
