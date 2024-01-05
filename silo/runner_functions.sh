@@ -52,8 +52,10 @@
 # Dockerfile. SILO_IMAGE_SHORT is defined in silo/silo_functions.sh.
 # SILO_VERSION is defined in silo/bin/ansible-silo but can be overridden by the
 # user through environment var
+# shellcheck disable=SC2034
 readonly SILO_IMAGE="{{ SILO_IMAGE }}"
 readonly SILO_IMAGE_SHORT="{{ SILO_IMAGE_SHORT }}"
+# shellcheck disable=SC2034
 readonly SILO_VERSION="{{ SILO_VERSION }}"
 
 #######################################
