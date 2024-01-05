@@ -7,7 +7,7 @@ asciinema: true
 [![Commits since v2.2.0](https://img.shields.io/github/commits-since/groupon/ansible-silo/v2.2.0.svg?style=flat&colorB=4183C4&label=Commits%20since%20v2.2.0)](https://github.com/groupon/ansible-silo/commits/master)
 [![GitHub Stars](https://img.shields.io/github/stars/groupon/ansible-silo.svg?style=flat&colorB=4183C4&label=GitHub%20Stars)](https://github.com/groupon/ansible-silo/stargazers)
 [![Build Status](https://img.shields.io/travis/groupon/ansible-silo.svg?style=flat&label=Tests)](https://travis-ci.org/groupon/ansible-silo)
-[![Docker Build Status](https://img.shields.io/docker/build/grpn/ansible-silo.svg?style=flat&label=Build)](https://hub.docker.com/r/grpn/ansible-silo/builds/)
+[![Docker Build Status](https://img.shields.io/docker/automated/grpn/ansible-silo?style=flat&label=Build)](https://hub.docker.com/r/grpn/ansible-silo/builds/)
 [![Code Climate](https://codeclimate.com/github/groupon/ansible-silo/badges/gpa.svg)](https://codeclimate.com/github/groupon/ansible-silo)
 
 If you expect reproducible outcome of an automation system, you not only need to make sure you have a specific version of the automation system itself, but also have fixed versions of all its dependencies. The most prominent Ansible dependency which can affect your plays would be Jinja2 but this applies to all involved components.
